@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   Clover,
   Dices,
@@ -21,6 +21,7 @@ import {
 } from './utils/calculator';
 import { useUrlSync, getUrlTicket } from './hooks/useUrlSync';
 import { ShareCard } from './components/ShareCard';
+import { trackEvent } from './utils/analytics';
 import rawDraws from './data/draws.json';
 
 const draws = rawDraws as DrawResult[];
@@ -127,6 +128,13 @@ export const App: React.FC = () => {
     return calculateSimulation(numbers, bonus, filteredDraws);
   }, [isComplete, numbers, bonus, filteredDraws]);
 
+  // Analytics : Simulation Réussie
+  useEffect(() => {
+    if (simulation) {
+      trackEvent('Simulation Réussie', { gainNet: simulation.netProfit });
+    }
+  }, [simulation]);
+
   // 4. Calcul de la température du ticket (%) sur la période sélectionnée
   // (impacte: Température de grille)
   const hotNumbersSet = useMemo(() => {
@@ -188,6 +196,7 @@ export const App: React.FC = () => {
 
   // Tirage chanceux aléatoire (Flash)
   const randomize = () => {
+    trackEvent('Bouton Flash');
     const pool = Array.from({ length: 42 }, (_, i) => i + 1);
     const picked: number[] = [];
     while (picked.length < 6) {
