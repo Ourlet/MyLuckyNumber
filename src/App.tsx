@@ -10,6 +10,7 @@ import {
   X,
   Award,
   Calendar,
+  Share2,
 } from 'lucide-react';
 import { DrawResult, UserTicket } from './types/lottery';
 import {
@@ -18,6 +19,8 @@ import {
   formatCHF,
   formatSwissDate,
 } from './utils/calculator';
+import { useUrlSync, getUrlTicket } from './hooks/useUrlSync';
+import { ShareCard } from './components/ShareCard';
 import rawDraws from './data/draws.json';
 
 const draws = rawDraws as DrawResult[];
@@ -80,10 +83,10 @@ const AdSlot: React.FC<{
 };
 
 export const App: React.FC = () => {
-  // Grille sélectionnée (initialisée avec la combinaison de la maquette Lovable)
-  const [ticket, setTicket] = useState<UserTicket>({
-    numbers: [1, 5, 6, 16, 30, 34],
-    bonus: 4,
+  // Grille sélectionnée : hydratée depuis l'URL si params valides, sinon valeurs par défaut
+  const [ticket, setTicket] = useState<UserTicket>(() => {
+    const urlTicket = getUrlTicket();
+    return urlTicket ?? { numbers: [1, 5, 6, 16, 30, 34], bonus: 4 };
   });
 
   // Date Picker : Date de début et date de fin pour filtrer les tirages
@@ -93,8 +96,14 @@ export const App: React.FC = () => {
   // Modal pour afficher l'historique complet et le tableau des 8 rangs
   const [showAllHistory, setShowAllHistory] = useState(false);
 
+  // Toggle pour la ShareCard
+  const [showShareCard, setShowShareCard] = useState(false);
+
   const { numbers, bonus } = ticket;
   const isComplete = numbers.length === 6 && bonus !== null;
+
+  // Synchronisation dynamique URL ↔ ticket (deep linking)
+  useUrlSync(ticket);
 
   // 1. Filtrage dynamique des tirages selon la période renseignée
   const filteredDraws = useMemo(() => {
@@ -568,6 +577,35 @@ export const App: React.FC = () => {
                 </p>
               </article>
             </div>
+
+            {/* 5. Bouton Partager + ShareCard collapsible */}
+            {isComplete && simulation && (
+              <div className="space-y-3">
+                <button
+                  type="button"
+                  onClick={() => setShowShareCard((v) => !v)}
+                  className={`w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 transition-all active:scale-[0.98] cursor-pointer ${
+                    showShareCard
+                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs'
+                      : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20'
+                  }`}
+                >
+                  <Share2 className="size-4.5" />
+                  <span>{showShareCard ? 'Masquer le partage' : 'Partager mon résultat'}</span>
+                </button>
+
+                {showShareCard && (
+                  <div className="animate-in slide-in-from-top-2 fade-in duration-200">
+                    <ShareCard
+                      simulation={simulation}
+                      numbers={numbers}
+                      bonus={bonus!}
+                      startYear={startDate.slice(0, 4)}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* 4. Carte Température */}
             <div className="panel p-5 space-y-4">
