@@ -6,6 +6,7 @@ import {
   MessageCircle,
   ExternalLink,
 } from 'lucide-react';
+import { track } from '@vercel/analytics';
 import { SimulationSummary } from '../types/lottery';
 
 /**
@@ -61,6 +62,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
 
   // Copy to clipboard
   const handleCopy = useCallback(async () => {
+    track('copy_link_clicked');
     try {
       await navigator.clipboard.writeText(message);
       setCopied(true);
@@ -178,6 +180,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
           target="_blank"
           rel="noopener noreferrer"
           className="share-btn-whatsapp"
+          onClick={() => track('share_whatsapp_clicked')}
         >
           <MessageCircle className="size-4.5" />
           <span>Envoyer sur WhatsApp</span>
