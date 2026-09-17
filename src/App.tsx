@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   Clover,
   Dices,
@@ -20,7 +20,9 @@ import {
   formatSwissDate,
 } from './utils/calculator';
 import { useUrlSync, getUrlTicket } from './hooks/useUrlSync';
-import { ShareCard } from './components/ShareCard';
+import { ShareModal } from './components/ShareModal';
+import { EtfComparison } from './components/EtfComparison';
+import { ShareTriggerModal } from './components/ShareTriggerModal';
 import { trackEvent } from './utils/analytics';
 import rawDraws from './data/draws.json';
 
@@ -97,8 +99,23 @@ export const App: React.FC = () => {
   // Modal pour afficher l'historique complet et le tableau des 8 rangs
   const [showAllHistory, setShowAllHistory] = useState(false);
 
-  // Toggle pour la ShareCard
-  const [showShareCard, setShowShareCard] = useState(false);
+  // Modale de partage
+  const [showShareModal, setShowShareModal] = useState(false);
+
+  // Compteur de simulations & modale d'incitation au partage (1 fois par session)
+  const [showShareTrigger, setShowShareTrigger] = useState(false);
+  const simCountRef = useRef<number>((() => {
+    try {
+      const val = parseInt(sessionStorage.getItem('simulations_count') || '0', 10);
+      if (Number.isNaN(val) || val < 0) {
+        sessionStorage.setItem('simulations_count', '0');
+        return 0;
+      }
+      return val;
+    } catch {
+      return 0;
+    }
+  })());
 
   const { numbers, bonus } = ticket;
   const isComplete = numbers.length === 6 && bonus !== null;
@@ -128,49 +145,33 @@ export const App: React.FC = () => {
     return calculateSimulation(numbers, bonus, filteredDraws);
   }, [isComplete, numbers, bonus, filteredDraws]);
 
-  // Analytics : Simulation Réussie
+  // Sérialise le ticket pour détecter les vrais changements (anti strict-mode + anti doublon)
+  const ticketKey = isComplete ? `${numbers.join(',')}-${bonus}` : '';
+  const prevTicketKeyRef = useRef(ticketKey); // Initialisé avec la valeur courante → skip le 1er rendu
+
+  // Analytics : Simulation Réussie + compteur de simulations pour ShareTriggerModal
   useEffect(() => {
-    if (simulation) {
-      trackEvent('Simulation Réussie', { gainNet: simulation.netProfit });
+    if (!simulation || !ticketKey) return;
+
+    // Ignore le rendu initial et les doublons strict-mode
+    if (ticketKey === prevTicketKeyRef.current) return;
+    prevTicketKeyRef.current = ticketKey;
+
+    trackEvent('Simulation Réussie', { gainNet: simulation.netProfit });
+
+    // Incrémente le compteur de simulations (sécurisé contre NaN)
+    const current = Number.isFinite(simCountRef.current) ? simCountRef.current : 0;
+    const newCount = current + 1;
+    simCountRef.current = newCount;
+    sessionStorage.setItem('simulations_count', String(newCount));
+
+    // Déclenche la modale à la 3ᵉ simulation (une seule fois par session)
+    if (newCount >= 3 && sessionStorage.getItem('has_seen_share_prompt') !== 'true') {
+      setShowShareTrigger(true);
+      sessionStorage.setItem('has_seen_share_prompt', 'true');
     }
-  }, [simulation]);
+  }, [simulation, ticketKey]);
 
-  // 4. Calcul de la température du ticket (%) sur la période sélectionnée
-  // (impacte: Température de grille)
-  const hotNumbersSet = useMemo(() => {
-    return new Set(stats.hotNumbers.map((n) => n.number));
-  }, [stats.hotNumbers]);
-
-  const temperature = useMemo(() => {
-    if (numbers.length === 0) return 0;
-    const hotCount = numbers.filter((n) => hotNumbersSet.has(n)).length;
-    return Math.round((hotCount / Math.max(numbers.length, 1)) * 100);
-  }, [numbers, hotNumbersSet]);
-
-  // Numéro le plus chaud et le plus froid parmi ceux choisis par l'utilisateur
-  const ticketTrends = useMemo(() => {
-    if (numbers.length === 0) {
-      return { hottest: null, coldest: null };
-    }
-
-    const statsForUserNumbers = numbers.map((num) => {
-      const hotStat = stats.hotNumbers.find((n) => n.number === num);
-      const coldStat = stats.coldNumbers.find((n) => n.number === num);
-      return {
-        num,
-        count: hotStat?.count ?? 0,
-        gap: coldStat?.drawsSinceLastDrawn ?? 0,
-      };
-    });
-
-    const sortedByCount = [...statsForUserNumbers].sort((a, b) => b.count - a.count);
-    const hottest = sortedByCount[0] || null;
-
-    const sortedByGap = [...statsForUserNumbers].sort((a, b) => b.gap - a.gap);
-    const coldest = sortedByGap[0] || null;
-
-    return { hottest, coldest };
-  }, [numbers, stats]);
 
   // Bascule d'un numéro principal (max 6)
   const toggleNumber = (num: number) => {
@@ -582,81 +583,19 @@ export const App: React.FC = () => {
               </article>
             </div>
 
-            {/* 5. Bouton Partager + ShareCard collapsible */}
-            {isComplete && simulation && (
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => setShowShareCard((v) => !v)}
-                  className={`w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 transition-all active:scale-[0.98] cursor-pointer ${showShareCard
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-xs'
-                    : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20'
-                    }`}
-                >
-                  <Share2 className="size-4.5" />
-                  <span>{showShareCard ? 'Masquer le partage' : 'Partager mon résultat'}</span>
-                </button>
 
-                {showShareCard && (
-                  <div className="animate-in slide-in-from-top-2 fade-in duration-200">
-                    <ShareCard
-                      simulation={simulation}
-                      numbers={numbers}
-                      bonus={bonus!}
-                      startYear={startDate.slice(0, 4)}
-                    />
-                  </div>
-                )}
-              </div>
+            {/* 5. Bouton Partager mon résultat (Ouvre la modale) */}
+            {isComplete && simulation && (
+              <button
+                type="button"
+                onClick={() => setShowShareModal(true)}
+                className="w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
+              >
+                <Share2 className="size-4.5" />
+                <span>Partager mon résultat</span>
+              </button>
             )}
 
-            {/* 4. Carte Température */}
-            <div className="panel p-5 space-y-4">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                    Température de la grille
-                  </h3>
-                  <p className="text-xs text-slate-500">Affinité avec les numéros chauds sur la période</p>
-                </div>
-                <span className="text-2xl font-black text-emerald-700">{temperature}%</span>
-              </div>
-
-              {/* Jauge de température */}
-              <div className="h-2.5 overflow-hidden rounded-full bg-slate-100">
-                <div
-                  className="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600 transition-all duration-500"
-                  style={{ width: `${temperature}%` }}
-                />
-              </div>
-
-              {/* Boîtes de tendance */}
-              <div className="grid grid-cols-2 gap-3 pt-1">
-                <div className="trend-box">
-                  <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
-                    <Flame className="size-4" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-medium text-slate-400">Plus chaud</p>
-                    <p className="text-sm font-bold text-slate-900">
-                      {ticketTrends.hottest ? `${ticketTrends.hottest.num} · ${ticketTrends.hottest.count}×` : '—'}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="trend-box">
-                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center">
-                    <Snowflake className="size-4" />
-                  </div>
-                  <div>
-                    <p className="text-[11px] font-medium text-slate-400">Plus froid</p>
-                    <p className="text-sm font-bold text-slate-900">
-                      {ticketTrends.coldest ? `${ticketTrends.coldest.num} · ${ticketTrends.coldest.gap} tirages` : '—'}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </section>
 
           {/* ======================================================== */}
@@ -807,6 +746,14 @@ export const App: React.FC = () => {
           </section>
         </div>
 
+        {/* Section ETF pleine largeur sous la grille */}
+        {isComplete && simulation && (
+          <EtfComparison
+            simulation={simulation}
+            filteredDraws={filteredDraws}
+          />
+        )}
+
         {/* 3. Emplacement publicitaire discret Partenaire */}
         <div className="pt-2">
           <AdSlot
@@ -943,6 +890,26 @@ export const App: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Modale de partage de résultat (Story, WhatsApp, Copie) */}
+      {isComplete && simulation && (
+        <ShareModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          simulation={simulation}
+          numbers={numbers}
+          bonus={bonus!}
+          startYear={startDate.slice(0, 4)}
+        />
+      )}
+
+      {/* Modale d'incitation au partage (3ᵉ simulation) */}
+      <ShareTriggerModal
+        isOpen={showShareTrigger}
+        onClose={() => setShowShareTrigger(false)}
+        numbers={numbers}
+        bonus={bonus ?? 1}
+      />
     </div>
   );
 };

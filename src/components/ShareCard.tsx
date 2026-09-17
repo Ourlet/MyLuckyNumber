@@ -5,9 +5,15 @@ import {
   Check,
   MessageCircle,
   ExternalLink,
+  Download,
+  Loader2,
+  Sparkles,
+  Smartphone,
+  Square,
 } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { SimulationSummary } from '../types/lottery';
+import { generateStoryImage } from '../utils/storyImage';
 
 /**
  * Format a number as Swiss CHF with apostrophe separator (for share messages).
@@ -34,7 +40,10 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   startYear,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [storyDownloaded, setStoryDownloaded] = useState(false);
+  const [storyFormat, setStoryFormat] = useState<'story' | 'square'>('story');
 
   // Build the shareable URL
   const shareUrl = (() => {
@@ -66,7 +75,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
     try {
       await navigator.clipboard.writeText(message);
       setCopied(true);
-      setShowToast(true);
+      setToastMessage('Lien copié dans le presse-papier !');
     } catch {
       // Fallback for older browsers
       const textarea = document.createElement('textarea');
@@ -78,20 +87,49 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       document.execCommand('copy');
       document.body.removeChild(textarea);
       setCopied(true);
-      setShowToast(true);
+      setToastMessage('Lien copié dans le presse-papier !');
     }
   }, [message]);
 
-  // Reset copied state after 2.5s
+  // Download Story image
+  const handleDownloadStory = useCallback(async () => {
+    setIsGenerating(true);
+    trackEvent('Téléchargement Story', { format: storyFormat });
+    try {
+      const dataUrl = await generateStoryImage(simulation, numbers, bonus, {
+        format: storyFormat,
+        startYear,
+      });
+
+      const filename = `swiss-lotto-${storyFormat}-${numbers.join('-')}.png`;
+      const link = document.createElement('a');
+      link.download = filename;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      setStoryDownloaded(true);
+      setToastMessage(`Image ${storyFormat === 'story' ? 'Story (9:16)' : 'Carré (1:1)'} téléchargée !`);
+      setTimeout(() => setStoryDownloaded(false), 3000);
+    } catch (err) {
+      console.error('Erreur lors de la génération de l’image:', err);
+      setToastMessage('Erreur lors de la création de l’image');
+    } finally {
+      setIsGenerating(false);
+    }
+  }, [simulation, numbers, bonus, storyFormat, startYear]);
+
+  // Reset copied and toast state after 2.5s
   useEffect(() => {
-    if (copied) {
+    if (toastMessage) {
       const timer = setTimeout(() => {
         setCopied(false);
-        setShowToast(false);
-      }, 2500);
+        setToastMessage(null);
+      }, 2800);
       return () => clearTimeout(timer);
     }
-  }, [copied]);
+  }, [toastMessage]);
 
   // WhatsApp share URL
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
@@ -111,6 +149,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       // User cancelled or not supported — silently ignore
     }
   }, [message, shareUrl]);
+
 
   const isLoss = simulation.netProfit < 0;
 
@@ -174,6 +213,53 @@ export const ShareCard: React.FC<ShareCardProps> = ({
 
       {/* Actions */}
       <div className="flex flex-col gap-2.5 mt-4">
+        {/* Story Format Selector */}
+        <div className="share-format-picker">
+          <button
+            type="button"
+            className={`share-format-btn ${storyFormat === 'story' ? 'active' : ''}`}
+            onClick={() => setStoryFormat('story')}
+          >
+            <Smartphone className="size-3.5" />
+            <span>Story (9:16)</span>
+          </button>
+          <button
+            type="button"
+            className={`share-format-btn ${storyFormat === 'square' ? 'active' : ''}`}
+            onClick={() => setStoryFormat('square')}
+          >
+            <Square className="size-3" />
+            <span>Carré (1:1)</span>
+          </button>
+        </div>
+
+        {/* Download Story / Image Button */}
+        <button
+          type="button"
+          onClick={handleDownloadStory}
+          disabled={isGenerating}
+          className="share-btn-story"
+          title="Télécharger une image optimisée pour WhatsApp Status ou Instagram Story"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="size-4.5 animate-spin" />
+              <span>Génération de l'image...</span>
+            </>
+          ) : storyDownloaded ? (
+            <>
+              <Check className="size-4.5 text-emerald-400" />
+              <span>Image téléchargée !</span>
+            </>
+          ) : (
+            <>
+              <Download className="size-4.5 text-amber-300" />
+              <span>Télécharger mon image {storyFormat === 'story' ? 'Story (9:16)' : 'Carrée'}</span>
+              <Sparkles className="size-3.5 ml-auto text-amber-300 opacity-90" />
+            </>
+          )}
+        </button>
+
         {/* WhatsApp — primary action */}
         <a
           href={whatsappUrl}
@@ -235,10 +321,10 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       </div>
 
       {/* Toast notification */}
-      {showToast && (
+      {toastMessage && (
         <div className="share-toast">
           <Check className="size-3.5" />
-          <span>Copié dans le presse-papier !</span>
+          <span>{toastMessage}</span>
         </div>
       )}
     </div>
