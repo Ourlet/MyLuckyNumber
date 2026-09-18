@@ -125,5 +125,12 @@
   "adSlot": {
     "partnerSpace": "Espace Partenaire",
     "leaderboard": "Bannière Leaderboard • Emplacement partenaire réservé"
+  },
+  "footer": {
+    "disclaimer": "Projet indépendant non affilié à Swisslos ou à la Loterie Romande.",
+    "privacy": "Analytics sans cookies respectant votre vie privée.",
+    "madeWith": "Fait avec ❤️ à Fribourg, Suisse",
+    "contact": "Contact",
+    "support": "Soutenir le projet"
   }
 }

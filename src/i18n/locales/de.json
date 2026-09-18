@@ -125,5 +125,12 @@
   "adSlot": {
     "partnerSpace": "Partnerbereich",
     "leaderboard": "Leaderboard-Banner • Reservierter Werbeplatz"
+  },
+  "footer": {
+    "disclaimer": "Unabhängiges Projekt, nicht mit Swisslos oder der Loterie Romande verbunden.",
+    "privacy": "Cookie-freie Webanalysen mit Respekt für Ihre Privatsphäre.",
+    "madeWith": "Mit ❤️ in Freiburg, Schweiz gemacht",
+    "contact": "Kontakt",
+    "support": "Projekt unterstützen"
   }
 }

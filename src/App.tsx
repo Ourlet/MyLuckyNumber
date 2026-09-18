@@ -23,6 +23,7 @@ import { ShareModal } from './components/ShareModal';
 import { EtfComparison } from './components/EtfComparison';
 import { ShareTriggerModal } from './components/ShareTriggerModal';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { Footer } from './components/Footer';
 import { useI18n } from './i18n/I18nContext';
 import { trackEvent } from './utils/analytics';
 import rawDraws from './data/draws.json';
@@ -781,6 +782,9 @@ export const App: React.FC = () => {
           />
         </div>
       </main>
+
+      {/* 4. Footer légal et informatif épuré */}
+      <Footer />
 
       {/* ======================================================== */}
       {/* MODAL : HISTORIQUE COMPLET & TABLEAU DES 8 RANGS         */}
