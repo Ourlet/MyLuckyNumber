@@ -14,6 +14,7 @@ import {
 import { trackEvent } from '../utils/analytics';
 import { SimulationSummary } from '../types/lottery';
 import { generateStoryImage } from '../utils/storyImage';
+import { useI18n } from '../i18n/I18nContext';
 
 /**
  * Format a number as Swiss CHF with apostrophe separator (for share messages).
@@ -39,6 +40,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   bonus,
   startYear,
 }) => {
+  const { t, language } = useI18n();
   const [copied, setCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -62,10 +64,20 @@ export const ShareCard: React.FC<ShareCardProps> = ({
 
     if (net < 0) {
       const perte = formatShareCHF(Math.abs(net));
-      return `J'ai testé mes numéros au Swiss Lotto depuis ${startYear} : j'aurais perdu ${perte} et mon plus gros gain est de ${maxGain} 😂. Teste ta grille ici : ${shareUrl}`;
+      return t('shareModal.lossMessage', {
+        year: startYear,
+        lost: perte,
+        maxGain,
+        url: shareUrl,
+      });
     } else {
       const gain = formatShareCHF(net);
-      return `Mes numéros fétiches auraient rapporté +${gain} au Swiss Lotto depuis ${startYear} ! Mon record : ${maxGain} 🤑. Teste ta grille ici : ${shareUrl}`;
+      return t('shareModal.winMessage', {
+        year: startYear,
+        gain,
+        maxGain,
+        url: shareUrl,
+      });
     }
   })();
 
@@ -75,7 +87,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
     try {
       await navigator.clipboard.writeText(message);
       setCopied(true);
-      setToastMessage('Lien copié dans le presse-papier !');
+      setToastMessage(t('shareModal.copySuccess'));
     } catch {
       // Fallback for older browsers
       const textarea = document.createElement('textarea');
@@ -87,9 +99,9 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       document.execCommand('copy');
       document.body.removeChild(textarea);
       setCopied(true);
-      setToastMessage('Lien copié dans le presse-papier !');
+      setToastMessage(t('shareModal.copySuccess'));
     }
-  }, [message]);
+  }, [message, t]);
 
   // Download Story image
   const handleDownloadStory = useCallback(async () => {
@@ -99,6 +111,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       const dataUrl = await generateStoryImage(simulation, numbers, bonus, {
         format: storyFormat,
         startYear,
+        language,
       });
 
       const filename = `swiss-lotto-${storyFormat}-${numbers.join('-')}.png`;
@@ -110,11 +123,11 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       document.body.removeChild(link);
 
       setStoryDownloaded(true);
-      setToastMessage(`Image ${storyFormat === 'story' ? 'Story (9:16)' : 'Carré (1:1)'} téléchargée !`);
+      setToastMessage(t('shareModal.downloaded'));
       setTimeout(() => setStoryDownloaded(false), 3000);
     } catch (err) {
       console.error('Erreur lors de la génération de l’image:', err);
-      setToastMessage('Erreur lors de la création de l’image');
+      setToastMessage('Error');
     } finally {
       setIsGenerating(false);
     }
@@ -168,10 +181,10 @@ export const ShareCard: React.FC<ShareCardProps> = ({
         </div>
         <div>
           <h3 className="text-sm font-bold text-slate-900">
-            Partager votre résultat
+            {t('shareModal.title')}
           </h3>
           <p className="text-[11px] text-slate-500">
-            Défiez vos amis avec leur propre grille
+            {t('shareModal.subtitle')}
           </p>
         </div>
       </div>
@@ -179,35 +192,21 @@ export const ShareCard: React.FC<ShareCardProps> = ({
       {/* Message preview */}
       <div className="share-message-preview">
         <p className="text-[12.5px] leading-relaxed text-slate-700">
-          {isLoss ? (
-            <>
-              J'ai testé mes numéros au Swiss Lotto depuis {startYear} : j'aurais perdu{' '}
-              <strong className="text-rose-600">
-                {formatShareCHF(Math.abs(simulation.netProfit))}
-              </strong>{' '}
-              et mon plus gros gain est de{' '}
-              <strong className="text-emerald-600">
-                {simulation.bestDraw
+          {isLoss
+            ? t('shareModal.lossPreview', {
+                year: startYear,
+                lost: formatShareCHF(Math.abs(simulation.netProfit)),
+                maxGain: simulation.bestDraw
                   ? formatShareCHF(simulation.bestDraw.amount)
-                  : '0 CHF'}
-              </strong>{' '}
-              😂
-            </>
-          ) : (
-            <>
-              Mes numéros fétiches auraient rapporté{' '}
-              <strong className="text-emerald-600">
-                +{formatShareCHF(simulation.netProfit)}
-              </strong>{' '}
-              au Swiss Lotto depuis {startYear} ! Mon record :{' '}
-              <strong className="text-emerald-600">
-                {simulation.bestDraw
+                  : '0 CHF',
+              })
+            : t('shareModal.winPreview', {
+                year: startYear,
+                gain: formatShareCHF(simulation.netProfit),
+                maxGain: simulation.bestDraw
                   ? formatShareCHF(simulation.bestDraw.amount)
-                  : '0 CHF'}
-              </strong>{' '}
-              🤑
-            </>
-          )}
+                  : '0 CHF',
+              })}
         </p>
       </div>
 
@@ -221,7 +220,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
             onClick={() => setStoryFormat('story')}
           >
             <Smartphone className="size-3.5" />
-            <span>Story (9:16)</span>
+            <span>{t('shareModal.story')}</span>
           </button>
           <button
             type="button"
@@ -229,7 +228,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
             onClick={() => setStoryFormat('square')}
           >
             <Square className="size-3" />
-            <span>Carré (1:1)</span>
+            <span>{t('shareModal.square')}</span>
           </button>
         </div>
 
@@ -239,22 +238,28 @@ export const ShareCard: React.FC<ShareCardProps> = ({
           onClick={handleDownloadStory}
           disabled={isGenerating}
           className="share-btn-story"
-          title="Télécharger une image optimisée pour WhatsApp Status ou Instagram Story"
+          title={t('shareModal.downloadStory', {
+            format: storyFormat === 'story' ? t('shareModal.story') : t('shareModal.square'),
+          })}
         >
           {isGenerating ? (
             <>
               <Loader2 className="size-4.5 animate-spin" />
-              <span>Génération de l'image...</span>
+              <span>{t('shareModal.downloading')}</span>
             </>
           ) : storyDownloaded ? (
             <>
               <Check className="size-4.5 text-emerald-400" />
-              <span>Image téléchargée !</span>
+              <span>{t('shareModal.downloaded')}</span>
             </>
           ) : (
             <>
               <Download className="size-4.5 text-amber-300" />
-              <span>Télécharger mon image {storyFormat === 'story' ? 'Story (9:16)' : 'Carrée'}</span>
+              <span>
+                {t('shareModal.downloadStory', {
+                  format: storyFormat === 'story' ? t('shareModal.story') : t('shareModal.square'),
+                })}
+              </span>
               <Sparkles className="size-3.5 ml-auto text-amber-300 opacity-90" />
             </>
           )}
@@ -269,7 +274,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
           onClick={() => trackEvent('Partage WhatsApp')}
         >
           <MessageCircle className="size-4.5" />
-          <span>Envoyer sur WhatsApp</span>
+          <span>{t('shareModal.whatsapp')}</span>
           <ExternalLink className="size-3.5 ml-auto opacity-60" />
         </a>
 
@@ -290,7 +295,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
             ) : (
               <Copy className="size-4" />
             )}
-            <span>{copied ? 'Copié !' : 'Copier le lien'}</span>
+            <span>{copied ? t('shareModal.copied') : t('shareModal.copy')}</span>
           </button>
 
           {/* Native share (mobile) */}
@@ -301,7 +306,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
               className="share-btn-secondary"
             >
               <Share2 className="size-4" />
-              <span>Partager…</span>
+              <span>{t('ticketCard.shareButton')}</span>
             </button>
           )}
 
@@ -314,7 +319,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
               className="share-btn-secondary"
             >
               <ExternalLink className="size-4" />
-              <span>Ouvrir le lien</span>
+              <span>{t('shareModal.copy')}</span>
             </a>
           )}
         </div>

@@ -3,6 +3,7 @@ import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 import { DrawResult } from '../types/lottery';
 import { SimulationSummary } from '../types/lottery';
 import { COST_PER_DRAW } from '../utils/calculator';
+import { useI18n } from '../i18n/I18nContext';
 
 /** Format suisse avec apostrophe : 7'420 CHF */
 function formatSwissCHF(amount: number): string {
@@ -39,6 +40,7 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
   simulation,
   filteredDraws,
 }) => {
+  const { t } = useI18n();
   const etf = useMemo(
     () => calculateEtfDCA(filteredDraws),
     [filteredDraws]
@@ -58,10 +60,8 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
           <TrendingUp className="size-5" />
         </div>
         <div>
-          <h3 className="etf-title">Et si vous aviez investi au lieu de jouer ?</h3>
-          <p className="etf-subtitle">
-            Même capital, deux destins radicalement différents
-          </p>
+          <h3 className="etf-title">{t('etf.title')}</h3>
+          <p className="etf-subtitle">{t('etf.subtitle')}</p>
         </div>
       </div>
 
@@ -71,25 +71,25 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
         <div className="etf-col etf-col-lotto">
           <div className="etf-col-header">
             <span className="etf-col-badge etf-col-badge-lotto">🎰</span>
-            <span className="etf-col-label">Swiss Lotto</span>
+            <span className="etf-col-label">{t('etf.lottoBadge')}</span>
           </div>
 
           <div className="etf-col-body">
             <div className="etf-row">
-              <span className="etf-row-label">Mises cumulées</span>
+              <span className="etf-row-label">{t('etf.totalCost')}</span>
               <span className="etf-row-value text-slate-700">
                 -{formatSwissCHF(simulation.totalCost)}
               </span>
             </div>
             <div className="etf-row">
-              <span className="etf-row-label">Gains totaux</span>
+              <span className="etf-row-label">{t('etf.totalWinnings')}</span>
               <span className="etf-row-value text-emerald-600">
                 +{formatSwissCHF(simulation.totalWinnings)}
               </span>
             </div>
             <div className="etf-divider" />
             <div className="etf-row etf-row-result">
-              <span className="etf-row-label font-bold">Bilan net</span>
+              <span className="etf-row-label font-bold">{t('etf.netProfit')}</span>
               <span
                 className={`etf-row-value-big ${
                   lottoNet >= 0 ? 'text-emerald-600' : 'text-rose-600'
@@ -111,25 +111,25 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
         <div className="etf-col etf-col-etf">
           <div className="etf-col-header">
             <span className="etf-col-badge etf-col-badge-etf">📈</span>
-            <span className="etf-col-label">ETF Monde (VT 7%/an)</span>
+            <span className="etf-col-label">{t('etf.etfBadge')}</span>
           </div>
 
           <div className="etf-col-body">
             <div className="etf-row">
-              <span className="etf-row-label">Capital investi</span>
+              <span className="etf-row-label">{t('etf.invested')}</span>
               <span className="etf-row-value text-slate-700">
                 {formatSwissCHF(etf.totalInvested)}
               </span>
             </div>
             <div className="etf-row">
-              <span className="etf-row-label">Capital actuel estimé</span>
+              <span className="etf-row-label">{t('etf.estimatedValue')}</span>
               <span className="etf-row-value text-emerald-600">
                 ~{formatSwissCHF(etf.etfValue)}
               </span>
             </div>
             <div className="etf-divider" />
             <div className="etf-row etf-row-result">
-              <span className="etf-row-label font-bold">Gain net</span>
+              <span className="etf-row-label font-bold">{t('etf.etfNetGain')}</span>
               <span className="etf-row-value-big text-emerald-600">
                 <TrendingUp className="size-4 inline-block mr-1" />
                 +{formatSwissCHF(etf.netGain)}
@@ -142,16 +142,13 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
       {/* Écart dramatique */}
       {difference > 0 && (
         <div className="etf-diff-banner">
-          <span className="etf-diff-label">Différence manquée</span>
+          <span className="etf-diff-label">{t('etf.missedDiff')}</span>
           <span className="etf-diff-value">+{formatSwissCHF(difference)}</span>
         </div>
       )}
 
       {/* Disclaimer */}
-      <p className="etf-disclaimer">
-        Simulation basée sur un DCA de 2.50 CHF par tirage à 7% annualisé composé.
-        Les performances passées ne préjugent pas des performances futures.
-      </p>
+      <p className="etf-disclaimer">{t('etf.disclaimer')}</p>
     </div>
   );
 };

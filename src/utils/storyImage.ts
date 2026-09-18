@@ -1,9 +1,11 @@
 import { SimulationSummary } from '../types/lottery';
-import { formatCHF, formatSwissDate } from './calculator';
+import { formatCHF } from './calculator';
+import { Language } from '../i18n/types';
 
 export interface StoryImageOptions {
   format?: 'story' | 'square'; // 'story' = 1080x1920 (9:16), 'square' = 1080x1080 (1:1)
   startYear?: string;
+  language?: Language;
 }
 
 /**
@@ -86,6 +88,110 @@ function drawCloverLogo(
   ctx.restore();
 }
 
+function formatCanvasDate(dateStr: string, lang: Language): string {
+  if (!dateStr) return '';
+  try {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    if (!year || !month || !day) return dateStr;
+    const date = new Date(year, month - 1, day);
+    const localeMap: Record<Language, string> = { fr: 'fr-CH', de: 'de-CH', en: 'en-CH' };
+    return date.toLocaleDateString(localeMap[lang] || 'fr-CH', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
+const canvasI18n = {
+  fr: {
+    subtitle: 'Votre combinaison face à l’histoire',
+    drawsAnalyzed: (count: number, startYear: string) =>
+      `${count.toLocaleString('fr-CH')} tirages analysés (${startYear} — 2026)`,
+    costPerGrid: '2.50 CHF / grille',
+    ticketAnalyzed: 'TICKET ANALYSÉ',
+    chanceBadge: (b: number) => `Chance ${b}`,
+    chanceBall: 'CHANCE',
+    bestWin: 'MEILLEUR GAIN',
+    onDate: (d: string) => `le ${d}`,
+    winningDraws: 'TIRAGES GAGNANTS',
+    outOfDraws: (count: number) => `sur ${count} tirages`,
+    totalWinnings: 'GAINS CUMULÉS',
+    winsSummary: (wins: number, total: number) => `${wins} gains sur ${total} tirages`,
+    netProfit: 'BILAN NET',
+    etfTitle: 'Et si vous aviez investi au lieu de jouer ?',
+    etfSubtitle: 'Même capital, deux destins radicalement différents',
+    lottoBets: (amt: string) => `Mises : ${amt}`,
+    lottoNet: (amt: string) => `Résultat net : ${amt}`,
+    etfEstimated: (amt: string) => `Capital estimé : ~${amt}`,
+    etfNetGain: (amt: string) => `Gain net : +${amt}`,
+    missedDiff: 'Différence manquée :',
+    punchlineLoss: '« Le million c’est sûrement pour le prochain tirage ! 🤞 »',
+    punchlineWin: '« Ne change surtout rien, tes numéros sont en or pur ! ✨ »',
+    challengeFriends: 'Défie tes proches avec leur propre grille fétiche',
+    footerStory: 'Simulateur rétroactif indépendant Swiss Lotto 🇨🇭',
+    footerSquare: 'Simulateur indépendant Swiss Lotto • Teste tes numéros en 3 secondes',
+  },
+  de: {
+    subtitle: 'Ihre Zahlen im Spiegel der Geschichte',
+    drawsAnalyzed: (count: number, startYear: string) =>
+      `${count.toLocaleString('de-CH')} Ziehungen analysiert (${startYear} — 2026)`,
+    costPerGrid: 'CHF 2.50 / Tipp',
+    ticketAnalyzed: 'ANALYSIERTER TIPP',
+    chanceBadge: (b: number) => `Glückszahl ${b}`,
+    chanceBall: 'GLÜCK',
+    bestWin: 'HÖCHSTER GEWINN',
+    onDate: (d: string) => `am ${d}`,
+    winningDraws: 'GEWINNENDE ZIEHUNGEN',
+    outOfDraws: (count: number) => `von ${count} Ziehungen`,
+    totalWinnings: 'GESAMTGEWINNE',
+    winsSummary: (wins: number, total: number) => `${wins} Gewinne von ${total} Ziehungen`,
+    netProfit: 'NETTOBILANZ',
+    etfTitle: 'Was wäre, wenn Sie investiert hätten?',
+    etfSubtitle: 'Gleicher Einsatz, zwei völlig unterschiedliche Wege',
+    lottoBets: (amt: string) => `Einsatz: ${amt}`,
+    lottoNet: (amt: string) => `Nettoergebnis: ${amt}`,
+    etfEstimated: (amt: string) => `Geschätzter Wert: ~${amt}`,
+    etfNetGain: (amt: string) => `Nettogewinn: +${amt}`,
+    missedDiff: 'Entgangene Differenz:',
+    punchlineLoss: '« Die Million kommt sicher bei der nächsten Ziehung! 🤞 »',
+    punchlineWin: '« Nichts ändern, deine Zahlen sind aus purem Gold! ✨ »',
+    challengeFriends: 'Fordere deine Freunde mit ihren Glückszahlen heraus',
+    footerStory: 'Unabhängiger historischer Swiss Lotto-Simulator 🇨🇭',
+    footerSquare: 'Unabhängiger Swiss Lotto-Simulator • Teste deine Zahlen in 3 Sekunden',
+  },
+  en: {
+    subtitle: 'Your numbers against history',
+    drawsAnalyzed: (count: number, startYear: string) =>
+      `${count.toLocaleString('en-CH')} draws analysed (${startYear} — 2026)`,
+    costPerGrid: 'CHF 2.50 / ticket',
+    ticketAnalyzed: 'ANALYSED TICKET',
+    chanceBadge: (b: number) => `Lucky ${b}`,
+    chanceBall: 'LUCKY',
+    bestWin: 'BEST WIN',
+    onDate: (d: string) => `on ${d}`,
+    winningDraws: 'WINNING DRAWS',
+    outOfDraws: (count: number) => `out of ${count} draws`,
+    totalWinnings: 'TOTAL WINNINGS',
+    winsSummary: (wins: number, total: number) => `${wins} wins out of ${total} draws`,
+    netProfit: 'NET BALANCE',
+    etfTitle: 'What if you had invested instead?',
+    etfSubtitle: 'Same capital, two radically different outcomes',
+    lottoBets: (amt: string) => `Spent: ${amt}`,
+    lottoNet: (amt: string) => `Net result: ${amt}`,
+    etfEstimated: (amt: string) => `Estimated value: ~${amt}`,
+    etfNetGain: (amt: string) => `Net gain: +${amt}`,
+    missedDiff: 'Opportunity difference:',
+    punchlineLoss: '« The million is definitely coming next draw! 🤞 »',
+    punchlineWin: '« Change nothing, your numbers are pure gold! ✨ »',
+    challengeFriends: 'Challenge your friends with their own lucky numbers',
+    footerStory: 'Independent historic Swiss Lotto simulator 🇨🇭',
+    footerSquare: 'Independent Swiss Lotto simulator • Test your numbers in 3 seconds',
+  },
+};
+
 /**
  * Generates an ultra-crisp Story / Square image in the exact luminous design theme of "My Magic Numbers".
  */
@@ -97,6 +203,8 @@ export async function generateStoryImage(
 ): Promise<string> {
   const format = options.format || 'story';
   const startYear = options.startYear || '2013';
+  const lang: Language = options.language || 'fr';
+  const i18n = canvasI18n[lang] || canvasI18n.fr;
 
   const width = 1080;
   const height = format === 'story' ? 1920 : 1080;
@@ -213,7 +321,7 @@ export async function generateStoryImage(
   ctx.font = '500 20px Inter, -apple-system, sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(
-    'Votre combinaison face à l’histoire',
+    i18n.subtitle,
     paddingX + logoSize + 22,
     headerY + (isStory ? 74 : 64)
   );
@@ -237,14 +345,14 @@ export async function generateStoryImage(
   ctx.font = '600 16px Inter, -apple-system, sans-serif';
   ctx.textAlign = 'left';
   ctx.fillText(
-    `${summary.drawsCount.toLocaleString('fr-CH')} tirages analysés (${startYear} — 2026)`,
+    i18n.drawsAnalyzed(summary.drawsCount, startYear),
     paddingX + 44,
     infoY + 28
   );
 
   ctx.textAlign = 'right';
   ctx.fillStyle = '#64748b';
-  ctx.fillText('2.50 CHF / grille', width - paddingX - 24, infoY + 28);
+  ctx.fillText(i18n.costPerGrid, width - paddingX - 24, infoY + 28);
   ctx.restore();
 
   // -------------------------------------------------------------
@@ -275,14 +383,14 @@ export async function generateStoryImage(
   ctx.shadowOffsetY = 10;
   ctx.restore();
 
-  // Card Header: "TICKET ANALYSÉ" + "Chance X"
+  // Card Header: TICKET ANALYSÉ + Chance Badge
   ctx.save();
   ctx.fillStyle = '#166534';
   ctx.font = '800 16px Inter, -apple-system, sans-serif';
-  ctx.fillText('TICKET ANALYSÉ', cardX + 36, cardY + 44);
+  ctx.fillText(i18n.ticketAnalyzed, cardX + 36, cardY + 44);
 
   // Chance Pill Badge
-  const chanceBadgeW = 110;
+  const chanceBadgeW = 120;
   const chanceBadgeX = cardX + cardW - chanceBadgeW - 36;
   const chanceBadgeY = cardY + 24;
   ctx.fillStyle = '#ffffff';
@@ -296,7 +404,7 @@ export async function generateStoryImage(
   ctx.fillStyle = '#065f46';
   ctx.font = '700 15px Inter, -apple-system, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText(`Chance ${bonus}`, chanceBadgeX + chanceBadgeW / 2, chanceBadgeY + 23);
+  ctx.fillText(i18n.chanceBadge(bonus), chanceBadgeX + chanceBadgeW / 2, chanceBadgeY + 23);
   ctx.restore();
 
   // Draw the balls (6 emerald balls + 1 dark forest chance ball)
@@ -392,7 +500,7 @@ export async function generateStoryImage(
     // Mini Chance tag below ball
     ctx.font = '700 12px Inter, -apple-system, sans-serif';
     ctx.fillStyle = '#059669';
-    ctx.fillText('CHANCE', cx, ballY + ballRadius + 18);
+    ctx.fillText(i18n.chanceBall, cx, ballY + ballRadius + 18);
     ctx.restore();
   }
 
@@ -414,7 +522,7 @@ export async function generateStoryImage(
   // Left: Meilleur gain
   ctx.fillStyle = '#64748b';
   ctx.font = '700 13px Inter, -apple-system, sans-serif';
-  ctx.fillText('MEILLEUR GAIN', cardX + 36, metricY);
+  ctx.fillText(i18n.bestWin, cardX + 36, metricY);
 
   ctx.fillStyle = '#0f172a';
   ctx.font = `800 ${isStory ? 34 : 26}px Inter, -apple-system, sans-serif`;
@@ -428,7 +536,7 @@ export async function generateStoryImage(
     ctx.fillStyle = '#94a3b8';
     ctx.font = '500 13px Inter, -apple-system, sans-serif';
     ctx.fillText(
-      `le ${formatSwissDate(summary.bestDraw.date)}`,
+      i18n.onDate(formatCanvasDate(summary.bestDraw.date, lang)),
       cardX + 36,
       metricY + (isStory ? 64 : 48)
     );
@@ -438,7 +546,7 @@ export async function generateStoryImage(
   ctx.textAlign = 'right';
   ctx.fillStyle = '#64748b';
   ctx.font = '700 13px Inter, -apple-system, sans-serif';
-  ctx.fillText('TIRAGES GAGNANTS', cardX + cardW - 36, metricY);
+  ctx.fillText(i18n.winningDraws, cardX + cardW - 36, metricY);
 
   ctx.fillStyle = '#16a34a';
   ctx.font = `800 ${isStory ? 34 : 26}px Inter, -apple-system, sans-serif`;
@@ -447,7 +555,7 @@ export async function generateStoryImage(
   ctx.fillStyle = '#94a3b8';
   ctx.font = '500 13px Inter, -apple-system, sans-serif';
   ctx.fillText(
-    `sur ${summary.drawsCount} tirages`,
+    i18n.outOfDraws(summary.drawsCount),
     cardX + cardW - 36,
     metricY + (isStory ? 64 : 48)
   );
@@ -473,7 +581,7 @@ export async function generateStoryImage(
 
   ctx.fillStyle = '#64748b';
   ctx.font = '700 14px Inter, -apple-system, sans-serif';
-  ctx.fillText('GAINS CUMULÉS', cardX + 28, row2Y + 36);
+  ctx.fillText(i18n.totalWinnings, cardX + 28, row2Y + 36);
 
   ctx.fillStyle = '#0f172a';
   ctx.font = `800 ${isStory ? 44 : 34}px Inter, -apple-system, sans-serif`;
@@ -482,7 +590,7 @@ export async function generateStoryImage(
   ctx.fillStyle = '#94a3b8';
   ctx.font = '500 15px Inter, -apple-system, sans-serif';
   ctx.fillText(
-    `${summary.winningDrawsCount} gains sur ${summary.drawsCount} tirages`,
+    i18n.winsSummary(summary.winningDrawsCount, summary.drawsCount),
     cardX + 28,
     row2Y + (isStory ? 144 : 114)
   );
@@ -501,7 +609,7 @@ export async function generateStoryImage(
 
   ctx.fillStyle = '#64748b';
   ctx.font = '700 14px Inter, -apple-system, sans-serif';
-  ctx.fillText('BILAN NET', col2X + 28, row2Y + 36);
+  ctx.fillText(i18n.netProfit, col2X + 28, row2Y + 36);
 
   ctx.fillStyle = isLoss ? '#dc2626' : '#16a34a';
   ctx.font = `800 ${isStory ? 44 : 34}px Inter, -apple-system, sans-serif`;
@@ -558,12 +666,12 @@ export async function generateStoryImage(
   // Title row
   ctx.fillStyle = '#0f172a';
   ctx.font = `800 ${isStory ? 24 : 20}px Inter, -apple-system, sans-serif`;
-  ctx.fillText('Et si vous aviez investi au lieu de jouer ?', cardX + 36, etfY + (isStory ? 48 : 38));
+  ctx.fillText(i18n.etfTitle, cardX + 36, etfY + (isStory ? 48 : 38));
 
   ctx.fillStyle = '#64748b';
   ctx.font = '500 15px Inter, -apple-system, sans-serif';
   ctx.fillText(
-    'Même capital, deux destins radicalement différents',
+    i18n.etfSubtitle,
     cardX + 36,
     etfY + (isStory ? 76 : 62)
   );
@@ -588,11 +696,11 @@ export async function generateStoryImage(
 
   ctx.fillStyle = '#64748b';
   ctx.font = '500 13px Inter, -apple-system, sans-serif';
-  ctx.fillText(`Mises : ${formatCHF(summary.totalCost)}`, cardX + 52, boxY + (isStory ? 60 : 50));
+  ctx.fillText(i18n.lottoBets(formatCHF(summary.totalCost)), cardX + 52, boxY + (isStory ? 60 : 50));
 
   ctx.fillStyle = isLoss ? '#dc2626' : '#16a34a';
   ctx.font = '700 15px Inter, -apple-system, sans-serif';
-  ctx.fillText(`Résultat net : ${formatCHF(summary.netProfit)}`, cardX + 52, boxY + (isStory ? 94 : 70));
+  ctx.fillText(i18n.lottoNet(formatCHF(summary.netProfit)), cardX + 52, boxY + (isStory ? 94 : 70));
 
   // Box 2: ETF Monde (VT 7%/an)
   const box2X = cardX + 36 + boxW + 20;
@@ -610,11 +718,11 @@ export async function generateStoryImage(
 
   ctx.fillStyle = '#047857';
   ctx.font = '500 13px Inter, -apple-system, sans-serif';
-  ctx.fillText(`Capital estimé : ~${formatCHF(etfEstimated)}`, box2X + 16, boxY + (isStory ? 60 : 50));
+  ctx.fillText(i18n.etfEstimated(formatCHF(etfEstimated)), box2X + 16, boxY + (isStory ? 60 : 50));
 
   ctx.fillStyle = '#15803d';
   ctx.font = '700 15px Inter, -apple-system, sans-serif';
-  ctx.fillText(`Gain net : +${formatCHF(etfGain)}`, box2X + 16, boxY + (isStory ? 94 : 70));
+  ctx.fillText(i18n.etfNetGain(formatCHF(etfGain)), box2X + 16, boxY + (isStory ? 94 : 70));
 
   // Banner: Différence manquée
   const bannerY = boxY + boxH + (isStory ? 24 : 16);
@@ -628,7 +736,7 @@ export async function generateStoryImage(
 
   ctx.fillStyle = '#065f46';
   ctx.font = `700 ${isStory ? 18 : 15}px Inter, -apple-system, sans-serif`;
-  ctx.fillText('Différence manquée :', cardX + 54, bannerY + (isStory ? 42 : 30));
+  ctx.fillText(i18n.missedDiff, cardX + 54, bannerY + (isStory ? 42 : 30));
 
   ctx.textAlign = 'right';
   ctx.fillStyle = '#047857';
@@ -651,9 +759,7 @@ export async function generateStoryImage(
     roundRect(ctx, cardX, punchY, cardW, 110, 20);
     ctx.stroke();
 
-    const punchline = isLoss
-      ? '« Le million c’est sûrement pour le prochain tirage ! 🤞 »'
-      : '« Ne change surtout rien, tes numéros sont en or pur ! ✨ »';
+    const punchline = isLoss ? i18n.punchlineLoss : i18n.punchlineWin;
 
     ctx.textAlign = 'center';
     ctx.fillStyle = '#0f172a';
@@ -662,7 +768,7 @@ export async function generateStoryImage(
 
     ctx.fillStyle = '#64748b';
     ctx.font = '500 15px Inter, -apple-system, sans-serif';
-    ctx.fillText('Défie tes proches avec leur propre grille fétiche', width / 2, punchY + 80);
+    ctx.fillText(i18n.challengeFriends, width / 2, punchY + 80);
     ctx.restore();
 
     // Footer Branding
@@ -686,7 +792,7 @@ export async function generateStoryImage(
 
     ctx.fillStyle = '#64748b';
     ctx.font = '600 18px Inter, -apple-system, sans-serif';
-    ctx.fillText('Simulateur rétroactif indépendant Swiss Lotto 🇨🇭', width / 2, footerY + 104);
+    ctx.fillText(i18n.footerStory, width / 2, footerY + 104);
     ctx.restore();
   } else {
     // Square mode footer
@@ -699,11 +805,7 @@ export async function generateStoryImage(
 
     ctx.fillStyle = '#64748b';
     ctx.font = '500 14px Inter, -apple-system, sans-serif';
-    ctx.fillText(
-      'Simulateur indépendant Swiss Lotto • Teste tes numéros en 3 secondes',
-      width / 2,
-      footerY + 52
-    );
+    ctx.fillText(i18n.footerSquare, width / 2, footerY + 52);
     ctx.restore();
   }
 

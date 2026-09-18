@@ -1,6 +1,7 @@
 import React, { useEffect, useCallback } from 'react';
 import { MessageCircle, ExternalLink, Dices, X } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
+import { useI18n } from '../i18n/I18nContext';
 
 interface ShareTriggerModalProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
   numbers,
   bonus,
 }) => {
+  const { t } = useI18n();
+
   // Fermer avec Échap
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -44,8 +47,7 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
     return url.toString();
   })();
 
-  const message = `J'ai déjà testé 3 grilles au Swiss Lotto et aucune ne me rend millionnaire 😂 Teste tes propres numéros fétiches ici et dis-moi ton score : ${shareUrl}`;
-
+  const message = t('shareTrigger.shareMessage', { url: shareUrl });
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(message)}`;
 
   // Clic sur le backdrop
@@ -77,13 +79,12 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
 
         {/* Titre */}
         <h2 id="share-trigger-title" className="stm-title">
-          Déjà 3 grilles testées !
+          {t('shareTrigger.title')}
         </h2>
 
         {/* Message */}
         <p className="stm-message">
-          Tes chiffres fétiches ne veulent décidément pas te rendre millionnaire...
-          Défie tes amis ou ta famille : qui a le pire score de l'histoire du Swiss Lotto ?
+          {t('shareTrigger.message')}
         </p>
 
         {/* Actions */}
@@ -99,7 +100,7 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
             }}
           >
             <MessageCircle className="size-4.5" />
-            <span>Défier sur WhatsApp</span>
+            <span>{t('shareTrigger.whatsappBtn')}</span>
             <ExternalLink className="size-3.5 ml-auto opacity-60" />
           </a>
 
@@ -109,7 +110,7 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
             className="stm-secondary"
           >
             <Dices className="size-4" />
-            <span>Tester d'autres chiffres</span>
+            <span>{t('shareTrigger.testMoreBtn')}</span>
           </button>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { SimulationSummary } from '../types/lottery';
-import { formatCHF, formatSwissDate } from '../utils/calculator';
+import { formatCHF } from '../utils/calculator';
+import { useI18n } from '../i18n/I18nContext';
 
 export interface ResultsDashboardProps {
   summary: SimulationSummary;
@@ -17,11 +18,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
   userBonus,
   className = '',
 }) => {
+  const { t, formatDate, getRankLabel } = useI18n();
   const [filterRank, setFilterRank] = useState<string>('all');
 
   const {
     totalWinnings,
-    totalCost,
     netProfit,
     roiPercentage,
     drawsCount,
@@ -46,7 +47,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
       <div className="bg-slate-900 text-white p-4 rounded-2xl flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="text-xs uppercase tracking-wider text-slate-400 font-bold">
-            Grille analysée :
+            {t('ticketCard.eyebrow')} :
           </span>
           <div className="flex items-center gap-1.5 flex-wrap">
             {userNumbers.map((num) => (
@@ -61,7 +62,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
             <span className="text-slate-500 font-bold px-0.5">+</span>
             <span
               className="w-7 h-7 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center text-xs font-black ring-2 ring-amber-300 shadow-sm"
-              title="Numéro Chance"
+              title={t('grid.chanceEyebrow')}
             >
               {userBonus}
             </span>
@@ -69,7 +70,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         </div>
 
         <div className="text-xs text-slate-400">
-          Simulation sur <strong className="text-white">{drawsCount} tirages</strong> (2013–2026)
+          {t('header.drawsAnalyzed', { count: drawsCount })} (2013–2026)
         </div>
       </div>
 
@@ -79,7 +80,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         <div className="relative overflow-hidden bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Gain Total Cumulé
+              {t('metrics.totalWinnings')}
             </span>
             <span
               className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-black shadow-sm"
@@ -94,8 +95,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
               {formatCHF(totalWinnings)}
             </div>
             <p className="mt-1 text-xs text-slate-500 flex items-center gap-1.5">
-              <span className="font-semibold text-slate-700">{winningDrawsCount}</span> tirages gagnants
-              sur <span className="font-semibold text-slate-700">{drawsCount}</span> analysés ({winRate}%)
+              <span className="font-semibold text-slate-700">{winningDrawsCount}</span>{' '}
+              {t('ticketCard.winningDraws').toLowerCase()}{' '}
+              {t('ticketCard.onDraws', { count: drawsCount })} ({winRate}%)
             </p>
           </div>
         </div>
@@ -114,7 +116,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                 isProfit ? 'text-emerald-700' : 'text-rose-700'
               }`}
             >
-              Bilan Net Historique
+              {t('metrics.netProfit')}
             </span>
             <span
               className={`text-xs px-2.5 py-0.5 rounded-full font-bold ${
@@ -140,7 +142,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                 isProfit ? 'text-emerald-700/80' : 'text-rose-700/80'
               }`}
             >
-              Pour <span className="font-semibold">{formatCHF(totalCost, true)}</span> investis (2.50 CHF × {drawsCount})
+              {t('metrics.investedNote', { count: drawsCount })}
             </p>
           </div>
         </div>
@@ -149,7 +151,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         <div className="relative overflow-hidden bg-white p-5 sm:p-6 rounded-3xl border border-slate-200/80 shadow-sm hover:shadow-md transition-shadow">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Meilleur Gain Décroché
+              {t('ticketCard.bestWin')}
             </span>
             <span className="w-7 h-7 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center text-xs font-black shadow-sm">
               ★
@@ -163,17 +165,17 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                   {formatCHF(bestDraw.amount)}
                 </div>
                 <div className="mt-1 flex items-center gap-1.5 flex-wrap text-xs text-slate-600">
-                  <span>le {formatSwissDate(bestDraw.date)}</span>
+                  <span>{t('ticketCard.onDate', { date: formatDate(bestDraw.date) })}</span>
                   <span className="text-slate-300">•</span>
                   <span className="font-semibold text-slate-800 px-2 py-0.5 rounded-md bg-amber-50 border border-amber-200/60 text-[11px]">
-                    {bestDraw.rankLabel}
+                    {getRankLabel(bestDraw.rankLabel)}
                   </span>
                 </div>
               </>
             ) : (
               <>
                 <div className="text-2xl font-bold text-slate-400">0 CHF</div>
-                <p className="mt-1 text-xs text-slate-400">Aucun gain sur cette période</p>
+                <p className="mt-1 text-xs text-slate-400">{t('history.noMatch')}</p>
               </>
             )}
           </div>
@@ -185,14 +187,14 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between flex-wrap gap-2">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-              <span>Répartition par rang de gain</span>
+              <span>{t('modalHistory.rankTitle')}</span>
             </h3>
             <p className="text-xs text-slate-500">
-              Détail des 8 rangs officiels du Swiss Lotto
+              {t('modalHistory.subtitle', { count: winningDrawsCount, start: '2013', end: '2026' })}
             </p>
           </div>
           <span className="text-xs font-semibold px-3 py-1 rounded-full bg-slate-100 text-slate-600">
-            {winningDrawsCount} victoires au total
+            {winningDrawsCount} {t('modalHistory.winsCol').toLowerCase()}
           </span>
         </div>
 
@@ -200,11 +202,11 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
           <table className="w-full text-left text-sm">
             <thead className="bg-slate-50/80 text-xs font-bold text-slate-500 uppercase tracking-wider border-b border-slate-100">
               <tr>
-                <th className="px-5 py-3">Rang</th>
-                <th className="px-4 py-3">Combinaison</th>
-                <th className="px-4 py-3 text-right">Cote moyenne</th>
-                <th className="px-4 py-3 text-center">Victoires</th>
-                <th className="px-5 py-3 text-right">Total remporté</th>
+                <th className="px-5 py-3">{t('modalHistory.rankCol')}</th>
+                <th className="px-4 py-3">{t('modalHistory.comboCol')}</th>
+                <th className="px-4 py-3 text-right">CHF</th>
+                <th className="px-4 py-3 text-center">{t('modalHistory.winsCol')}</th>
+                <th className="px-5 py-3 text-right">{t('modalHistory.totalCol')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -227,10 +229,10 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                       >
                         {definition.shortLabel}
                       </span>
-                      <span>{definition.label}</span>
+                      <span>{getRankLabel(definition.key)}</span>
                     </td>
                     <td className="px-4 py-3 text-slate-600 text-xs">
-                      {definition.matchCount} numéros {definition.needBonus ? '+ Chance' : ''}
+                      {definition.matchCount} {t('grid.mainLabel').toLowerCase()} {definition.needBonus ? `+ ${t('grid.chanceEyebrow')}` : ''}
                     </td>
                     <td className="px-4 py-3 text-right font-medium text-slate-600">
                       {formatCHF(definition.defaultPayout)}
@@ -266,13 +268,13 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
         <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between flex-wrap gap-3">
           <div>
             <h3 className="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
-              <span>Historique des tirages gagnants</span>
+              <span>{t('history.title')}</span>
               <span className="text-xs px-2.5 py-0.5 rounded-full font-bold bg-[#D52B1E]/10 text-[#D52B1E]">
                 {filteredDraws.length}
               </span>
             </h3>
             <p className="text-xs text-slate-500">
-              Classés du plus récent au plus ancien avec vos numéros trouvés
+              {t('modalHistory.allDrawsTitle', { count: filteredDraws.length })}
             </p>
           </div>
 
@@ -288,12 +290,12 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                 onChange={(e) => setFilterRank(e.target.value)}
                 className="text-xs font-semibold bg-slate-50 border border-slate-200 rounded-xl px-3 py-1.5 text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-400 cursor-pointer"
               >
-                <option value="all">Tous les rangs ({winningDraws.length})</option>
+                <option value="all">{t('modalHistory.allDrawsTitle', { count: winningDraws.length })}</option>
                 {rankStats
                   .filter((r) => r.count > 0)
                   .map((r) => (
                     <option key={r.definition.key} value={r.definition.key}>
-                      {r.definition.label} ({r.count})
+                      {getRankLabel(r.definition.key)} ({r.count})
                     </option>
                   ))}
               </select>
@@ -314,15 +316,15 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="font-bold text-sm text-slate-900">
-                        {formatSwissDate(draw.date)}
+                        {formatDate(draw.date)}
                       </span>
                       <span className="text-xs font-semibold px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-700 shadow-xs">
-                        {draw.rankLabel}
+                        {getRankLabel(draw.rankKey)}
                       </span>
                     </div>
                     <div className="text-xs text-slate-500">
-                      {draw.matchedCount} numéros trouvés
-                      {draw.matchedBonus ? ' + Chance trouvée !' : ''}
+                      {draw.matchedCount} {t('grid.mainLabel').toLowerCase()}
+                      {draw.matchedBonus ? ` + ${t('history.chanceFoundTitle')}` : ''}
                     </div>
                   </div>
 
@@ -339,7 +341,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                               : 'bg-white text-slate-400 border border-slate-200'
                           }`}
                           style={isMatched ? { backgroundColor: SWISS_RED } : undefined}
-                          title={isMatched ? `Numéro trouvé : ${num}` : `Numéro tiré : ${num}`}
+                          title={isMatched ? `${num} ✓` : `${num}`}
                         >
                           {num}
                         </div>
@@ -355,11 +357,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
                           ? 'bg-amber-400 text-slate-950 ring-amber-300 shadow-sm scale-105'
                           : 'bg-white text-slate-400 ring-slate-200 border border-slate-200'
                       }`}
-                      title={
-                        draw.matchedBonus
-                          ? `Numéro Chance trouvé ! (${draw.drawBonus})`
-                          : `Numéro Chance tiré : ${draw.drawBonus}`
-                      }
+                      title={`${t('grid.chanceEyebrow')}: ${draw.drawBonus}`}
                     >
                       {draw.drawBonus}
                     </div>
@@ -377,9 +375,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({
           ) : (
             <div className="py-12 text-center text-slate-400">
               <p className="text-sm font-medium">
-                {winningDraws.length === 0
-                  ? 'Aucun tirage gagnant trouvé pour cette combinaison.'
-                  : 'Aucun tirage gagnant ne correspond au filtre sélectionné.'}
+                {winningDraws.length === 0 ? t('history.noMatch') : t('history.noMatch')}
               </p>
             </div>
           )}

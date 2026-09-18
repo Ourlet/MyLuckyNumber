@@ -1,0 +1,129 @@
+{
+  "header": {
+    "title": "My Magic Numbers",
+    "badge": "Swiss Lotto",
+    "subtitle": "Votre combinaison face à l’histoire",
+    "drawsAnalyzed": "{{count}} tirages analysés",
+    "costPerGrid": "2.50 CHF / grille"
+  },
+  "grid": {
+    "eyebrow": "COMPOSEZ VOTRE CHANCE",
+    "title": "Votre grille",
+    "mainLabel": "Numéros principaux",
+    "mainSub": "(choisir 6 numéros)",
+    "chanceEyebrow": "NUMÉRO CHANCE",
+    "chanceSub": "Choisissez 1 numéro (1 à 6)",
+    "flash": "Tirage chanceux",
+    "flashShort": "Flash",
+    "reset": "Réinitialiser",
+    "complete": "Grille complète ✓",
+    "selectedCount": "{{count}} / 6 sélectionnés"
+  },
+  "ticketCard": {
+    "eyebrow": "TICKET ANALYSÉ",
+    "chanceBadge": "Chance {{bonus}}",
+    "bestWin": "Meilleur gain",
+    "winningDraws": "Tirages gagnants",
+    "onDraws": "sur {{count}} tirages",
+    "onDate": "le {{date}}",
+    "incompletePrompt": "Complétez vos 6 numéros et le numéro Chance pour révéler son histoire.",
+    "periodTitle": "Période d'analyse",
+    "periodSub": "Filtrer l'historique considéré",
+    "startDate": "Date de début",
+    "endDate": "Date de fin",
+    "shortcuts": "Raccourcis :",
+    "allTime": "Tout (2013–2026)",
+    "oneYear": "1 an",
+    "fiveYears": "5 ans",
+    "shareButton": "Partager mon résultat"
+  },
+  "metrics": {
+    "totalWinnings": "GAINS CUMULÉS",
+    "winningsNote": "{{wins}} gains sur {{total}} tirages",
+    "waiting": "En attente...",
+    "netProfit": "BILAN NET",
+    "roi": "ROI {{value}}%",
+    "investedNote": "2.50 CHF × {{count}} tirages"
+  },
+  "stats": {
+    "title": "Chaud ou froid ?",
+    "subtitle": "Tendances sur la période ({{count}} tirages)",
+    "applyTop6": "Appliquer le Top 6",
+    "hotLabel": "LES PLUS TIRÉS (TOP 6)",
+    "coldLabel": "LES MOINS TIRÉS (PLUS EN RETARD)",
+    "hotTooltip": "{{number}} : tiré {{count}} fois ({{percent}}%) sur cette période",
+    "coldTooltip": "{{number}} : absent depuis {{draws}} tirages sur cette période"
+  },
+  "history": {
+    "eyebrow": "VOTRE COMBINAISON DANS LE PASSÉ",
+    "title": "Tirages correspondants",
+    "chanceFound": "Chance {{bonus}} ★",
+    "chanceFoundTitle": "Chance trouvée !",
+    "viewAll": "Voir tout l’historique ({{count}} tirages) & rangs",
+    "noMatch": "Aucun tirage gagnant répertorié sur la période sélectionnée.",
+    "incomplete": "Complétez votre grille pour afficher les tirages correspondants."
+  },
+  "etf": {
+    "title": "Et si vous aviez investi au lieu de jouer ?",
+    "subtitle": "Même capital, deux destins radicalement différents",
+    "lottoBadge": "Swiss Lotto",
+    "totalCost": "Mises cumulées",
+    "totalWinnings": "Gains totaux",
+    "netProfit": "Bilan net",
+    "etfBadge": "ETF Monde (VT 7%/an)",
+    "invested": "Capital investi",
+    "estimatedValue": "Capital actuel estimé",
+    "etfNetGain": "Gain net",
+    "missedDiff": "Différence manquée",
+    "disclaimer": "Simulation basée sur un DCA de 2.50 CHF par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures."
+  },
+  "modalHistory": {
+    "title": "Historique & Répartition des gains",
+    "subtitle": "{{count}} tirages gagnants répertoriés (du {{start}} au {{end}})",
+    "rankTitle": "Répartition des victoires par rang",
+    "rankCol": "Rang",
+    "comboCol": "Combinaison",
+    "winsCol": "Victoires",
+    "totalCol": "Total",
+    "allDrawsTitle": "Tous les tirages correspondants ({{count}})",
+    "close": "Fermer"
+  },
+  "shareModal": {
+    "title": "Partager votre résultat",
+    "subtitle": "Défiez vos amis avec leur propre grille fétiche",
+    "lossMessage": "J'ai testé mes numéros au Swiss Lotto depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂. Teste ta grille ici : {{url}}",
+    "lossPreview": "J'ai testé mes numéros au Swiss Lotto depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂",
+    "winMessage": "Mes numéros fétiches auraient rapporté +{{gain}} au Swiss Lotto depuis {{year}} ! Mon record : {{maxGain}} 🤑. Teste ta grille ici : {{url}}",
+    "winPreview": "Mes numéros fétiches auraient rapporté +{{gain}} au Swiss Lotto depuis {{year}} ! Mon record : {{maxGain}} 🤑",
+    "story": "Story (9:16)",
+    "square": "Carré (1:1)",
+    "downloadStory": "Télécharger mon image {{format}}",
+    "downloading": "Génération de l'image...",
+    "downloaded": "Image téléchargée !",
+    "whatsapp": "Partager sur WhatsApp",
+    "copy": "Copier le message",
+    "copied": "Message copié !",
+    "copySuccess": "Lien copié dans le presse-papier !"
+  },
+  "shareTrigger": {
+    "title": "Déjà 3 grilles testées !",
+    "message": "Tes chiffres fétiches ne veulent décidément pas te rendre millionnaire... Défie tes amis ou ta famille : qui a le pire score de l'histoire du Swiss Lotto ?",
+    "whatsappBtn": "Défier sur WhatsApp",
+    "testMoreBtn": "Tester d'autres chiffres",
+    "shareMessage": "J'ai déjà testé 3 grilles au Swiss Lotto et aucune ne me rend millionnaire 😂 Teste tes propres numéros fétiches ici et dis-moi ton score : {{url}}"
+  },
+  "ranks": {
+    "rank6_1": "6 numéros + Chance",
+    "rank6_0": "6 numéros",
+    "rank5_1": "5 numéros + Chance",
+    "rank5_0": "5 numéros",
+    "rank4_1": "4 numéros + Chance",
+    "rank4_0": "4 numéros",
+    "rank3_1": "3 numéros + Chance",
+    "rank3_0": "3 numéros"
+  },
+  "adSlot": {
+    "partnerSpace": "Espace Partenaire",
+    "leaderboard": "Bannière Leaderboard • Emplacement partenaire réservé"
+  }
+}

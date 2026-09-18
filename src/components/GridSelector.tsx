@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { UserTicket } from '../types/lottery';
+import { useI18n } from '../i18n/I18nContext';
 
 export interface GridSelectorProps {
   /** Numéros principaux sélectionnés (1 à 42, max 6) */
@@ -28,6 +29,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
   onComplete,
   className = '',
 }) => {
+  const { t } = useI18n();
   // Gestion d'état interne (compatible mode contrôlé ou non contrôlé)
   const [internalNumbers, setInternalNumbers] = useState<number[]>([]);
   const [internalBonus, setInternalBonus] = useState<number | null>(null);
@@ -115,9 +117,9 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold tracking-tight flex items-center gap-2">
-                Grille Swiss Lotto
+                {t('grid.title')}
               </h2>
-              <p className="text-xs text-slate-400">Sélectionnez vos 6 numéros + 1 numéro Chance</p>
+              <p className="text-xs text-slate-400">{t('header.subtitle')}</p>
             </div>
           </div>
 
@@ -129,7 +131,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                 : 'bg-slate-800 text-slate-400 border border-slate-700'
             }`}
           >
-            {isComplete ? 'Grille complète ✓' : `${numbers.length}/6 • ${bonus ? '1/1' : '0/1'}`}
+            {isComplete ? t('grid.complete') : `${numbers.length}/6 • ${bonus ? '1/1' : '0/1'}`}
           </div>
         </div>
 
@@ -137,7 +139,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
         <div className="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span className="text-[11px] uppercase tracking-wider text-slate-400 font-semibold mr-1">
-              Ticket :
+              {t('ticketCard.eyebrow')} :
             </span>
             {Array.from({ length: MAX_MAIN_SELECTION }).map((_, idx) => {
               const val = numbers[idx];
@@ -165,7 +167,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                   ? 'bg-amber-400 text-slate-950 ring-amber-300 shadow-sm'
                   : 'bg-slate-800/70 text-slate-500 ring-slate-700 border border-dashed border-slate-600'
               }`}
-              title="Numéro Chance"
+              title={t('grid.chanceEyebrow')}
             >
               {bonus ?? '–'}
             </div>
@@ -179,7 +181,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
               className={`flex items-center gap-1.5 text-xs font-medium px-3 py-1.5 rounded-full bg-white/10 hover:bg-white/20 active:scale-95 text-white transition-all ${
                 flashAnimation ? 'ring-2 ring-amber-400 scale-105' : ''
               }`}
-              title="Sélection automatique aléatoire"
+              title={t('grid.flash')}
             >
               <svg
                 className="w-3.5 h-3.5 text-amber-400 fill-current animate-pulse"
@@ -187,17 +189,17 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
               >
                 <path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z" />
               </svg>
-              <span>Flash</span>
+              <span>{t('grid.flashShort')}</span>
             </button>
 
             <button
               type="button"
               onClick={handleReset}
               disabled={!hasSelection}
-              className="text-xs font-medium px-2.5 py-1.5 rounded-full text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400 hover:bg-white/5 active:scale-95 transition-all"
-              title="Effacer la sélection"
+              className="text-xs font-medium px-2.5 py-1.5 rounded-full text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400 hover:bg-white/5 active:scale-95 transition-all cursor-pointer"
+              title={t('grid.reset')}
             >
-              Réinitialiser
+              {t('grid.reset')}
             </button>
           </div>
         </div>
@@ -208,9 +210,9 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
         <div>
           <div className="flex items-center justify-between mb-3">
             <label className="text-xs sm:text-sm font-bold tracking-wide uppercase text-slate-700 flex items-center gap-2">
-              <span>Numéros principaux</span>
+              <span>{t('grid.mainLabel')}</span>
               <span className="text-[11px] font-normal text-slate-500 lowercase">
-                (choisir 6 numéros)
+                {t('grid.mainSub')}
               </span>
             </label>
             <span
@@ -262,7 +264,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
         <div className="relative flex items-center justify-center">
           <div className="border-t border-slate-200 w-full" />
           <span className="bg-white px-3 text-xs font-semibold uppercase tracking-wider text-slate-400 absolute">
-            et
+            +
           </span>
         </div>
 
@@ -274,10 +276,10 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                 ★
               </span>
               <label className="text-xs sm:text-sm font-bold tracking-wide uppercase text-slate-800">
-                Numéro Chance
+                {t('grid.chanceEyebrow')}
               </label>
               <span className="text-[11px] text-slate-500 font-normal">
-                (1 seul numéro de 1 à 6)
+                {t('grid.chanceSub')}
               </span>
             </div>
 
@@ -286,7 +288,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                 bonus !== null ? 'bg-amber-100 text-amber-900' : 'text-slate-500 bg-slate-200/70'
               }`}
             >
-              {bonus !== null ? '1 / 1 sélectionné' : '0 / 1'}
+              {bonus !== null ? '1 / 1' : '0 / 1'}
             </span>
           </div>
 
@@ -301,7 +303,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                   type="button"
                   onClick={() => toggleBonus(num)}
                   aria-pressed={isSelected}
-                  aria-label={`Numéro Chance ${num}`}
+                  aria-label={`${t('grid.chanceEyebrow')} ${num}`}
                   className={`
                     relative aspect-square rounded-xl sm:rounded-2xl font-black text-sm sm:text-base
                     flex items-center justify-center select-none touch-manipulation transition-all duration-150
@@ -327,7 +329,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
           <button
             type="button"
             onClick={handleFlash}
-            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 active:scale-[0.98] transition-all border border-slate-200/80 shadow-sm"
+            className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 active:scale-[0.98] transition-all border border-slate-200/80 shadow-sm cursor-pointer"
           >
             <svg
               className="w-4 h-4 text-amber-500 fill-current"
@@ -335,14 +337,14 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
             >
               <path d="M13 2L3 14h8l-2 8 10-12h-8l2-8z" />
             </svg>
-            <span>Tirage Flash Aléatoire</span>
+            <span>{t('grid.flash')}</span>
           </button>
 
           <button
             type="button"
             onClick={handleReset}
             disabled={!hasSelection}
-            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold text-slate-600 bg-transparent hover:bg-slate-100 active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-transparent transition-all border border-slate-200"
+            className="flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-sm font-semibold text-slate-600 bg-transparent hover:bg-slate-100 active:scale-[0.98] disabled:opacity-40 disabled:hover:bg-transparent transition-all border border-slate-200 cursor-pointer"
           >
             <svg
               className="w-4 h-4 text-slate-400"
@@ -357,7 +359,7 @@ export const GridSelector: React.FC<GridSelectorProps> = ({
                 d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
               />
             </svg>
-            <span>Réinitialiser</span>
+            <span>{t('grid.reset')}</span>
           </button>
         </div>
       </div>

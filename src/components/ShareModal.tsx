@@ -15,6 +15,7 @@ import {
 import { trackEvent } from '../utils/analytics';
 import { SimulationSummary } from '../types/lottery';
 import { generateStoryImage } from '../utils/storyImage';
+import { useI18n } from '../i18n/I18nContext';
 
 function formatShareCHF(amount: number): string {
   const isNeg = amount < 0;
@@ -40,6 +41,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   bonus,
   startYear,
 }) => {
+  const { t, language } = useI18n();
   const [copied, setCopied] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -83,10 +85,20 @@ export const ShareModal: React.FC<ShareModalProps> = ({
 
     if (net < 0) {
       const perte = formatShareCHF(Math.abs(net));
-      return `J'ai testé mes numéros au Swiss Lotto depuis ${startYear} : j'aurais perdu ${perte} et mon plus gros gain est de ${maxGain} 😂. Teste ta grille ici : ${shareUrl}`;
+      return t('shareModal.lossMessage', {
+        year: startYear,
+        lost: perte,
+        maxGain,
+        url: shareUrl,
+      });
     } else {
       const gain = formatShareCHF(net);
-      return `Mes numéros fétiches auraient rapporté +${gain} au Swiss Lotto depuis ${startYear} ! Mon record : ${maxGain} 🤑. Teste ta grille ici : ${shareUrl}`;
+      return t('shareModal.winMessage', {
+        year: startYear,
+        gain,
+        maxGain,
+        url: shareUrl,
+      });
     }
   })();
 
@@ -96,7 +108,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     try {
       await navigator.clipboard.writeText(message);
       setCopied(true);
-      setToastMessage('Lien copié dans le presse-papier !');
+      setToastMessage(t('shareModal.copySuccess'));
     } catch {
       const textarea = document.createElement('textarea');
       textarea.value = message;
@@ -107,9 +119,9 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       document.execCommand('copy');
       document.body.removeChild(textarea);
       setCopied(true);
-      setToastMessage('Lien copié dans le presse-papier !');
+      setToastMessage(t('shareModal.copySuccess'));
     }
-  }, [message]);
+  }, [message, t]);
 
   // Download Story image
   const handleDownloadStory = useCallback(async () => {
@@ -119,6 +131,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       const dataUrl = await generateStoryImage(simulation, numbers, bonus, {
         format: storyFormat,
         startYear,
+        language,
       });
 
       const filename = `swiss-lotto-${storyFormat}-${numbers.join('-')}.png`;
@@ -130,15 +143,15 @@ export const ShareModal: React.FC<ShareModalProps> = ({
       document.body.removeChild(link);
 
       setStoryDownloaded(true);
-      setToastMessage(`Image ${storyFormat === 'story' ? 'Story (9:16)' : 'Carré (1:1)'} téléchargée !`);
+      setToastMessage(t('shareModal.downloaded'));
       setTimeout(() => setStoryDownloaded(false), 3000);
     } catch (err) {
       console.error('Erreur lors de la génération de l’image:', err);
-      setToastMessage('Erreur lors de la création de l’image');
+      setToastMessage('Error');
     } finally {
       setIsGenerating(false);
     }
-  }, [simulation, numbers, bonus, storyFormat, startYear]);
+  }, [simulation, numbers, bonus, storyFormat, startYear, language, t]);
 
   // Reset toast state after 2.8s
   useEffect(() => {
@@ -211,10 +224,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           </div>
           <div>
             <h2 id="share-modal-title" className="text-base font-extrabold text-slate-900 leading-tight">
-              Partager votre résultat
+              {t('shareModal.title')}
             </h2>
             <p className="text-xs text-slate-500">
-              Défiez vos amis avec leur propre grille fétiche
+              {t('shareModal.subtitle')}
             </p>
           </div>
         </div>
@@ -224,31 +237,23 @@ export const ShareModal: React.FC<ShareModalProps> = ({
           <p className="text-[12.5px] leading-relaxed text-slate-700">
             {isLoss ? (
               <>
-                J'ai testé mes numéros au Swiss Lotto depuis {startYear} : j'aurais perdu{' '}
-                <strong className="text-rose-600">
-                  {formatShareCHF(Math.abs(simulation.netProfit))}
-                </strong>{' '}
-                et mon plus gros gain est de{' '}
-                <strong className="text-emerald-600">
-                  {simulation.bestDraw
+                {t('shareModal.lossPreview', {
+                  year: startYear,
+                  lost: formatShareCHF(Math.abs(simulation.netProfit)),
+                  maxGain: simulation.bestDraw
                     ? formatShareCHF(simulation.bestDraw.amount)
-                    : '0 CHF'}
-                </strong>{' '}
-                😂
+                    : '0 CHF',
+                })}
               </>
             ) : (
               <>
-                Mes numéros fétiches auraient rapporté{' '}
-                <strong className="text-emerald-600">
-                  +{formatShareCHF(simulation.netProfit)}
-                </strong>{' '}
-                au Swiss Lotto depuis {startYear} ! Mon record :{' '}
-                <strong className="text-emerald-600">
-                  {simulation.bestDraw
+                {t('shareModal.winPreview', {
+                  year: startYear,
+                  gain: formatShareCHF(simulation.netProfit),
+                  maxGain: simulation.bestDraw
                     ? formatShareCHF(simulation.bestDraw.amount)
-                    : '0 CHF'}
-                </strong>{' '}
-                🤑
+                    : '0 CHF',
+                })}
               </>
             )}
           </p>
@@ -264,7 +269,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               onClick={() => setStoryFormat('story')}
             >
               <Smartphone className="size-3.5" />
-              <span>Story (9:16)</span>
+              <span>{t('shareModal.story')}</span>
             </button>
             <button
               type="button"
@@ -272,7 +277,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               onClick={() => setStoryFormat('square')}
             >
               <Square className="size-3" />
-              <span>Carré (1:1)</span>
+              <span>{t('shareModal.square')}</span>
             </button>
           </div>
 
@@ -287,17 +292,21 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             {isGenerating ? (
               <>
                 <Loader2 className="size-4.5 animate-spin" />
-                <span>Génération de l'image...</span>
+                <span>{t('shareModal.downloading')}</span>
               </>
             ) : storyDownloaded ? (
               <>
                 <Check className="size-4.5 text-emerald-400" />
-                <span>Image téléchargée !</span>
+                <span>{t('shareModal.downloaded')}</span>
               </>
             ) : (
               <>
                 <Download className="size-4.5 text-amber-300" />
-                <span>Télécharger mon image {storyFormat === 'story' ? 'Story (9:16)' : 'Carrée'}</span>
+                <span>
+                  {t('shareModal.downloadStory', {
+                    format: storyFormat === 'story' ? t('shareModal.story') : t('shareModal.square'),
+                  })}
+                </span>
                 <Sparkles className="size-3.5 ml-auto text-amber-300 opacity-90" />
               </>
             )}
@@ -315,7 +324,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
             }}
           >
             <MessageCircle className="size-4.5" />
-            <span>Envoyer sur WhatsApp</span>
+            <span>{t('shareModal.whatsapp')}</span>
             <ExternalLink className="size-3.5 ml-auto opacity-60" />
           </a>
 
@@ -334,7 +343,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               ) : (
                 <Copy className="size-4" />
               )}
-              <span>{copied ? 'Copié !' : 'Copier le lien'}</span>
+              <span>{copied ? t('shareModal.copied') : t('shareModal.copy')}</span>
             </button>
 
             {/* Native share (mobile) */}

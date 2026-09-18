@@ -17,12 +17,13 @@ import {
   calculateLotteryStats,
   calculateSimulation,
   formatCHF,
-  formatSwissDate,
 } from './utils/calculator';
 import { useUrlSync, getUrlTicket } from './hooks/useUrlSync';
 import { ShareModal } from './components/ShareModal';
 import { EtfComparison } from './components/EtfComparison';
 import { ShareTriggerModal } from './components/ShareTriggerModal';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
+import { useI18n } from './i18n/I18nContext';
 import { trackEvent } from './utils/analytics';
 import rawDraws from './data/draws.json';
 
@@ -38,10 +39,14 @@ const AdSlot: React.FC<{
   className?: string;
 }> = ({
   variant = 'responsive',
-  label = 'Espace Partenaire',
+  label,
   description,
   className = '',
 }) => {
+    const { t } = useI18n();
+    const displayLabel = label ?? t('adSlot.partnerSpace');
+    const displayDescription = description ?? t('adSlot.leaderboard');
+
     const getDimensions = () => {
       switch (variant) {
         case 'leaderboard':
@@ -56,7 +61,7 @@ const AdSlot: React.FC<{
     return (
       <div
         role="complementary"
-        aria-label={label}
+        aria-label={displayLabel}
         className={`relative w-full rounded-2xl border-2 border-dashed border-slate-300 bg-white/90 hover:bg-slate-50 transition-colors flex flex-col items-center justify-center text-center px-4 overflow-hidden select-none group ${getDimensions()} ${className}`}
       >
         <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-200 shadow-2xs text-[11px] font-bold tracking-wide uppercase text-slate-500 group-hover:text-slate-700 transition-colors">
@@ -73,10 +78,10 @@ const AdSlot: React.FC<{
               d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"
             />
           </svg>
-          <span>{label}</span>
+          <span>{displayLabel}</span>
         </div>
         <p className="mt-1.5 text-xs text-slate-400 font-medium tracking-tight">
-          {description ?? 'Bannière publicitaire • Emplacement réservé'}
+          {displayDescription}
         </p>
         <span className="absolute bottom-1.5 right-2.5 text-[9px] uppercase tracking-widest text-slate-300 font-bold">
           Ad
@@ -86,6 +91,8 @@ const AdSlot: React.FC<{
   };
 
 export const App: React.FC = () => {
+  const { t, language, formatDate, getRankLabel } = useI18n();
+
   // Grille sélectionnée : hydratée depuis l'URL si params valides, sinon valeurs par défaut
   const [ticket, setTicket] = useState<UserTicket>(() => {
     const urlTicket = getUrlTicket();
@@ -149,65 +156,57 @@ export const App: React.FC = () => {
   const ticketKey = isComplete ? `${numbers.join(',')}-${bonus}` : '';
   const prevTicketKeyRef = useRef(ticketKey); // Initialisé avec la valeur courante → skip le 1er rendu
 
-  // Analytics : Simulation Réussie + compteur de simulations pour ShareTriggerModal
   useEffect(() => {
-    if (!simulation || !ticketKey) return;
+    if (!isComplete) return;
 
-    // Ignore le rendu initial et les doublons strict-mode
-    if (ticketKey === prevTicketKeyRef.current) return;
-    prevTicketKeyRef.current = ticketKey;
+    // Si la combinaison a changé par rapport au render précédent
+    if (ticketKey && ticketKey !== prevTicketKeyRef.current) {
+      prevTicketKeyRef.current = ticketKey;
 
-    trackEvent('Simulation Réussie', { gainNet: simulation.netProfit });
+      simCountRef.current += 1;
+      try {
+        sessionStorage.setItem('simulations_count', String(simCountRef.current));
+      } catch {
+        // ignore
+      }
 
-    // Incrémente le compteur de simulations (sécurisé contre NaN)
-    const current = Number.isFinite(simCountRef.current) ? simCountRef.current : 0;
-    const newCount = current + 1;
-    simCountRef.current = newCount;
-    sessionStorage.setItem('simulations_count', String(newCount));
-
-    // Déclenche la modale à la 3ᵉ simulation (une seule fois par session)
-    if (newCount >= 3 && sessionStorage.getItem('has_seen_share_prompt') !== 'true') {
-      setShowShareTrigger(true);
-      sessionStorage.setItem('has_seen_share_prompt', 'true');
+      // Déclenchement automatique à la 3ᵉ grille simulée (exactement une seule fois)
+      if (simCountRef.current === 3) {
+        const hasTriggered = sessionStorage.getItem('share_trigger_shown');
+        if (!hasTriggered) {
+          setShowShareTrigger(true);
+          try {
+            sessionStorage.setItem('share_trigger_shown', '1');
+          } catch {
+            // ignore
+          }
+          trackEvent('Affichage Trigger Share Modal', { gridCount: 3 });
+        }
+      }
     }
-  }, [simulation, ticketKey]);
+  }, [ticketKey, isComplete]);
 
-
-  // Bascule d'un numéro principal (max 6)
+  // Basculer la sélection d'un numéro
   const toggleNumber = (num: number) => {
-    setTicket((prev) => {
-      const exists = prev.numbers.includes(num);
-      if (exists) {
-        return { ...prev, numbers: prev.numbers.filter((n) => n !== num) };
-      }
-      if (prev.numbers.length < 6) {
-        return { ...prev, numbers: [...prev.numbers, num].sort((a, b) => a - b) };
-      }
-      return prev;
-    });
-  };
-
-  // Bascule du numéro Chance (1 à 6)
-  const toggleBonus = (b: number) => {
-    setTicket((prev) => ({
-      ...prev,
-      bonus: prev.bonus === b ? null : b,
-    }));
-  };
-
-  // Tirage chanceux aléatoire (Flash)
-  const randomize = () => {
-    trackEvent('Bouton Flash');
-    const pool = Array.from({ length: 42 }, (_, i) => i + 1);
-    const picked: number[] = [];
-    while (picked.length < 6) {
-      const idx = Math.floor(Math.random() * pool.length);
-      const val = pool.splice(idx, 1)[0];
-      if (val !== undefined) picked.push(val);
+    if (numbers.includes(num)) {
+      setTicket({ ...ticket, numbers: numbers.filter((n) => n !== num) });
+    } else if (numbers.length < 6) {
+      setTicket({ ...ticket, numbers: [...numbers, num].sort((a, b) => a - b) });
     }
+  };
+
+  // Basculer la boule Chance (1 à 6)
+  const toggleBonus = (num: number) => {
+    setTicket({ ...ticket, bonus: bonus === num ? null : num });
+  };
+
+  // Flash aléatoire
+  const randomize = () => {
+    const all = Array.from({ length: 42 }, (_, i) => i + 1);
+    const shuffled = all.sort(() => 0.5 - Math.random());
     const randBonus = Math.floor(Math.random() * 6) + 1;
     setTicket({
-      numbers: picked.sort((a, b) => a - b),
+      numbers: shuffled.slice(0, 6).sort((a, b) => a - b),
       bonus: randBonus,
     });
   };
@@ -243,25 +242,30 @@ export const App: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
-                  My Magic Numbers
+                  {t('header.title')}
                 </h1>
                 <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200/60">
-                  Swiss Lotto
+                  {t('header.badge')}
                 </span>
               </div>
-              <p className="text-xs text-slate-500">Votre combinaison face à l’histoire</p>
+              <p className="text-xs text-slate-500">{t('header.subtitle')}</p>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 overflow-x-auto text-xs">
+          <div className="flex items-center gap-2.5 sm:gap-3 text-xs flex-wrap sm:flex-nowrap">
             <span className="status-pill">
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-              {filteredDraws.length.toLocaleString('fr-CH')} tirages analysés
+              {t('header.drawsAnalyzed', {
+                count: filteredDraws.length.toLocaleString(
+                  language === 'de' ? 'de-CH' : language === 'en' ? 'en-CH' : 'fr-CH'
+                ),
+              })}
             </span>
             <span className="status-pill">
               {startDate.slice(0, 4)} — {endDate.slice(0, 4)}
             </span>
-            <span className="hidden text-slate-500 sm:inline font-medium">2.50 CHF / grille</span>
+            <span className="hidden text-slate-500 sm:inline font-medium">{t('header.costPerGrid')}</span>
+            <LanguageSwitcher />
           </div>
         </div>
       </header>
@@ -278,9 +282,9 @@ export const App: React.FC = () => {
           >
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="eyebrow">COMPOSEZ VOTRE CHANCE</p>
+                <p className="eyebrow">{t('grid.eyebrow')}</p>
                 <h2 id="selection-title" className="mt-0.5 text-2xl font-bold tracking-tight text-slate-900">
-                  Votre grille
+                  {t('grid.title')}
                 </h2>
               </div>
               <span
@@ -326,8 +330,8 @@ export const App: React.FC = () => {
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="eyebrow">NUMÉRO CHANCE</p>
-                  <p className="text-xs text-slate-500">Choisissez 1 numéro (1 à 6)</p>
+                  <p className="eyebrow">{t('grid.chanceEyebrow')}</p>
+                  <p className="text-xs text-slate-500">{t('grid.chanceSub')}</p>
                 </div>
                 <Sparkles className="size-5 text-emerald-600" aria-hidden="true" />
               </div>
@@ -340,7 +344,7 @@ export const App: React.FC = () => {
                       key={number}
                       type="button"
                       aria-pressed={isSelected}
-                      aria-label={`Numéro Chance ${number}`}
+                      aria-label={`${t('grid.chanceEyebrow')} ${number}`}
                       onClick={() => toggleBonus(number)}
                       className={`chance-cell cursor-pointer ${isSelected
                         ? 'chance-cell-selected ball-pop'
@@ -362,13 +366,13 @@ export const App: React.FC = () => {
                 className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 shadow-md shadow-emerald-600/20 transition-all active:scale-95 cursor-pointer"
               >
                 <Dices className="size-4" />
-                <span>Tirage chanceux</span>
+                <span>{t('grid.flash')}</span>
               </button>
 
               <button
                 type="button"
-                aria-label="Réinitialiser la grille"
-                title="Réinitialiser"
+                aria-label={t('grid.reset')}
+                title={t('grid.reset')}
                 onClick={resetSelection}
                 disabled={numbers.length === 0 && bonus === null}
                 className="inline-flex items-center justify-center rounded-xl text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-3 border border-slate-200/80 transition-all active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
@@ -389,9 +393,9 @@ export const App: React.FC = () => {
             <div className="ticket-panel-light p-5 sm:p-6">
               <div className="relative">
                 <div className="flex items-center justify-between">
-                  <p className="eyebrow text-emerald-800 font-bold">TICKET ANALYSÉ</p>
+                  <p className="eyebrow text-emerald-800 font-bold">{t('ticketCard.eyebrow')}</p>
                   <span className="rounded-full border border-emerald-200 bg-white/90 px-3 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
-                    Chance {bonus ?? '—'}
+                    {t('ticketCard.chanceBadge', { bonus: bonus ?? '—' })}
                   </span>
                 </div>
 
@@ -417,33 +421,33 @@ export const App: React.FC = () => {
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                        Meilleur gain
+                        {t('ticketCard.bestWin')}
                       </p>
                       <p className="mt-1 text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                         {simulation.bestDraw ? formatCHF(simulation.bestDraw.amount) : '0 CHF'}
                       </p>
                       {simulation.bestDraw && (
                         <p className="text-[11px] text-slate-400 mt-0.5 truncate">
-                          le {formatSwissDate(simulation.bestDraw.date)}
+                          {t('ticketCard.onDate', { date: formatDate(simulation.bestDraw.date) })}
                         </p>
                       )}
                     </div>
 
                     <div className="text-right">
                       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                        Tirages gagnants
+                        {t('ticketCard.winningDraws')}
                       </p>
                       <p className="mt-1 text-2xl sm:text-3xl font-black text-emerald-600 tracking-tight">
                         {simulation.winningDrawsCount}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-0.5">
-                        sur {filteredDraws.length} tirages
+                        {t('ticketCard.onDraws', { count: filteredDraws.length })}
                       </p>
                     </div>
                   </div>
                 ) : (
                   <p className="py-2 text-center text-xs sm:text-sm text-slate-500">
-                    Complétez vos 6 numéros et le numéro Chance pour révéler son histoire.
+                    {t('ticketCard.incompletePrompt')}
                   </p>
                 )}
               </div>
@@ -458,15 +462,19 @@ export const App: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-xs sm:text-sm font-bold text-slate-900 leading-tight">
-                      Période d'analyse
+                      {t('ticketCard.periodTitle')}
                     </h3>
-                    <p className="text-[11px] text-slate-500">Filtrer l'historique considéré</p>
+                    <p className="text-[11px] text-slate-500">{t('ticketCard.periodSub')}</p>
                   </div>
                 </div>
 
                 <span className="status-pill text-[11px] py-0.5 px-2.5 bg-emerald-50 text-emerald-800 border-emerald-200 font-semibold">
                   <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  {filteredDraws.length.toLocaleString('fr-CH')} tirages
+                  {t('header.drawsAnalyzed', {
+                    count: filteredDraws.length.toLocaleString(
+                      language === 'de' ? 'de-CH' : language === 'en' ? 'en-CH' : 'fr-CH'
+                    ),
+                  })}
                 </span>
               </div>
 
@@ -474,7 +482,7 @@ export const App: React.FC = () => {
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="space-y-1">
                   <label htmlFor="start-date" className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Date de début
+                    {t('ticketCard.startDate')}
                   </label>
                   <input
                     id="start-date"
@@ -489,7 +497,7 @@ export const App: React.FC = () => {
 
                 <div className="space-y-1">
                   <label htmlFor="end-date" className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                    Date de fin
+                    {t('ticketCard.endDate')}
                   </label>
                   <input
                     id="end-date"
@@ -505,7 +513,7 @@ export const App: React.FC = () => {
 
               {/* Raccourcis temporels rapides */}
               <div className="flex items-center gap-1.5 flex-wrap pt-0.5">
-                <span className="text-[10px] text-slate-400 font-medium mr-1">Raccourcis :</span>
+                <span className="text-[10px] text-slate-400 font-medium mr-1">{t('ticketCard.shortcuts')}</span>
                 <button
                   type="button"
                   onClick={() => { setStartDate(minDate); setEndDate(maxDate); }}
@@ -514,7 +522,7 @@ export const App: React.FC = () => {
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                     }`}
                 >
-                  Tout (2013–2026)
+                  {t('ticketCard.allTime')}
                 </button>
                 <button
                   type="button"
@@ -526,7 +534,7 @@ export const App: React.FC = () => {
                   }}
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer"
                 >
-                  1 an
+                  {t('ticketCard.oneYear')}
                 </button>
                 <button
                   type="button"
@@ -538,7 +546,7 @@ export const App: React.FC = () => {
                   }}
                   className="text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer"
                 >
-                  5 ans
+                  {t('ticketCard.fiveYears')}
                 </button>
                 <button
                   type="button"
@@ -556,17 +564,19 @@ export const App: React.FC = () => {
             {/* 3. Cartes Gains Cumulés & Bilan Net (METRIC CARDS) */}
             <div className="grid grid-cols-2 gap-4">
               <article className="metric-card">
-                <p className="eyebrow">GAINS CUMULÉS</p>
+                <p className="eyebrow">{t('metrics.totalWinnings')}</p>
                 <p className="metric-value">
                   {simulation ? formatCHF(simulation.totalWinnings) : 'CHF 0.–'}
                 </p>
                 <p className="metric-note">
-                  {simulation ? `${simulation.winningDrawsCount} gains sur ${filteredDraws.length} tirages` : 'En attente...'}
+                  {simulation
+                    ? t('metrics.winningsNote', { wins: simulation.winningDrawsCount, total: filteredDraws.length })
+                    : t('metrics.waiting')}
                 </p>
               </article>
 
               <article className="metric-card">
-                <p className="eyebrow">BILAN NET</p>
+                <p className="eyebrow">{t('metrics.netProfit')}</p>
                 <p
                   className={`metric-value ${simulation && simulation.netProfit >= 0
                     ? 'text-emerald-600'
@@ -577,8 +587,10 @@ export const App: React.FC = () => {
                 </p>
                 <p className="metric-note">
                   {simulation
-                    ? `ROI ${simulation.roiPercentage >= 0 ? '+' : ''}${simulation.roiPercentage.toFixed(1)}%`
-                    : `2.50 CHF × ${filteredDraws.length} tirages`}
+                    ? t('metrics.roi', {
+                        value: (simulation.roiPercentage >= 0 ? '+' : '') + simulation.roiPercentage.toFixed(1),
+                      })
+                    : t('metrics.investedNote', { count: filteredDraws.length })}
                 </p>
               </article>
             </div>
@@ -592,7 +604,7 @@ export const App: React.FC = () => {
                 className="w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <Share2 className="size-4.5" />
-                <span>Partager mon résultat</span>
+                <span>{t('ticketCard.shareButton')}</span>
               </button>
             )}
 
@@ -610,19 +622,19 @@ export const App: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-base sm:text-lg font-bold text-slate-900">
-                    Chaud ou froid ?
+                    {t('stats.title')}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    Tendances sur la période ({filteredDraws.length} tirages)
+                    {t('stats.subtitle', { count: filteredDraws.length })}
                   </p>
                 </div>
                 <button
                   type="button"
                   onClick={applyHotSelection}
                   className="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                  title="Appliquer le Top 6 chaud de cette période sur votre grille"
+                  title={t('stats.applyTop6')}
                 >
-                  Appliquer le Top 6
+                  {t('stats.applyTop6')}
                 </button>
               </div>
 
@@ -630,7 +642,7 @@ export const App: React.FC = () => {
               <div>
                 <p className="eyebrow flex items-center gap-1.5 text-rose-600">
                   <Flame className="size-3.5" />
-                  <span>LES PLUS TIRÉS (TOP 6)</span>
+                  <span>{t('stats.hotLabel')}</span>
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {stats.hotNumbers.map((item) => (
@@ -640,7 +652,11 @@ export const App: React.FC = () => {
                       onClick={() => toggleNumber(item.number)}
                       className={`stat-ball stat-ball-hot cursor-pointer ${numbers.includes(item.number) ? 'ring-2 ring-rose-500 ring-offset-1' : ''
                         }`}
-                      title={`${item.number} : tiré ${item.count} fois (${item.frequencyPercentage.toFixed(1)}%) sur cette période`}
+                      title={t('stats.hotTooltip', {
+                        number: item.number,
+                        count: item.count,
+                        percent: item.frequencyPercentage.toFixed(1),
+                      })}
                     >
                       {item.number}
                     </button>
@@ -652,7 +668,7 @@ export const App: React.FC = () => {
               <div>
                 <p className="eyebrow flex items-center gap-1.5 text-sky-600">
                   <Snowflake className="size-3.5" />
-                  <span>LES MOINS TIRÉS (PLUS EN RETARD)</span>
+                  <span>{t('stats.coldLabel')}</span>
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {stats.coldNumbers.map((item) => (
@@ -662,7 +678,10 @@ export const App: React.FC = () => {
                       onClick={() => toggleNumber(item.number)}
                       className={`stat-ball stat-ball-cold cursor-pointer ${numbers.includes(item.number) ? 'ring-2 ring-sky-500 ring-offset-1' : ''
                         }`}
-                      title={`${item.number} : absent depuis ${item.drawsSinceLastDrawn} tirages sur cette période`}
+                      title={t('stats.coldTooltip', {
+                        number: item.number,
+                        draws: item.drawsSinceLastDrawn,
+                      })}
                     >
                       {item.number}
                     </button>
@@ -675,9 +694,9 @@ export const App: React.FC = () => {
             <div className="panel overflow-hidden">
               <div className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                 <div>
-                  <p className="eyebrow">VOTRE COMBINAISON DANS LE PASSÉ</p>
+                  <p className="eyebrow">{t('history.eyebrow')}</p>
                   <h3 className="mt-0.5 text-base sm:text-lg font-bold text-slate-900">
-                    Tirages correspondants
+                    {t('history.title')}
                   </h3>
                 </div>
                 <Trophy className="size-5 text-emerald-600" aria-hidden="true" />
@@ -693,9 +712,9 @@ export const App: React.FC = () => {
                       <div className="flex items-center justify-between gap-3">
                         <div>
                           <p className="text-sm font-bold text-slate-900">
-                            {formatSwissDate(match.date)}
+                            {formatDate(match.date)}
                           </p>
-                          <p className="text-xs text-slate-500">{match.rankLabel}</p>
+                          <p className="text-xs text-slate-500">{getRankLabel(match.rankKey)}</p>
                         </div>
                         <p className="text-sm font-black text-emerald-600">
                           + {formatCHF(match.amount)}
@@ -712,9 +731,9 @@ export const App: React.FC = () => {
                         {match.matchedBonus && (
                           <span
                             className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-amber-100 text-amber-900 border border-amber-300"
-                            title="Chance trouvée !"
+                            title={t('history.chanceFoundTitle')}
                           >
-                            Chance {match.drawBonus} ★
+                            {t('history.chanceFound', { bonus: match.drawBonus })}
                           </span>
                         )}
                       </div>
@@ -724,8 +743,8 @@ export const App: React.FC = () => {
                   <div className="py-8 text-center text-slate-400 px-4">
                     <p className="text-xs sm:text-sm">
                       {isComplete
-                        ? 'Aucun tirage gagnant répertorié sur la période sélectionnée.'
-                        : 'Complétez votre grille pour afficher les tirages correspondants.'}
+                        ? t('history.noMatch')
+                        : t('history.incomplete')}
                     </p>
                   </div>
                 )}
@@ -738,7 +757,7 @@ export const App: React.FC = () => {
                     onClick={() => setShowAllHistory(true)}
                     className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-100 py-2.5 px-4 border border-dashed border-slate-200 transition-all cursor-pointer"
                   >
-                    Voir tout l’historique ({simulation.winningDraws.length} tirages) &amp; rangs
+                    {t('history.viewAll', { count: simulation.winningDraws.length })}
                   </button>
                 </div>
               )}
@@ -758,8 +777,6 @@ export const App: React.FC = () => {
         <div className="pt-2">
           <AdSlot
             variant="leaderboard"
-            label="Espace Partenaire"
-            description="Bannière Leaderboard • Emplacement partenaire réservé"
             className="bg-white/80"
           />
         </div>
@@ -779,10 +796,14 @@ export const App: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    Historique &amp; Répartition des gains
+                    {t('modalHistory.title')}
                   </h3>
                   <p className="text-xs text-slate-500">
-                    {simulation.winningDrawsCount} tirages gagnants répertoriés (du {formatSwissDate(startDate)} au {formatSwissDate(endDate)})
+                    {t('modalHistory.subtitle', {
+                      count: simulation.winningDrawsCount,
+                      start: formatDate(startDate),
+                      end: formatDate(endDate),
+                    })}
                   </p>
                 </div>
               </div>
@@ -800,16 +821,16 @@ export const App: React.FC = () => {
               {/* Tableau des rangs de gain */}
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                  Répartition des victoires par rang
+                  {t('modalHistory.rankTitle')}
                 </h4>
                 <div className="overflow-x-auto rounded-2xl border border-slate-200">
                   <table className="w-full text-left text-xs sm:text-sm">
                     <thead className="bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
                       <tr>
-                        <th className="px-4 py-2.5">Rang</th>
-                        <th className="px-3 py-2.5">Combinaison</th>
-                        <th className="px-3 py-2.5 text-center">Victoires</th>
-                        <th className="px-4 py-2.5 text-right">Total</th>
+                        <th className="px-4 py-2.5">{t('modalHistory.rankCol')}</th>
+                        <th className="px-3 py-2.5">{t('modalHistory.comboCol')}</th>
+                        <th className="px-3 py-2.5 text-center">{t('modalHistory.winsCol')}</th>
+                        <th className="px-4 py-2.5 text-right">{t('modalHistory.totalCol')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -818,7 +839,7 @@ export const App: React.FC = () => {
                           key={definition.key}
                           className={count > 0 ? 'bg-emerald-50/40 font-semibold' : ''}
                         >
-                          <td className="px-4 py-2.5 text-slate-900">{definition.label}</td>
+                          <td className="px-4 py-2.5 text-slate-900">{getRankLabel(definition.key)}</td>
                           <td className="px-3 py-2.5 text-slate-500">{definition.shortLabel}</td>
                           <td className="px-3 py-2.5 text-center">
                             <span
@@ -843,7 +864,7 @@ export const App: React.FC = () => {
               {/* Tous les tirages gagnants */}
               <div>
                 <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">
-                  Tous les tirages correspondants ({simulation.winningDraws.length})
+                  {t('modalHistory.allDrawsTitle', { count: simulation.winningDraws.length })}
                 </h4>
                 <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
                   {simulation.winningDraws.map((match) => (
@@ -853,10 +874,10 @@ export const App: React.FC = () => {
                     >
                       <div>
                         <span className="font-bold text-slate-900">
-                          {formatSwissDate(match.date)}
+                          {formatDate(match.date)}
                         </span>{' '}
                         <span className="text-slate-400">•</span>{' '}
-                        <span className="text-slate-600">{match.rankLabel}</span>
+                        <span className="text-slate-600">{getRankLabel(match.rankKey)}</span>
                         <div className="mt-1 flex gap-1">
                           {match.matchedNumbers.map((n) => (
                             <span
@@ -884,7 +905,7 @@ export const App: React.FC = () => {
                 onClick={() => setShowAllHistory(false)}
                 className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold bg-slate-200 hover:bg-slate-300 text-slate-800 transition-all cursor-pointer"
               >
-                Fermer
+                {t('modalHistory.close')}
               </button>
             </div>
           </div>
