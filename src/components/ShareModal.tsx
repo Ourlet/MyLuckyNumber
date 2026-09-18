@@ -163,7 +163,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const handleNativeShare = async () => {
     try {
       await navigator.share({
-        title: 'My lucky number – Swiss Lotto',
+        title: 'My Magic Numbers – Swiss Lotto',
         text: message,
         url: shareUrl,
       });

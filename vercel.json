@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "my-lucky-number-sb3c.vercel.app"
+        }
+      ],
+      "destination": "https://mymagicnumbers.com/$1",
+      "permanent": true
+    }
+  ]
+}

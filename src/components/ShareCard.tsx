@@ -141,7 +141,7 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   const handleNativeShare = useCallback(async () => {
     try {
       await navigator.share({
-        title: 'My Lucky Number – Swiss Lotto',
+        title: 'My Magic Numbers – Swiss Lotto',
         text: message,
         url: shareUrl,
       });

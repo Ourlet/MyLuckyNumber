@@ -243,7 +243,7 @@ export const App: React.FC = () => {
             <div>
               <div className="flex items-center gap-2">
                 <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
-                  My lucky number
+                  My Magic Numbers
                 </h1>
                 <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200/60">
                   Swiss Lotto

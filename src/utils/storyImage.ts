@@ -37,7 +37,7 @@ function roundRect(
 }
 
 /**
- * Draw the official 4-leaf clover logo of My lucky number
+ * Draw the official 4-leaf clover logo of My Magic Numbers
  */
 function drawCloverLogo(
   ctx: CanvasRenderingContext2D,
@@ -87,7 +87,7 @@ function drawCloverLogo(
 }
 
 /**
- * Generates an ultra-crisp Story / Square image in the exact luminous design theme of "My lucky number".
+ * Generates an ultra-crisp Story / Square image in the exact luminous design theme of "My Magic Numbers".
  */
 export async function generateStoryImage(
   summary: SimulationSummary,
@@ -160,23 +160,23 @@ export async function generateStoryImage(
   ctx.restore();
 
   // -------------------------------------------------------------
-  // 2. HEADER SECTION (Brand: My lucky number)
+  // 2. HEADER SECTION (Brand: My Magic Numbers)
   // -------------------------------------------------------------
   const headerY = isStory ? 90 : 60;
   const paddingX = 80;
-
-  // Emerald Logo Container
   const logoSize = isStory ? 76 : 64;
+
+  // Background icon box
   ctx.save();
   ctx.fillStyle = '#16a34a';
   ctx.shadowColor = 'rgba(22, 163, 74, 0.3)';
   ctx.shadowBlur = 16;
   ctx.shadowOffsetY = 4;
-  roundRect(ctx, paddingX, headerY, logoSize, logoSize, isStory ? 22 : 18);
+  roundRect(ctx, paddingX, headerY, logoSize, logoSize, isStory ? 20 : 16);
   ctx.fill();
   ctx.restore();
 
-  // Clover inside logo
+  // Clover in logo box
   drawCloverLogo(
     ctx,
     paddingX + logoSize / 2,
@@ -185,14 +185,15 @@ export async function generateStoryImage(
     '#ffffff'
   );
 
-  // Title: My lucky number
+  // Title: My Magic Numbers
   ctx.save();
   ctx.fillStyle = '#0f172a';
   ctx.font = `800 ${isStory ? 46 : 38}px Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif`;
-  ctx.fillText('My lucky number', paddingX + logoSize + 22, headerY + (isStory ? 42 : 36));
+  ctx.fillText('My Magic Numbers', paddingX + logoSize + 22, headerY + (isStory ? 42 : 36));
 
-  // "Swiss Lotto" Pill
-  const pillX = paddingX + logoSize + 22 + (isStory ? 395 : 330);
+  // "Swiss Lotto" Pill (dynamically positioned after title)
+  const titleWidth = ctx.measureText('My Magic Numbers').width;
+  const pillX = paddingX + logoSize + 22 + titleWidth + 16;
   const pillY = headerY + (isStory ? 14 : 10);
   ctx.fillStyle = '#ecfdf5';
   roundRect(ctx, pillX, pillY, 136, 36, 10);
@@ -681,7 +682,7 @@ export async function generateStoryImage(
     ctx.fillStyle = '#ffffff';
     ctx.font = '800 24px Inter, -apple-system, sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('myluckynumber.ch', width / 2 + 12, footerY + 37);
+    ctx.fillText('mymagicnumbers.com', width / 2 + 12, footerY + 37);
 
     ctx.fillStyle = '#64748b';
     ctx.font = '600 18px Inter, -apple-system, sans-serif';
@@ -694,7 +695,7 @@ export async function generateStoryImage(
     ctx.textAlign = 'center';
     ctx.fillStyle = '#16a34a';
     ctx.font = '800 22px Inter, -apple-system, sans-serif';
-    ctx.fillText('🍀 myluckynumber.ch', width / 2, footerY + 28);
+    ctx.fillText('🍀 mymagicnumbers.com', width / 2, footerY + 28);
 
     ctx.fillStyle = '#64748b';
     ctx.font = '500 14px Inter, -apple-system, sans-serif';
