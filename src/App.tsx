@@ -158,11 +158,13 @@ export const App: React.FC = () => {
   const prevTicketKeyRef = useRef(ticketKey); // Initialisé avec la valeur courante → skip le 1er rendu
 
   useEffect(() => {
-    if (!isComplete) return;
+    if (!isComplete || !simulation) return;
 
     // Si la combinaison a changé par rapport au render précédent
     if (ticketKey && ticketKey !== prevTicketKeyRef.current) {
       prevTicketKeyRef.current = ticketKey;
+
+      trackEvent('Simulation Réussie', { gainNet: simulation.netProfit });
 
       simCountRef.current += 1;
       try {
@@ -185,7 +187,7 @@ export const App: React.FC = () => {
         }
       }
     }
-  }, [ticketKey, isComplete]);
+  }, [ticketKey, isComplete, simulation]);
 
   // Basculer la sélection d'un numéro
   const toggleNumber = (num: number) => {
@@ -203,6 +205,7 @@ export const App: React.FC = () => {
 
   // Flash aléatoire
   const randomize = () => {
+    trackEvent('Bouton Flash');
     const all = Array.from({ length: 42 }, (_, i) => i + 1);
     const shuffled = all.sort(() => 0.5 - Math.random());
     const randBonus = Math.floor(Math.random() * 6) + 1;
