@@ -884,3 +884,356 @@
 .stm-secondary:active {
   transform: translateY(0) scale(0.98);
 }
+
+/* Étoiles EuroMillions */
+.star-cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.875rem;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: all 0.15s ease;
+  user-select: none;
+  touch-action: manipulation;
+  background-color: #fefce8;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.star-cell:hover:not(:disabled) {
+  background-color: #fef08a;
+  color: #713f12;
+  transform: scale(1.04);
+}
+
+.star-cell-selected {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #ffffff !important;
+  border-color: #b45309 !important;
+  box-shadow: 0 4px 14px rgba(217, 119, 6, 0.4);
+  transform: scale(1.05);
+}
+
+.ticket-star-ball {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 1rem;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  color: #92400e;
+  border: 2px solid #f59e0b;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.25);
+}
+
+/* ====================================================================== */
+/* THÈME EUROMILLIONS (bleu-indigo) – activé via data-game="euromillions" */
+/* ====================================================================== */
+
+body[data-game="euromillions"] {
+  background-color: #f0f4fa;
+}
+
+body[data-game="euromillions"] .min-h-screen {
+  background-color: #f0f4fa !important;
+}
+
+body[data-game="euromillions"] .panel {
+  border-color: #dde5f4;
+}
+
+body[data-game="euromillions"] .ticket-panel-light {
+  background: linear-gradient(135deg, #ffffff 0%, #eef3fd 100%);
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.07);
+}
+
+body[data-game="euromillions"] .ticket-ball {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 10px rgba(29, 78, 216, 0.25);
+}
+
+body[data-game="euromillions"] .number-cell-idle:hover {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+body[data-game="euromillions"] .number-cell-selected {
+  background-color: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.3);
+}
+
+/* Étoiles sélectionnées : bleu-indigo au lieu du vert foncé */
+body[data-game="euromillions"] .chance-cell-selected {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(29, 78, 216, 0.45);
+  transform: scale(1.07);
+}
+
+/* Étoiles non-sélectionnées : légère teinte bleue au hover */
+body[data-game="euromillions"] .chance-cell:not(.chance-cell-selected):hover {
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+  transform: scale(1.04);
+}
+
+body[data-game="euromillions"] .history-ball {
+  background-color: #dbeafe;
+  color: #1e40af;
+  border-color: #bfdbfe;
+}
+
+body[data-game="euromillions"] header {
+  border-bottom-color: #bfdbfe !important;
+  background-color: rgba(238, 243, 253, 0.96) !important;
+}
+
+body[data-game="euromillions"] .etf-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f5f8ff 40%, #eef3fd 100%);
+  border-color: #c7d7f4;
+  box-shadow: 0 4px 24px -4px rgba(29, 78, 216, 0.06), 0 1px 3px rgba(0,0,0,0.03);
+}
+
+body[data-game="euromillions"] .etf-card-topbar {
+  background: linear-gradient(90deg, #1d4ed8, #3b82f6, #60a5fa, #93c5fd);
+}
+
+body[data-game="euromillions"] .etf-icon-wrapper {
+  background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.25);
+}
+
+body[data-game="euromillions"] .etf-diff-banner {
+  background: linear-gradient(135deg, #1e3a8a, #1d4ed8);
+  animation: etfPulseGlowBlue 3s ease-in-out infinite;
+}
+
+body[data-game="euromillions"] .etf-diff-value {
+  color: #93c5fd;
+}
+
+@keyframes etfPulseGlowBlue {
+  0%, 100% { box-shadow: 0 4px 20px -4px rgba(29, 78, 216, 0.25); }
+  50%       { box-shadow: 0 4px 28px -2px rgba(29, 78, 216, 0.4); }
+}
+
+/* ====================================================================== */
+/* SÉLECTEUR DE JEU – Pill coloré et affordant                            */
+/* ====================================================================== */
+
+.lottery-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.lottery-switcher-select {
+  appearance: none;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.375rem 2.25rem 0.375rem 0.875rem;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  transition: background 0.25s ease, box-shadow 0.25s ease, transform 0.1s ease;
+  letter-spacing: 0.01em;
+}
+
+.lottery-switcher-select.theme-swiss {
+  background: linear-gradient(135deg, #16a34a 0%, #22c55e 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(22, 163, 74, 0.35), 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.lottery-switcher-select.theme-swiss:hover {
+  background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+  box-shadow: 0 4px 16px rgba(22, 163, 74, 0.45);
+  transform: translateY(-1px);
+}
+
+.lottery-switcher-select.theme-em {
+  background: linear-gradient(135deg, #1d4ed8 0%, #3b82f6 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(29, 78, 216, 0.35), 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.lottery-switcher-select.theme-em:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #1d4ed8 100%);
+  box-shadow: 0 4px 16px rgba(29, 78, 216, 0.45);
+  transform: translateY(-1px);
+}
+
+.lottery-switcher-select:active {
+  transform: scale(0.97);
+}
+
+.lottery-switcher-icon {
+  position: absolute;
+  right: 0.625rem;
+  pointer-events: none;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.lottery-switcher-select option {
+  background-color: #ffffff;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* ====================================================================== */
+/* OVERRIDES TAILWIND emerald → blue-indigo en mode EuroMillions           */
+/* Couvre tous les éléments restants qui utilisent des classes emerald-*   */
+/* ====================================================================== */
+
+/* bg-emerald-600 → bleu (boutons principaux : Flash, Partager, etc.) */
+body[data-game="euromillions"] .bg-emerald-600 {
+  background-color: #1d4ed8 !important;
+}
+body[data-game="euromillions"] .hover\:bg-emerald-700:hover {
+  background-color: #1e40af !important;
+}
+body[data-game="euromillions"] .bg-emerald-700 {
+  background-color: #1e40af !important;
+}
+
+/* bg-emerald-50/100 → bleu clair (badges, pills, raccourcis sélectionnés) */
+body[data-game="euromillions"] .bg-emerald-50 {
+  background-color: #eff6ff !important;
+}
+body[data-game="euromillions"] .bg-emerald-100 {
+  background-color: #dbeafe !important;
+}
+
+/* text-emerald-600/700/800 → bleu */
+body[data-game="euromillions"] .text-emerald-600 {
+  color: #1d4ed8 !important;
+}
+body[data-game="euromillions"] .text-emerald-700 {
+  color: #1e40af !important;
+}
+body[data-game="euromillions"] .text-emerald-800 {
+  color: #1e3a8a !important;
+}
+
+/* border-emerald-200/500 → bleu */
+body[data-game="euromillions"] .border-emerald-200 {
+  border-color: #bfdbfe !important;
+}
+body[data-game="euromillions"] .border-emerald-200\/60 {
+  border-color: rgba(191, 219, 254, 0.6) !important;
+}
+
+/* Logo icon bg */
+body[data-game="euromillions"] .bg-emerald-600.rounded-xl,
+body[data-game="euromillions"] .bg-emerald-600.rounded-lg {
+  background-color: #1d4ed8 !important;
+  box-shadow: 0 4px 12px rgba(29, 78, 216, 0.2) !important;
+}
+
+/* shadow-emerald → blue */
+body[data-game="euromillions"] .shadow-emerald-600\/20 {
+  --tw-shadow-color: rgba(29, 78, 216, 0.2);
+}
+
+/* Focus ring */
+body[data-game="euromillions"] .focus\:ring-emerald-500\/50:focus {
+  --tw-ring-color: rgba(59, 130, 246, 0.5) !important;
+}
+body[data-game="euromillions"] .focus\:border-emerald-500:focus {
+  border-color: #3b82f6 !important;
+}
+
+/* Pill "raccourcis" actif (ex: "Tout 2004–2026" sélectionné) */
+body[data-game="euromillions"] .bg-emerald-600.text-white.shadow-2xs {
+  background-color: #1d4ed8 !important;
+}
+
+/* Animate-pulse dot vert dans le status-pill date picker */
+body[data-game="euromillions"] .bg-emerald-500 {
+  background-color: #3b82f6 !important;
+}
+
+/* hover:bg-emerald-100 (bouton applyTop) */
+body[data-game="euromillions"] .hover\:bg-emerald-100:hover {
+  background-color: #dbeafe !important;
+}
+body[data-game="euromillions"] .hover\:text-emerald-800:hover {
+  color: #1e3a8a !important;
+}
+
+/* Ticket card border */
+body[data-game="euromillions"] .border-emerald-200\/80 {
+  border-color: rgba(191, 219, 254, 0.8) !important;
+}
+
+/* stat-card ROI badge */
+body[data-game="euromillions"] .bg-emerald-100.text-emerald-800 {
+  background-color: #dbeafe !important;
+  color: #1e3a8a !important;
+}
+
+/* Modal Award icon */
+body[data-game="euromillions"] .bg-emerald-100.text-emerald-700 {
+  background-color: #dbeafe !important;
+  color: #1d4ed8 !important;
+}
+
+/* stat badge "complete" */
+body[data-game="euromillions"] .bg-emerald-100.text-emerald-800 {
+  background-color: #dbeafe !important;
+  color: #1e3a8a !important;
+}
+
+/* ===== Tailwind v4: hover/focus variants ===== */
+
+/* hover:bg-emerald-700 → dark blue */
+body[data-game="euromillions"] [class*="hover:bg-emerald-700"]:hover,
+body[data-game="euromillions"] [class*="hover\\:bg-emerald-700"]:hover {
+  background-color: #1e40af !important;
+}
+
+/* hover:bg-emerald-100 */
+body[data-game="euromillions"] [class*="hover:bg-emerald-100"]:hover,
+body[data-game="euromillions"] [class*="hover\\:bg-emerald-100"]:hover {
+  background-color: #dbeafe !important;
+}
+
+/* hover:text-emerald-800 */
+body[data-game="euromillions"] [class*="hover:text-emerald-800"]:hover,
+body[data-game="euromillions"] [class*="hover\\:text-emerald-800"]:hover {
+  color: #1e3a8a !important;
+}
+
+/* shadow-emerald-600/20 */
+body[data-game="euromillions"] [class*="shadow-emerald-600"] {
+  --tw-shadow-color: rgba(29, 78, 216, 0.2) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+              var(--tw-ring-shadow, 0 0 #0000),
+              0 4px 16px -2px rgba(29, 78, 216, 0.25) !important;
+}
+
+/* focus:ring-emerald → blue */
+body[data-game="euromillions"] [class*="focus:ring-emerald"]:focus,
+body[data-game="euromillions"] [class*="focus\\:ring-emerald"]:focus {
+  --tw-ring-color: rgba(59, 130, 246, 0.5) !important;
+}
+body[data-game="euromillions"] [class*="focus:border-emerald"]:focus,
+body[data-game="euromillions"] [class*="focus\\:border-emerald"]:focus {
+  border-color: #3b82f6 !important;
+}
+
+/* bg-emerald-50/40 (modal rank row) */
+body[data-game="euromillions"] [class*="bg-emerald-50/40"] {
+  background-color: rgba(219, 234, 254, 0.4) !important;
+}
+

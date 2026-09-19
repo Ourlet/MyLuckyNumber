@@ -1,38 +1,39 @@
 {
   "header": {
     "title": "My Magic Numbers",
-    "badge": "Swiss Lotto",
-    "subtitle": "Votre combinaison face à l’histoire",
+    "badge": "EuroMillions",
+    "subtitle": "Vos numéros fétiches face à l'histoire depuis 2004",
     "drawsAnalyzed": "{{count}} tirages analysés",
-    "costPerGrid": "2.50 CHF / grille"
+    "costPerGrid": "2.50 € / grille"
   },
   "grid": {
     "eyebrow": "COMPOSEZ VOTRE CHANCE",
     "title": "Votre grille",
     "mainLabel": "Numéros principaux",
-    "mainSub": "(choisir 6 numéros)",
-    "chanceEyebrow": "NUMÉRO CHANCE",
-    "chanceSub": "Choisissez 1 numéro (1 à 6)",
+    "mainSub": "(choisir 5 numéros)",
+    "chanceEyebrow": "ÉTOILES CHANCE",
+    "chanceSub": "Choisissez 2 étoiles (1 à 12)",
     "flash": "Tirage chanceux",
     "flashShort": "Flash",
     "reset": "Réinitialiser",
     "complete": "Grille complète ✓",
-    "selectedCount": "{{count}} / 6 sélectionnés"
+    "selectedCount": "{{count}} / 5 sélectionnés",
+    "starsCount": "{{count}} / 2 étoiles"
   },
   "ticketCard": {
     "eyebrow": "TICKET ANALYSÉ",
-    "chanceBadge": "Chance {{bonus}}",
+    "chanceBadge": "Étoiles ★ {{stars}}",
     "bestWin": "Meilleur gain",
     "winningDraws": "Tirages gagnants",
     "onDraws": "sur {{count}} tirages",
     "onDate": "le {{date}}",
-    "incompletePrompt": "Complétez vos 6 numéros et le numéro Chance pour révéler son histoire.",
+    "incompletePrompt": "Complétez vos 5 numéros et vos 2 étoiles pour révéler leur histoire.",
     "periodTitle": "Période d'analyse",
     "periodSub": "Filtrer l'historique considéré",
     "startDate": "Date de début",
     "endDate": "Date de fin",
     "shortcuts": "Raccourcis :",
-    "allTime": "Tout (2013–2026)",
+    "allTime": "Tout (2004–2026)",
     "oneYear": "1 an",
     "fiveYears": "5 ans",
     "shareButton": "Partager mon résultat"
@@ -43,30 +44,32 @@
     "waiting": "En attente...",
     "netProfit": "BILAN NET",
     "roi": "ROI {{value}}%",
-    "investedNote": "2.50 CHF × {{count}} tirages"
+    "investedNote": "2.50 € × {{count}} tirages"
   },
   "stats": {
     "title": "Chaud ou froid ?",
     "subtitle": "Tendances sur la période ({{count}} tirages)",
-    "applyTop6": "Appliquer le Top 6",
-    "hotLabel": "LES PLUS TIRÉS (TOP 6)",
+    "applyTop6": "Appliquer le Top 5 + 2★",
+    "hotLabel": "LES PLUS TIRÉS (TOP 5)",
     "coldLabel": "LES MOINS TIRÉS (PLUS EN RETARD)",
+    "hotStarsLabel": "ÉTOILES LES PLUS TIRÉES",
+    "coldStarsLabel": "ÉTOILES EN RETARD",
     "hotTooltip": "{{number}} : tiré {{count}} fois ({{percent}}%) sur cette période",
     "coldTooltip": "{{number}} : absent depuis {{draws}} tirages sur cette période"
   },
   "history": {
     "eyebrow": "VOTRE COMBINAISON DANS LE PASSÉ",
     "title": "Tirages correspondants",
-    "chanceFound": "Chance {{bonus}} ★",
-    "chanceFoundTitle": "Chance trouvée !",
+    "chanceFound": "★ {{stars}}",
+    "chanceFoundTitle": "Étoile trouvée !",
     "viewAll": "Voir tout l’historique ({{count}} tirages) & rangs",
     "noMatch": "Aucun tirage gagnant répertorié sur la période sélectionnée.",
-    "incomplete": "Complétez votre grille pour afficher les tirages correspondants."
+    "incomplete": "Complétez votre grille (5 numéros + 2 étoiles) pour afficher les tirages."
   },
   "etf": {
     "title": "Et si vous aviez investi au lieu de jouer ?",
     "subtitle": "Même capital, deux destins radicalement différents",
-    "lottoBadge": "Swiss Lotto",
+    "lottoBadge": "EuroMillions",
     "totalCost": "Mises cumulées",
     "totalWinnings": "Gains totaux",
     "netProfit": "Bilan net",
@@ -75,10 +78,10 @@
     "estimatedValue": "Capital actuel estimé",
     "etfNetGain": "Gain net",
     "missedDiff": "Différence manquée",
-    "disclaimer": "Simulation basée sur un DCA de 2.50 CHF par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures."
+    "disclaimer": "Simulation basée sur un DCA de 2.50 € par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures."
   },
   "modalHistory": {
-    "title": "Historique & Répartition des gains",
+    "title": "Historique & Répartition des 13 rangs",
     "subtitle": "{{count}} tirages gagnants répertoriés (du {{start}} au {{end}})",
     "rankTitle": "Répartition des victoires par rang",
     "rankCol": "Rang",
@@ -91,10 +94,10 @@
   "shareModal": {
     "title": "Partager votre résultat",
     "subtitle": "Défiez vos amis avec leur propre grille fétiche",
-    "lossMessage": "J'ai testé mes numéros au Swiss Lotto depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂. Teste ta grille ici : {{url}}",
-    "lossPreview": "J'ai testé mes numéros au Swiss Lotto depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂",
-    "winMessage": "Mes numéros fétiches auraient rapporté +{{gain}} au Swiss Lotto depuis {{year}} ! Mon record : {{maxGain}} 🤑. Teste ta grille ici : {{url}}",
-    "winPreview": "Mes numéros fétiches auraient rapporté +{{gain}} au Swiss Lotto depuis {{year}} ! Mon record : {{maxGain}} 🤑",
+    "lossMessage": "J'ai testé mes numéros à l'EuroMillions depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂. Teste ta grille ici : {{url}}",
+    "lossPreview": "J'ai testé mes numéros à l'EuroMillions depuis {{year}} : j'aurais perdu {{lost}} et mon plus gros gain est de {{maxGain}} 😂",
+    "winMessage": "Mes numéros fétiches auraient rapporté +{{gain}} à l'EuroMillions depuis {{year}} ! Mon record : {{maxGain}} 🤑. Teste ta grille ici : {{url}}",
+    "winPreview": "Mes numéros fétiches auraient rapporté +{{gain}} à l'EuroMillions depuis {{year}} ! Mon record : {{maxGain}} 🤑",
     "story": "Story (9:16)",
     "square": "Carré (1:1)",
     "downloadStory": "Télécharger mon image {{format}}",
@@ -107,10 +110,10 @@
   },
   "shareTrigger": {
     "title": "Déjà 3 grilles testées !",
-    "message": "Tes chiffres fétiches ne veulent décidément pas te rendre millionnaire... Défie tes amis ou ta famille : qui a le pire score de l'histoire du Swiss Lotto ?",
+    "message": "Vos chiffres fétiches ne veulent décidément pas vous rendre millionnaire... Défiez vos amis ou votre famille : qui a le pire score de l'histoire de l'EuroMillions ?",
     "whatsappBtn": "Défier sur WhatsApp",
     "testMoreBtn": "Tester d'autres chiffres",
-    "shareMessage": "J'ai déjà testé 3 grilles au Swiss Lotto et aucune ne me rend millionnaire 😂 Teste tes propres numéros fétiches ici et dis-moi ton score : {{url}}"
+    "shareMessage": "J'ai déjà testé 3 grilles à l'EuroMillions et aucune ne me rend millionnaire 😂 Teste tes propres numéros fétiches ici et dis-moi ton score : {{url}}"
   },
   "ranks": {
     "rank6_1": "6 numéros + Chance",
@@ -120,16 +123,29 @@
     "rank4_1": "4 numéros + Chance",
     "rank4_0": "4 numéros",
     "rank3_1": "3 numéros + Chance",
-    "rank3_0": "3 numéros"
+    "rank3_0": "3 numéros",
+    "rank_5_2": "5 numéros + 2 étoiles",
+    "rank_5_1": "5 numéros + 1 étoile",
+    "rank_5_0": "5 numéros",
+    "rank_4_2": "4 numéros + 2 étoiles",
+    "rank_4_1": "4 numéros + 1 étoile",
+    "rank_3_2": "3 numéros + 2 étoiles",
+    "rank_4_0": "4 numéros",
+    "rank_2_2": "2 numéros + 2 étoiles",
+    "rank_3_1": "3 numéros + 1 étoile",
+    "rank_3_0": "3 numéros",
+    "rank_1_2": "1 numéro + 2 étoiles",
+    "rank_2_1": "2 numéros + 1 étoile",
+    "rank_2_0": "2 numéros"
   },
   "adSlot": {
     "partnerSpace": "Espace Partenaire",
     "leaderboard": "Bannière Leaderboard • Emplacement partenaire réservé"
   },
   "footer": {
-    "disclaimer": "Projet indépendant non affilié à Swisslos ou à la Loterie Romande.",
+    "disclaimer": "Projet indépendant non affilié à la Française des Jeux (FDJ) ou à l'opérateur officiel EuroMillions.",
     "privacy": "Analytics sans cookies respectant votre vie privée.",
-    "madeWith": "Fait avec ❤️ à Fribourg, Suisse",
+    "madeWith": "Fait avec ❤️ pour les passionnés de statistiques",
     "contact": "Contact",
     "support": "Soutenir le projet"
   }

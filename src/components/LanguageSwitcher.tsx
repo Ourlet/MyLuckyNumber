@@ -46,6 +46,18 @@ export const UKFlag: React.FC<{ className?: string }> = ({ className = 'w-5 h-5'
     </g>
   </svg>
 );
+export const FranceFlag: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
+  <svg
+    viewBox="0 0 32 32"
+    className={`shrink-0 rounded-md shadow-xs overflow-hidden ${className}`}
+    aria-hidden="true"
+  >
+    {/* Bleu-blanc-rouge */}
+    <rect width="10.67" height="32" x="0" fill="#002395" />
+    <rect width="10.67" height="32" x="10.67" fill="#FFFFFF" />
+    <rect width="10.67" height="32" x="21.33" fill="#ED2939" />
+  </svg>
+);
 
 interface LanguageItem {
   code: Language;
@@ -64,6 +76,14 @@ const LANGUAGES: LanguageItem[] = [
     shortLabel: 'FR',
     badgeBg: 'bg-red-50 text-red-700 border-red-200/80',
     flag: <SwissFlag className="w-5 h-5" />,
+  },
+  {
+    code: 'fr-FR',
+    label: 'Français',
+    sublabel: 'France',
+    shortLabel: 'FR',
+    badgeBg: 'bg-blue-50 text-blue-700 border-blue-200/80',
+    flag: <FranceFlag className="w-5 h-5" />,
   },
   {
     code: 'de',

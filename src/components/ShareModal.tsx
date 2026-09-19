@@ -13,13 +13,16 @@ import {
   X,
 } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
-import { SimulationSummary } from '../types/lottery';
 import { generateStoryImage } from '../utils/storyImage';
 import { useI18n } from '../i18n/I18nContext';
 
-function formatShareCHF(amount: number): string {
+function formatShareAmount(amount: number, currency: string = 'CHF'): string {
   const isNeg = amount < 0;
   const abs = Math.abs(Math.round(amount));
+  if (currency === 'EUR') {
+    const formatted = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    return `${isNeg ? '-' : ''}${formatted} €`;
+  }
   const formatted = abs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, "'");
   return `${isNeg ? '-' : ''}${formatted} CHF`;
 }
@@ -27,10 +30,13 @@ function formatShareCHF(amount: number): string {
 export interface ShareModalProps {
   isOpen: boolean;
   onClose: () => void;
-  simulation: SimulationSummary;
+  simulation: any;
   numbers: number[];
-  bonus: number;
+  bonus?: number | null;
+  stars?: number[];
   startYear: string;
+  game?: 'swisslotto' | 'euromillions';
+  currency?: 'CHF' | 'EUR';
 }
 
 export const ShareModal: React.FC<ShareModalProps> = ({
@@ -39,7 +45,10 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   simulation,
   numbers,
   bonus,
+  stars,
   startYear,
+  game = 'swisslotto',
+  currency = 'CHF',
 }) => {
   const { t, language } = useI18n();
   const [copied, setCopied] = useState(false);
@@ -71,8 +80,14 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const shareUrl = (() => {
     if (typeof window === 'undefined') return '';
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('n', numbers.join(','));
-    url.searchParams.set('b', String(bonus));
+    if (game === 'euromillions') {
+      url.searchParams.set('game', 'euromillions');
+      url.searchParams.set('n', numbers.join(','));
+      if (stars && stars.length > 0) url.searchParams.set('s', stars.join(','));
+    } else {
+      url.searchParams.set('n', numbers.join(','));
+      if (bonus !== undefined && bonus !== null) url.searchParams.set('b', String(bonus));
+    }
     return url.toString();
   })();
 
@@ -80,11 +95,11 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   const message = (() => {
     const net = simulation.netProfit;
     const maxGain = simulation.bestDraw
-      ? formatShareCHF(simulation.bestDraw.amount)
-      : '0 CHF';
+      ? formatShareAmount(simulation.bestDraw.amount, currency)
+      : currency === 'EUR' ? '0 €' : '0 CHF';
 
     if (net < 0) {
-      const perte = formatShareCHF(Math.abs(net));
+      const perte = formatShareAmount(Math.abs(net), currency);
       return t('shareModal.lossMessage', {
         year: startYear,
         lost: perte,
@@ -92,7 +107,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
         url: shareUrl,
       });
     } else {
-      const gain = formatShareCHF(net);
+      const gain = formatShareAmount(net, currency);
       return t('shareModal.winMessage', {
         year: startYear,
         gain,
@@ -128,7 +143,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
     setIsGenerating(true);
     trackEvent('Téléchargement Story', { format: storyFormat });
     try {
-      const dataUrl = await generateStoryImage(simulation, numbers, bonus, {
+      const dataUrl = await generateStoryImage(simulation, numbers, bonus ?? 1, {
         format: storyFormat,
         startYear,
         language,
@@ -239,20 +254,20 @@ export const ShareModal: React.FC<ShareModalProps> = ({
               <>
                 {t('shareModal.lossPreview', {
                   year: startYear,
-                  lost: formatShareCHF(Math.abs(simulation.netProfit)),
+                  lost: formatShareAmount(Math.abs(simulation.netProfit), currency),
                   maxGain: simulation.bestDraw
-                    ? formatShareCHF(simulation.bestDraw.amount)
-                    : '0 CHF',
+                    ? formatShareAmount(simulation.bestDraw.amount, currency)
+                    : currency === 'EUR' ? '0 €' : '0 CHF',
                 })}
               </>
             ) : (
               <>
                 {t('shareModal.winPreview', {
                   year: startYear,
-                  gain: formatShareCHF(simulation.netProfit),
+                  gain: formatShareAmount(simulation.netProfit, currency),
                   maxGain: simulation.bestDraw
-                    ? formatShareCHF(simulation.bestDraw.amount)
-                    : '0 CHF',
+                    ? formatShareAmount(simulation.bestDraw.amount, currency)
+                    : currency === 'EUR' ? '0 €' : '0 CHF',
                 })}
               </>
             )}

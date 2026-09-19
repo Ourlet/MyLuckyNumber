@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import type { Language } from './types';
+import { getCurrencyForLanguage, getEmCostForLanguage, getEmCurrencyForLanguage } from './types';
 import { trackEvent } from '../utils/analytics';
 import fr from './locales/fr.json';
 import de from './locales/de.json';
 import en from './locales/en.json';
 
+// fr-FR uses the same French translations as fr (identical language, different currency)
 const translations: Record<Language, Record<string, any>> = {
   fr,
+  'fr-FR': fr,
   de,
   en,
 };
@@ -17,6 +20,12 @@ interface I18nContextType {
   t: (path: string, params?: Record<string, string | number>) => string;
   formatDate: (dateStr: string) => string;
   getRankLabel: (rankKey: string) => string;
+  /** 'CHF' pour fr / de, 'EUR' pour fr-FR / en */
+  currency: 'CHF' | 'EUR';
+  /** Prix d'une grille EuroMillions selon la locale (3.50 CHF ou 2.50 EUR) */
+  emCostPerDraw: number;
+  /** Devise EuroMillions selon la locale */
+  emCurrency: 'CHF' | 'EUR';
 }
 
 const I18nContext = createContext<I18nContextType | null>(null);
@@ -28,8 +37,8 @@ function getInitialLanguage(): Language {
 
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved === 'fr' || saved === 'de' || saved === 'en') {
-      return saved;
+    if (saved === 'fr' || saved === 'fr-FR' || saved === 'de' || saved === 'en') {
+      return saved as Language;
     }
   } catch {
     // localStorage might be unavailable
@@ -38,6 +47,8 @@ function getInitialLanguage(): Language {
   const navLang = navigator.language?.toLowerCase() || '';
   if (navLang.startsWith('de')) return 'de';
   if (navLang.startsWith('en')) return 'en';
+  // fr-FR: langue fr mais pays France
+  if (navLang === 'fr-fr') return 'fr-FR';
   return 'fr';
 }
 
@@ -61,6 +72,12 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     trackEvent('Change Language', { language: newLang });
   }, [language]);
+
+  // Currency derived from language (CHF for Swiss, EUR for France/international)
+  const currency = useMemo(() => getCurrencyForLanguage(language), [language]);
+  // EuroMillions: 3.50 CHF in Switzerland, 2.50 EUR in France/international
+  const emCostPerDraw = useMemo(() => getEmCostForLanguage(language), [language]);
+  const emCurrency = useMemo(() => getEmCurrencyForLanguage(language), [language]);
 
   // Translation lookup helper with nested paths (e.g. 'header.title') and {{var}} replacement
   const t = useCallback(
@@ -111,8 +128,9 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         const localeMap: Record<Language, string> = {
           fr: 'fr-CH',
+          'fr-FR': 'fr-FR',
           de: 'de-CH',
-          en: 'en-CH',
+          en: 'en-GB',
         };
 
         return date.toLocaleDateString(localeMap[language] || 'fr-CH', {
@@ -142,8 +160,11 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
       t,
       formatDate,
       getRankLabel,
+      currency,
+      emCostPerDraw,
+      emCurrency,
     }),
-    [language, setLanguage, t, formatDate, getRankLabel]
+    [language, setLanguage, t, formatDate, getRankLabel, currency, emCostPerDraw, emCurrency]
   );
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;

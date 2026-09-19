@@ -1,33 +1,41 @@
 import { useEffect } from 'react';
 import { UserTicket } from '../types/lottery';
+import { EuromillionsUserTicket } from '../types/euromillions';
+
+export type LotteryGame = 'swisslotto' | 'euromillions';
 
 /**
- * Parses and validates URL search parameters `n` (main numbers) and `b` (bonus/chance).
- * Returns a valid UserTicket or null if data is invalid.
+ * Détecte le jeu depuis l'URL (?game=euromillions ou présence du paramètre s)
  */
-function parseUrlTicket(): UserTicket | null {
+export function getUrlGameMode(): LotteryGame {
+  if (typeof window === 'undefined') return 'swisslotto';
+  const params = new URLSearchParams(window.location.search);
+  const game = params.get('game')?.toLowerCase();
+  if (game === 'euromillions' || params.has('s')) {
+    return 'euromillions';
+  }
+  return 'swisslotto';
+}
+
+/**
+ * Décode un ticket Swiss Lotto (6 numéros 1..42 + 1 chance 1..6)
+ */
+export function getUrlSwissTicket(): UserTicket | null {
+  if (typeof window === 'undefined') return null;
   try {
     const params = new URLSearchParams(window.location.search);
     const nParam = params.get('n');
     const bParam = params.get('b');
-
     if (!nParam || !bParam) return null;
 
-    // Parse main numbers
-    const numbers = nParam.split(',').map((s) => {
-      const n = parseInt(s.trim(), 10);
-      if (isNaN(n)) throw new Error('Invalid number');
-      return n;
-    });
-
-    // Validate: exactly 6 unique integers between 1 and 42
-    if (numbers.length !== 6) return null;
-    if (!numbers.every((n) => Number.isInteger(n) && n >= 1 && n <= 42)) return null;
+    const numbers = nParam.split(',').map((s) => parseInt(s.trim(), 10));
+    if (numbers.length !== 6 || numbers.some((n) => isNaN(n) || n < 1 || n > 42)) {
+      return null;
+    }
     if (new Set(numbers).size !== 6) return null;
 
-    // Parse bonus
     const bonus = parseInt(bParam.trim(), 10);
-    if (isNaN(bonus) || !Number.isInteger(bonus) || bonus < 1 || bonus > 6) return null;
+    if (isNaN(bonus) || bonus < 1 || bonus > 6) return null;
 
     return {
       numbers: numbers.sort((a, b) => a - b),
@@ -39,38 +47,78 @@ function parseUrlTicket(): UserTicket | null {
 }
 
 /**
- * Reads URL parameters on mount and returns a hydrated ticket if valid.
- * Also updates the URL bar dynamically whenever the ticket state changes.
+ * Décode un ticket EuroMillions (5 numéros 1..50 + 2 étoiles 1..12)
  */
-export function useUrlSync(ticket: UserTicket) {
-  const { numbers, bonus } = ticket;
-  const isComplete = numbers.length === 6 && bonus !== null;
+export function getUrlEuromillionsTicket(): EuromillionsUserTicket | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const nParam = params.get('n');
+    const sParam = params.get('s');
+    if (!nParam || !sParam) return null;
 
-  // Update URL when ticket changes
-  useEffect(() => {
-    const url = new URL(window.location.href);
-
-    if (isComplete) {
-      url.searchParams.set('n', numbers.join(','));
-      url.searchParams.set('b', String(bonus));
-    } else {
-      url.searchParams.delete('n');
-      url.searchParams.delete('b');
+    const numbers = nParam.split(',').map((s) => parseInt(s.trim(), 10));
+    if (numbers.length !== 5 || numbers.some((n) => isNaN(n) || n < 1 || n > 50)) {
+      return null;
     }
+    if (new Set(numbers).size !== 5) return null;
 
-    // Only replace if URL actually changed
-    if (url.toString() !== window.location.href) {
-      window.history.replaceState(null, '', url.toString());
+    const stars = sParam.split(',').map((s) => parseInt(s.trim(), 10));
+    if (stars.length !== 2 || stars.some((s) => isNaN(s) || s < 1 || s > 12)) {
+      return null;
     }
-  }, [numbers, bonus, isComplete]);
+    if (new Set(stars).size !== 2) return null;
 
-  return null;
+    return {
+      numbers: numbers.sort((a, b) => a - b),
+      stars: stars.sort((a, b) => a - b),
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**
- * Returns the hydrated ticket from URL params on initial load.
- * Call this once at component mount to get initial state.
+ * Synchronise l'URL selon le jeu sélectionné
  */
-export function getUrlTicket(): UserTicket | null {
-  return parseUrlTicket();
+export function useMultiLotteryUrlSync({
+  game,
+  swissTicket,
+  emTicket,
+}: {
+  game: LotteryGame;
+  swissTicket: UserTicket;
+  emTicket: EuromillionsUserTicket;
+}) {
+  useEffect(() => {
+    const url = new URL(window.location.href);
+
+    if (game === 'euromillions') {
+      url.searchParams.set('game', 'euromillions');
+      url.searchParams.delete('b');
+      if (emTicket.numbers.length === 5 && emTicket.stars.length === 2) {
+        url.searchParams.set('n', emTicket.numbers.join(','));
+        url.searchParams.set('s', emTicket.stars.join(','));
+      } else {
+        url.searchParams.delete('n');
+        url.searchParams.delete('s');
+      }
+    } else {
+      url.searchParams.delete('game');
+      url.searchParams.delete('s');
+      if (swissTicket.numbers.length === 6 && swissTicket.bonus !== null) {
+        url.searchParams.set('n', swissTicket.numbers.join(','));
+        url.searchParams.set('b', String(swissTicket.bonus));
+      } else {
+        url.searchParams.delete('n');
+        url.searchParams.delete('b');
+      }
+    }
+
+    if (url.toString() !== window.location.href) {
+      window.history.replaceState(null, '', url.toString());
+    }
+  }, [game, swissTicket.numbers, swissTicket.bonus, emTicket.numbers, emTicket.stars]);
+
+  return null;
 }

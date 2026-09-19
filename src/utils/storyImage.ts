@@ -94,7 +94,7 @@ function formatCanvasDate(dateStr: string, lang: Language): string {
     const [year, month, day] = dateStr.split('-').map(Number);
     if (!year || !month || !day) return dateStr;
     const date = new Date(year, month - 1, day);
-    const localeMap: Record<Language, string> = { fr: 'fr-CH', de: 'de-CH', en: 'en-CH' };
+    const localeMap: Record<Language, string> = { fr: 'fr-CH', 'fr-FR': 'fr-FR', de: 'de-CH', en: 'en-GB' };
     return date.toLocaleDateString(localeMap[lang] || 'fr-CH', {
       day: 'numeric',
       month: 'long',
@@ -190,7 +190,11 @@ const canvasI18n = {
     footerStory: 'Independent historic Swiss Lotto simulator 🇨🇭',
     footerSquare: 'Independent Swiss Lotto simulator • Test your numbers in 3 seconds',
   },
+  // fr-FR uses same French text (EuroMillions data is always in EUR)
+  'fr-FR': undefined as any,
 };
+// Clone fr content for fr-FR
+canvasI18n['fr-FR'] = canvasI18n.fr;
 
 /**
  * Generates an ultra-crisp Story / Square image in the exact luminous design theme of "My Magic Numbers".

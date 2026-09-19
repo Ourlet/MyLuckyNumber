@@ -1,38 +1,39 @@
 {
   "header": {
     "title": "My Magic Numbers",
-    "badge": "Swiss Lotto",
-    "subtitle": "Ihre Zahlen im Spiegel der Geschichte",
+    "badge": "EuroMillions",
+    "subtitle": "Ihre Glückszahlen im Spiegel der Geschichte seit 2004",
     "drawsAnalyzed": "{{count}} Ziehungen analysiert",
-    "costPerGrid": "CHF 2.50 / Tipp"
+    "costPerGrid": "2.50 € / Tipp"
   },
   "grid": {
     "eyebrow": "WÄHLEN SIE IHR GLÜCK",
     "title": "Ihr Tipp",
     "mainLabel": "Hauptzahlen",
-    "mainSub": "(6 Zahlen wählen)",
-    "chanceEyebrow": "GLÜCKSZAHL",
-    "chanceSub": "Wählen Sie 1 Zahl (1 bis 6)",
+    "mainSub": "(5 Zahlen wählen)",
+    "chanceEyebrow": "GLÜCKSSTERNE",
+    "chanceSub": "Wählen Sie 2 Sterne (1 bis 12)",
     "flash": "Quick-Tipp",
-    "flashShort": "Quick-Tipp",
+    "flashShort": "Flash",
     "reset": "Zurücksetzen",
     "complete": "Tipp vollständig ✓",
-    "selectedCount": "{{count}} / 6 gewählt"
+    "selectedCount": "{{count}} / 5 gewählt",
+    "starsCount": "{{count}} / 2 Sterne"
   },
   "ticketCard": {
     "eyebrow": "ANALYSIERTER TIPP",
-    "chanceBadge": "Glückszahl {{bonus}}",
+    "chanceBadge": "Sterne ★ {{stars}}",
     "bestWin": "Höchster Gewinn",
     "winningDraws": "Gewinnende Ziehungen",
     "onDraws": "von {{count}} Ziehungen",
     "onDate": "am {{date}}",
-    "incompletePrompt": "Wählen Sie 6 Zahlen und die Glückszahl, um die Statistik zu sehen.",
+    "incompletePrompt": "Wählen Sie 5 Zahlen und 2 Sterne, um ihre Geschichte zu enthüllen.",
     "periodTitle": "Analysezeitraum",
     "periodSub": "Historie filtern",
     "startDate": "Startdatum",
     "endDate": "Enddatum",
-    "shortcuts": "Schnellwahl:",
-    "allTime": "Gesamt (2013–2026)",
+    "shortcuts": "Schnellauswahl:",
+    "allTime": "Gesamt (2004–2026)",
     "oneYear": "1 Jahr",
     "fiveYears": "5 Jahre",
     "shareButton": "Mein Ergebnis teilen"
@@ -40,47 +41,49 @@
   "metrics": {
     "totalWinnings": "GESAMTGEWINNE",
     "winningsNote": "{{wins}} Gewinne bei {{total}} Ziehungen",
-    "waiting": "Warte auf Auswahl...",
+    "waiting": "Warten...",
     "netProfit": "NETTOBILANZ",
     "roi": "ROI {{value}}%",
-    "investedNote": "CHF 2.50 × {{count}} Ziehungen"
+    "investedNote": "2.50 € × {{count}} Ziehungen"
   },
   "stats": {
     "title": "Heiss oder kalt?",
     "subtitle": "Trends im Zeitraum ({{count}} Ziehungen)",
-    "applyTop6": "Top 6 anwenden",
-    "hotLabel": "AM HÄUFIGSTEN GEZOGEN (TOP 6)",
+    "applyTop6": "Top 5 + 2★ anwenden",
+    "hotLabel": "AM HÄUFIGSTEN GEZOGEN (TOP 5)",
     "coldLabel": "AM SELTENSTEN GEZOGEN (LÄNGSTES INTERVALL)",
-    "hotTooltip": "{{number}} : {{count}} Mal gezogen ({{percent}}%) in diesem Zeitraum",
-    "coldTooltip": "{{number}} : seit {{draws}} Ziehungen nicht mehr gezogen"
+    "hotStarsLabel": "HÄUFIGSTE STERNE",
+    "coldStarsLabel": "SELTENSTE STERNE",
+    "hotTooltip": "{{number}}: {{count}}-mal gezogen ({{percent}}%) in diesem Zeitraum",
+    "coldTooltip": "{{number}}: seit {{draws}} Ziehungen nicht gezogen"
   },
   "history": {
     "eyebrow": "IHRE KOMBINATION IN DER VERGANGENHEIT",
     "title": "Passende Ziehungen",
-    "chanceFound": "Glückszahl {{bonus}} ★",
-    "chanceFoundTitle": "Glückszahl getroffen!",
+    "chanceFound": "★ {{stars}}",
+    "chanceFoundTitle": "Stern getroffen!",
     "viewAll": "Gesamte Historie ({{count}} Ziehungen) & Ränge ansehen",
-    "noMatch": "Keine Gewinnziehung im gewählten Zeitraum gefunden.",
-    "incomplete": "Vervollständigen Sie Ihren Tipp, um passende Ziehungen zu sehen."
+    "noMatch": "Keine passenden Gewinnziehungen im gewählten Zeitraum gefunden.",
+    "incomplete": "Vervollständigen Sie Ihren Tipp (5 Zahlen + 2 Sterne) für passende Ziehungen."
   },
   "etf": {
     "title": "Was wäre, wenn Sie investiert hätten?",
     "subtitle": "Gleicher Einsatz, zwei völlig unterschiedliche Wege",
-    "lottoBadge": "Swiss Lotto",
+    "lottoBadge": "EuroMillions",
     "totalCost": "Gesamteinsatz",
     "totalWinnings": "Gesamtgewinne",
     "netProfit": "Nettobilanz",
-    "etfBadge": "Welt-ETF (VT 7%/Jahr)",
+    "etfBadge": "Welt ETF (VT 7%/Jahr)",
     "invested": "Investiertes Kapital",
     "estimatedValue": "Geschätzter aktueller Wert",
     "etfNetGain": "Nettogewinn",
     "missedDiff": "Entgangene Differenz",
-    "disclaimer": "Simulation basiert auf einem Sparplan (DCA) von CHF 2.50 pro Ziehung bei 7% p.a. Zinseszins. Vergangene Performance ist keine Garantie für zukünftige Erträge."
+    "disclaimer": "Simulation basierend auf 2.50 € pro Ziehung bei 7% jährlicher Zinseszins-Rendite. Die historische Wertentwicklung lässt keine verlässlichen Rückschlüsse auf die Zukunft zu."
   },
   "modalHistory": {
-    "title": "Historie & Gewinnverteilung",
-    "subtitle": "{{count}} Gewinnziehungen verzeichnet (vom {{start}} bis {{end}})",
-    "rankTitle": "Verteilung der Gewinne nach Rang",
+    "title": "Historie & Aufschlüsselung der 13 Gewinnränge",
+    "subtitle": "{{count}} Gewinnziehungen erfasst (vom {{start}} bis {{end}})",
+    "rankTitle": "Gewinnverteilung nach Rängen",
     "rankCol": "Rang",
     "comboCol": "Kombination",
     "winsCol": "Gewinne",
@@ -90,27 +93,27 @@
   },
   "shareModal": {
     "title": "Ergebnis teilen",
-    "subtitle": "Fordere Freunde mit ihren eigenen Glückszahlen heraus",
-    "lossMessage": "Ich habe meine Zahlen im Swiss Lotto seit {{year}} getestet: Ich hätte {{lost}} verloren und mein höchster Gewinn liegt bei {{maxGain}} 😂. Teste deinen Tipp hier: {{url}}",
-    "lossPreview": "Ich habe meine Zahlen im Swiss Lotto seit {{year}} getestet: Ich hätte {{lost}} verloren und mein höchster Gewinn liegt bei {{maxGain}} 😂",
-    "winMessage": "Meine Glückszahlen hätten seit {{year}} im Swiss Lotto +{{gain}} eingebracht! Mein Rekord: {{maxGain}} 🤑. Teste deinen Tipp hier: {{url}}",
-    "winPreview": "Meine Glückszahlen hätten seit {{year}} im Swiss Lotto +{{gain}} eingebracht! Mein Rekord: {{maxGain}} 🤑",
+    "subtitle": "Fordere deine Freunde mit ihren eigenen Glückszahlen heraus",
+    "lossMessage": "Ich habe meine Zahlen bei EuroMillions seit {{year}} getestet: Ich hätte {{lost}} verloren und mein höchster Gewinn war {{maxGain}} 😂. Teste deine Zahlen hier: {{url}}",
+    "lossPreview": "Ich habe meine Zahlen bei EuroMillions seit {{year}} getestet: Ich hätte {{lost}} verloren und mein höchster Gewinn war {{maxGain}} 😂",
+    "winMessage": "Meine Glückszahlen hätten bei EuroMillions seit {{year}} +{{gain}} gebracht! Mein Rekord: {{maxGain}} 🤑. Teste deine Zahlen hier: {{url}}",
+    "winPreview": "Meine Glückszahlen hätten bei EuroMillions seit {{year}} +{{gain}} gebracht! Mein Rekord: {{maxGain}} 🤑",
     "story": "Story (9:16)",
     "square": "Quadrat (1:1)",
-    "downloadStory": "Mein {{format}}-Bild herunterladen",
+    "downloadStory": "Bild herunterladen {{format}}",
     "downloading": "Bild wird erstellt...",
     "downloaded": "Bild heruntergeladen!",
     "whatsapp": "Auf WhatsApp teilen",
     "copy": "Nachricht kopieren",
-    "copied": "Kopiert!",
+    "copied": "Nachricht kopiert!",
     "copySuccess": "Link in die Zwischenablage kopiert!"
   },
   "shareTrigger": {
     "title": "Bereits 3 Tipps getestet!",
-    "message": "Deine Glückszahlen wollen dich einfach nicht zum Millionär machen... Fordere deine Freunde oder Familie heraus: Wer hat das schlechteste Swiss Lotto-Ergebnis aller Zeiten?",
+    "message": "Deine Glückszahlen wollen dich wohl einfach nicht zum Millionär machen... Fordere Freunde oder Familie heraus: Wer hat den schlechtesten Score in der Geschichte von EuroMillions?",
     "whatsappBtn": "Auf WhatsApp herausfordern",
-    "testMoreBtn": "Andere Zahlen testen",
-    "shareMessage": "Ich habe 3 Swiss Lotto-Tipps getestet und keiner macht mich zum Millionär 😂 Teste deine Glückszahlen hier und sag mir dein Ergebnis: {{url}}"
+    "testMoreBtn": "Weitere Zahlen testen",
+    "shareMessage": "Ich habe bereits 3 EuroMillions-Tipps getestet und keiner macht mich reich 😂 Teste deine eigenen Glückszahlen hier und sag mir deinen Score: {{url}}"
   },
   "ranks": {
     "rank6_1": "6 Zahlen + Glückszahl",
@@ -120,16 +123,29 @@
     "rank4_1": "4 Zahlen + Glückszahl",
     "rank4_0": "4 Zahlen",
     "rank3_1": "3 Zahlen + Glückszahl",
-    "rank3_0": "3 Zahlen"
+    "rank3_0": "3 Zahlen",
+    "rank_5_2": "5 Zahlen + 2 Sterne",
+    "rank_5_1": "5 Zahlen + 1 Stern",
+    "rank_5_0": "5 Zahlen",
+    "rank_4_2": "4 Zahlen + 2 Sterne",
+    "rank_4_1": "4 Zahlen + 1 Stern",
+    "rank_3_2": "3 Zahlen + 2 Sterne",
+    "rank_4_0": "4 Zahlen",
+    "rank_2_2": "2 Zahlen + 2 Sterne",
+    "rank_3_1": "3 Zahlen + 1 Stern",
+    "rank_3_0": "3 Zahlen",
+    "rank_1_2": "1 Zahl + 2 Sterne",
+    "rank_2_1": "2 Zahlen + 1 Stern",
+    "rank_2_0": "2 Zahlen"
   },
   "adSlot": {
     "partnerSpace": "Partnerbereich",
     "leaderboard": "Leaderboard-Banner • Reservierter Werbeplatz"
   },
   "footer": {
-    "disclaimer": "Unabhängiges Projekt, nicht mit Swisslos oder der Loterie Romande verbunden.",
+    "disclaimer": "Unabhängiges Projekt, nicht mit FDJ oder den offiziellen EuroMillions-Veranstaltern verbunden.",
     "privacy": "Cookie-freie Webanalysen mit Respekt für Ihre Privatsphäre.",
-    "madeWith": "Mit ❤️ in Freiburg, Schweiz gemacht",
+    "madeWith": "Mit ❤️ für Statistik-Fans entwickelt",
     "contact": "Kontakt",
     "support": "Projekt unterstützen"
   }

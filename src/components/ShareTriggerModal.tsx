@@ -7,7 +7,9 @@ interface ShareTriggerModalProps {
   isOpen: boolean;
   onClose: () => void;
   numbers: number[];
-  bonus: number;
+  bonus?: number | null;
+  stars?: number[];
+  game?: 'swisslotto' | 'euromillions';
 }
 
 export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
@@ -15,6 +17,8 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
   onClose,
   numbers,
   bonus,
+  stars,
+  game = 'swisslotto',
 }) => {
   const { t } = useI18n();
 
@@ -42,8 +46,14 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
   // Build shareable URL
   const shareUrl = (() => {
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('n', numbers.join(','));
-    url.searchParams.set('b', String(bonus));
+    if (game === 'euromillions') {
+      url.searchParams.set('game', 'euromillions');
+      url.searchParams.set('n', numbers.join(','));
+      if (stars && stars.length > 0) url.searchParams.set('s', stars.join(','));
+    } else {
+      url.searchParams.set('n', numbers.join(','));
+      if (bonus !== undefined && bonus !== null) url.searchParams.set('b', String(bonus));
+    }
     return url.toString();
   })();
 
