@@ -148,5 +148,49 @@
     "madeWith": "Fait avec ❤️ pour les passionnés de statistiques",
     "contact": "Contact",
     "support": "Soutenir le projet"
+  },
+  "seo": {
+    "section1": {
+      "badge": "Méthodologie & Données",
+      "title": "Comment fonctionne le simulateur rétrospectif ?",
+      "p1": "My Magic Numbers compare instantanément vos numéros fétiches face à l'historique officiel complet de chaque tirage. Pour le Swiss Lotto, nous analysons tous les tirages depuis le changement de formule de janvier 2013 (42 numéros + 6 numéros chance). Pour l'EuroMillions, l'analyse couvre l'intégralité des tirages officiels depuis le lancement en février 2004.",
+      "p2": "Chaque rang de gain est recalculé avec les rapports officiels réels constatés lors du tirage. Vous découvrez ainsi le montant exact que vous auriez encaissé (ou perdu) en jouant cette même combinaison de manière ininterrompue.",
+      "card1Title": "Données Officielles",
+      "card1Desc": "Historique certifié issu des jeux de données publics de Swisslos, de la Loterie Romande et de la FDJ.",
+      "card2Title": "Calcul Côté Client",
+      "card2Desc": "Tous les algorithmes tournent directement dans votre navigateur web pour une réactivité instantanée.",
+      "card3Title": "100% Confidentiel",
+      "card3Desc": "Aucune grille n'est stockée sur nos serveurs. Zéro cookie publicitaire, respect total de votre vie privée."
+    },
+    "section2": {
+      "badge": "Statistiques & Biais",
+      "title": "Le piège des dates d'anniversaire et la dilution des gains",
+      "p1": "En théorie des probabilités, chaque combinaison a strictement la même probabilité de sortir au tirage : 1 chance sur environ 31,4 millions au Swiss Lotto (6/42 + 1/6) et 1 chance sur 139,8 millions à l'EuroMillions (5/50 + 2/12). Les boules ne possèdent aucune mémoire.",
+      "p2": "Cependant, le comportement humain crée un déséquilibre majeur : une écrasante majorité de joueurs sélectionnent des dates de naissance ou d'événements familiaux (numéros 1 à 31, et mois 1 à 12). Lorsque les numéros gagnants sont tous inférieurs ou égaux à 31, le nombre de grilles gagnantes explose.",
+      "p3": "La conséquence économique est immédiate : la cagnotte et les rangs élevés sont divisés entre des dizaines, voire des centaines de gagnants. Bien que la probabilité de gain soit identique, l'espérance de gain net effectif s'effondre.",
+      "tipTitle": "Conseil d'optimisation",
+      "tipText": "Si vous jouez pour maximiser votre gain potentiel en cas de victoire, privilégiez les numéros supérieurs à 31 (de 32 à 42 ou 50). Vous ne gagnerez pas plus souvent, mais vous partagerez beaucoup moins votre cagnotte."
+    },
+    "section3": {
+      "badge": "Éducation Financière",
+      "title": "Loto vs Investissement : Comprendre le coût d'opportunité",
+      "p1": "Le coût d'opportunité représente la valeur de ce à quoi vous renoncez lorsque vous choisissez une alternative plutôt qu'une autre. Dans le cas de la loterie, chaque mise de 2.50 CHF, 3.50 CHF ou 2.50 € représente un flux financier récurrent soustrait à votre capacité d'épargne ou d'investissement.",
+      "p2": "Avec un Taux de Retour Joueur (TRJ) légal plafonné à environ 50 %, la loterie présente une espérance mathématique structurellement négative. En moyenne, chaque franc ou euro joué perd la moitié de sa valeur dès l'instant où le ticket est validé.",
+      "p3": "À l'inverse, l'investissement programmé (DCA) dans un ETF mondial diversifié (type MSCI World ou Vanguard FTSE All-World) a généré historiquement un rendement moyen composé d'environ 7 % à 8 % par an sur le long terme. Grâce aux intérêts composés, ces micro-mises accumulées sur 10, 15 ou 20 ans se transforment en un capital substantiel garanti sans risque de perte totale.",
+      "statLabel": "Rendement annuel moyen historique d'un ETF mondial"
+    },
+    "faq": {
+      "badge": "Foire Aux Questions",
+      "title": "Questions fréquentes sur les statistiques de loterie",
+      "subtitle": "Tout ce que vous devez savoir sur les probabilités, la transparence des calculs et la rentabilité du jeu.",
+      "q1": "Les tirages passés permettent-ils de prédire les numéros des prochains tirages ?",
+      "a1": "Non. Chaque tirage de loterie est un événement aléatoire indépendant et sans mémoire. Le fait qu'un numéro soit sorti très souvent (« numéro chaud ») ou qu'il n'ait pas été tiré depuis longtemps (« numéro froid » ou en retard) ne modifie en rien sa probabilité exacte de sortir au prochain tirage.",
+      "q2": "Ce site est-il affilié à Swisslos, à la Loterie Romande ou à la FDJ ?",
+      "a2": "Non. My Magic Numbers est un outil indépendant à vocation pédagogique et statistique. Il n'est affilié, sponsorisé ni approuvé par Swisslos, la Loterie Romande, la Française des Jeux (FDJ) ou tout autre opérateur officiel de loterie.",
+      "q3": "Pourquoi mes gains historiques sont-ils si faibles malgré plusieurs bons numéros ?",
+      "a3": "Les loteries d'État reversent environ 50 % des mises sous forme de gains (Taux de Retour Joueur). De plus, l'essentiel de cette enveloppe est concentré sur le rang 1 (le jackpot). Les rangs inférieurs ne distribuent que des montants minimes qui ne compensent pas le coût cumulé des grilles jouées sur la durée.",
+      "q4": "Comment est calculée la valeur de l'investissement ETF comparatif ?",
+      "a4": "Notre simulateur reproduit un achat programmé régulier (Dollar-Cost Averaging ou DCA) à chaque date de tirage officiel, pour un montant identique au prix de la grille (ex: 2.50 CHF ou 2.50 €). Ce capital est composé au taux annuel théorique de 7 % réinvesti, représentatif de la performance historique long terme des grands indices d'actions mondiaux."
+    }
   }
 }

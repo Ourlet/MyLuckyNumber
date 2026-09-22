@@ -148,5 +148,49 @@
     "madeWith": "Made with ❤️ for statistics enthusiasts",
     "contact": "Contact",
     "support": "Support the project"
+  },
+  "seo": {
+    "section1": {
+      "badge": "Methodology & Data",
+      "title": "How does the retrospective simulator work?",
+      "p1": "My Magic Numbers instantly checks your favorite lottery numbers against the complete official historical archive of past draws. For Swiss Lotto, we analyze every draw since the modern game format introduced in January 2013 (42 numbers + 6 lucky numbers). For EuroMillions, the analysis spans all draws since its launch in February 2004.",
+      "p2": "Every prize tier is evaluated against real historical payout tables recorded for each specific draw. You discover exactly how much money you would have won—or lost—had you played this exact combination consistently over time.",
+      "card1Title": "Official Open Data",
+      "card1Desc": "Certified dataset sourced directly from Swisslos, Loterie Romande, and FDJ official archives.",
+      "card2Title": "Client-Side Engine",
+      "card2Desc": "All simulations run in real time inside your browser with zero latency.",
+      "card3Title": "100% Private",
+      "card3Desc": "Your numbers never leave your device. No advertising cookies, total privacy guaranteed."
+    },
+    "section2": {
+      "badge": "Statistics & Bias",
+      "title": "The birthday bias trap and prize dilution",
+      "p1": "In probability theory, every combination has the exact same mathematical likelihood of being drawn: 1 in ~31.4 million for Swiss Lotto (6/42 + 1/6) and 1 in 139.8 million for EuroMillions (5/50 + 2/12). Lottery balls have no memory.",
+      "p2": "However, human psychology introduces severe distortion: the vast majority of players select calendar dates like birthdays (numbers 1 to 31, and months 1 to 12). Whenever winning numbers are all 31 or lower, the number of winning tickets surges.",
+      "p3": "The economic consequence is immediate: the jackpot and top tiers must be split across dozens or even hundreds of winners. While the odds of hitting the numbers remain unchanged, the net payout per winner collapses.",
+      "tipTitle": "Smart Strategy Tip",
+      "tipText": "If your goal is to maximize your payout if you win, pick numbers above 31 (from 32 to 42 or 50). You won't win more often, but you won't have to share your jackpot with as many people."
+    },
+    "section3": {
+      "badge": "Financial Literacy",
+      "title": "Lottery vs Investing: Understanding opportunity cost",
+      "p1": "Opportunity cost is the loss of potential gain from other alternatives when one alternative is chosen. When playing the lottery, spending 2.50 CHF, 3.50 CHF, or 2.50 € per draw represents a recurring cash outflow diverted away from wealth generation.",
+      "p2": "With a legal Return to Player (RTP) capped around 50%, lottery games carry a structurally negative mathematical expectation. On average, every dollar, franc, or euro wagered instantly loses half its value.",
+      "p3": "In contrast, dollar-cost averaging (DCA) into a globally diversified index fund (like MSCI World or Vanguard FTSE All-World) has historically delivered an annualized return of ~7% to 8% over the long run. Compound interest transforms these small recurring stakes into substantial wealth over 10, 15, or 20 years.",
+      "statLabel": "Historical annualized average return of global index funds"
+    },
+    "faq": {
+      "badge": "Frequently Asked Questions",
+      "title": "Lottery statistics & probability FAQ",
+      "subtitle": "Everything you need to know about probability, calculation methodology, and financial realities.",
+      "q1": "Can past draws help predict future winning numbers?",
+      "a1": "No. Every lottery draw is an independent random event with zero memory. Whether a number is 'hot' (drawn frequently) or 'cold/overdue' (not drawn in months) has zero impact on its exact mathematical probability of appearing in the next draw.",
+      "q2": "Is this website affiliated with Swisslos, Loterie Romande, or FDJ?",
+      "a2": "No. My Magic Numbers is a completely independent educational and statistical project. It is not affiliated with, sponsored by, or endorsed by Swisslos, Loterie Romande, FDJ, or any other official lottery operator.",
+      "q3": "Why are my historical winnings so low despite matching numbers?",
+      "a3": "State lotteries return only ~50% of total revenue back to players. Furthermore, the lion's share of this prize pool is concentrated in the top jackpot tier. Lower tiers pay out small sums that rarely offset the cumulative cost of tickets over time.",
+      "q4": "How is the ETF comparison investment value calculated?",
+      "a4": "We simulate recurring purchases (DCA) on every official draw date matching the ticket cost. This capital is compounded at a theoretical 7% annual rate, representing the historical long-term real performance of global equity markets."
+    }
   }
 }

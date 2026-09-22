@@ -148,5 +148,49 @@
     "madeWith": "Mit ❤️ für Statistik-Fans entwickelt",
     "contact": "Kontakt",
     "support": "Projekt unterstützen"
+  },
+  "seo": {
+    "section1": {
+      "badge": "Methodik & Daten",
+      "title": "Wie funktioniert der retrospektive Simulator?",
+      "p1": "My Magic Numbers vergleicht Ihre persönlichen Glückszahlen unmittelbar mit der vollständigen offiziellen Ziehungshistorie. Für Swiss Lotto analysieren wir sämtliche Ziehungen seit der Systemumstellung im Januar 2013 (42 Zahlen + 6 Glückszahlen). Bei EuroMillions deckt die Analyse alle offiziellen Ziehungen seit dem Start im Februar 2004 ab.",
+      "p2": "Jeder Gewinnrang wird exakt mit den tatsächlich ausgezahlten offiziellen Gewinnquoten berechnet. So sehen Sie transparent, wie viel Sie gewonnen oder verloren hätten, wenn Sie dieselbe Kombination bei jeder Ziehung gespielt hätten.",
+      "card1Title": "Offizielle Daten",
+      "card1Desc": "Zertifizierte Datenbasis aus den Open-Data-Beständen von Swisslos, Loterie Romande und FDJ.",
+      "card2Title": "Client-Side Berechnung",
+      "card2Desc": "Alle Berechnungen laufen direkt in Ihrem Browser – blitzschnell und ohne Serverlatenz.",
+      "card3Title": "100% Vertraulich",
+      "card3Desc": "Ihre getippten Zahlen werden nicht gespeichert. Keine Tracking-Cookies, voller Datenschutz."
+    },
+    "section2": {
+      "badge": "Statistik & Psychologie",
+      "title": "Die Geburtstagsfalle und die Gewinnverwässerung",
+      "p1": "In der Wahrscheinlichkeitsrechnung hat jede Zahlenkombination exakt dieselbe Chance gezogen zu werden: 1 zu ca. 31,4 Millionen bei Swiss Lotto (6/42 + 1/6) und 1 zu 139,8 Millionen bei EuroMillions (5/50 + 2/12). Lottokugeln haben kein Gedächtnis.",
+      "p2": "Das menschliche Tippverhalten erzeugt jedoch ein starkes Ungleichgewicht: Die überwiegende Mehrheit der Spieler wählt Geburtstage oder Kalenderdaten (Zahlen 1 bis 31 und Monate 1 bis 12). Werden Ziehungszahlen unter 32 gezogen, steigt die Anzahl der Gewinner sprunghaft an.",
+      "p3": "Die wirtschaftliche Konsequenz ist drastisch: Der Jackpot und die oberen Gewinnklassen müssen unter vielen Gewinnern aufgeteilt werden. Trotz gleicher Trefferwahrscheinlichkeit bricht die effektive Gewinnerwartung massiv ein.",
+      "tipTitle": "Optimierungs-Tipp",
+      "tipText": "Wer den potenziellen Einzelgewinn maximieren möchte, setzt gezielt auf Zahlen über 31 (32 bis 42 bzw. 50). Sie gewinnen dadurch nicht häufiger, müssen Ihren Gewinn im Erfolgsfall aber mit deutlich weniger Spielern teilen."
+    },
+    "section3": {
+      "badge": "Finanzielle Bildung",
+      "title": "Lotto vs. Investieren: Opportunitätskosten verstehen",
+      "p1": "Opportunitätskosten beschreiben den entgangenen Nutzen einer nicht gewählten Alternative. Beim Lottospiel bedeutet jeder Einsatz von 2.50 CHF, 3.50 CHF oder 2.50 € pro Ziehung einen kontinuierlichen Geldabfluss, der dem Vermögensaufbau entzogen wird.",
+      "p2": "Mit einer gesetzlichen Ausschüttungsquote (RTP) von rund 50 % ist der mathematische Erwartungswert beim Lotto stark negativ. Im Durchschnitt verliert jeder eingesetzte Franken oder Euro direkt die Hälfte seines Wertes.",
+      "p3": "Ein regelmässiger Sparplan (DCA) in einen breit gestreuten Welt-Aktien-ETF (wie MSCI World oder Vanguard FTSE All-World) erzielte historisch eine durchschnittliche jährliche Rendite von ca. 7 % bis 8 %. Über 10, 15 oder 20 Jahre verwandelt der Zinseszinseffekt die kleinen Beträge in ein beträchtliches Vermögen.",
+      "statLabel": "Historische durchschnittliche Jahresrendite eines Welt-ETFs"
+    },
+    "faq": {
+      "badge": "Häufige Fragen",
+      "title": "Häufig gestellte Fragen zur Lotteriestatistik",
+      "subtitle": "Wissenswertes über Wahrscheinlichkeiten, Datenberechnungen und die Rentabilität des Glücksspiels.",
+      "q1": "Kann man anhand vergangener Ziehungen künftige Lottozahlen vorhersagen?",
+      "a1": "Nein. Jede Ziehung ist ein stochastisch unabhängiges Ereignis ohne Gedächtnis. Weder häufig gezogene («heisse Zahlen») noch lange überfällige Zahlen («kalte Zahlen») haben bei der nächsten Ziehung eine höhere oder niedrigere Wahrscheinlichkeit.",
+      "q2": "Ist diese Website mit Swisslos, der Loterie Romande oder FDJ verbunden?",
+      "a2": "Nein. My Magic Numbers ist ein völlig unabhängiges Projekt zu Informations- und Bildungszwecken. Es besteht keinerlei Partnerschaft oder Verbindung zu staatlichen Lotteriegesellschaften.",
+      "q3": "Warum sind meine historischen Gewinne trotz mehrerer Treffer so gering?",
+      "a3": "Staatliche Lotterien schütten im Schnitt nur etwa 50 % der Spieleinsätze als Gewinne aus. Der grösste Teil dieses Betrags fliesst in den Jackpot (Rang 1). Die unteren Gewinnränge zahlen nur kleine Beträge aus, die die laufenden Einsätze selten decken.",
+      "q4": "Wie wird der vergleichende ETF-Sparplan berechnet?",
+      "a4": "Wir simulieren einen automatisierten Kaufplan (DCA) zu jedem offiziellen Ziehungstermin mit dem Betrag des Tipping-Preises. Dieses Kapital wird mit einer theoretischen Jahresrendite von 7 % aufgezinst, basierend auf der historischen Langzeitperformance globaler Aktienmärkte."
+    }
   }
 }

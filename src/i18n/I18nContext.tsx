@@ -70,7 +70,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch {
       // ignore
     }
-    trackEvent('Change Language', { language: newLang });
+    trackEvent('Change language', { language: newLang });
   }, [language]);
 
   // Currency derived from language (CHF for Swiss, EUR for France/international)

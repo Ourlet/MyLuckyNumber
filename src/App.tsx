@@ -39,6 +39,7 @@ import { EtfComparison } from './components/EtfComparison';
 import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { ShareModal } from './components/ShareModal';
 import { ShareTriggerModal } from './components/ShareTriggerModal';
+import { SeoContent } from './components/SeoContent';
 import { Footer } from './components/Footer';
 import { useI18n } from './i18n/I18nContext';
 import { trackEvent } from './utils/analytics';
@@ -247,13 +248,13 @@ export const App: React.FC = () => {
   const currency: 'CHF' | 'EUR' = gameMode === 'swisslotto' ? 'CHF' : emCurrency;
   const formatAmount = currency === 'CHF' ? formatCHF : formatEUR;
 
-  // Analytics : Simulation Réussie anti doublon strict-mode
+  // Analytics : Simulation réussie anti doublon strict-mode
   const currentTicketKey =
     gameMode === 'swisslotto'
       ? (isComplete ? `swiss-${swissTicket.numbers.join(',')}-${swissTicket.bonus}` : '')
       : (isComplete ? `em-${emTicket.numbers.join(',')}-${emTicket.stars.join(',')}` : '');
 
-  const prevTicketKeyRef = useRef(currentTicketKey);
+  const prevTicketKeyRef = useRef<string>('');
 
   useEffect(() => {
     if (!isComplete || !simulation) return;
@@ -261,7 +262,7 @@ export const App: React.FC = () => {
     if (currentTicketKey && currentTicketKey !== prevTicketKeyRef.current) {
       prevTicketKeyRef.current = currentTicketKey;
 
-      trackEvent('Simulation Réussie', {
+      trackEvent('Simulation réussie', {
         game: gameMode,
         gainNet: simulation.netProfit,
       });
@@ -282,7 +283,7 @@ export const App: React.FC = () => {
           } catch {
             // ignore
           }
-          trackEvent('Affichage Trigger Share Modal', { gridCount: 3 });
+          trackEvent('Affichage trigger share modal', { gridCount: 3 });
         }
       }
     }
@@ -1104,7 +1105,10 @@ export const App: React.FC = () => {
         </div>
       </main>
 
-      {/* 4. Footer */}
+      {/* 4. Contenu textuel éducatif & FAQ SEO (Indexation Google) */}
+      <SeoContent />
+
+      {/* 5. Footer */}
       <Footer />
 
       {/* ======================================================== */}
