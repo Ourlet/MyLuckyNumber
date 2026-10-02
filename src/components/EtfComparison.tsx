@@ -162,7 +162,9 @@ export const EtfComparison: React.FC<EtfComparisonProps> = ({
 
       {/* Disclaimer */}
       <p className="etf-disclaimer">
-        Simulation basée sur un DCA de {costPerDraw.toFixed(2).replace('.', ',')} {currency === 'EUR' ? '€' : 'CHF'} par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures.
+        {t('etf.disclaimer', {
+          cost: `${costPerDraw.toFixed(2).replace('.', ',')} ${currency === 'EUR' ? '€' : 'CHF'}`,
+        })}
       </p>
     </div>
   );

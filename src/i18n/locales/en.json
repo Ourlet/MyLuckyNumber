@@ -3,16 +3,24 @@
     "title": "My Magic Numbers",
     "badge": "EuroMillions",
     "subtitle": "Your lucky numbers against history since 2004",
+    "subtitleSwiss": "Official retrospective simulator of your numbers (since 2013)",
+    "subtitleEm": "Your lucky numbers against official history since 2004",
     "drawsAnalyzed": "{{count}} draws analyzed",
-    "costPerGrid": "2.50 € / line"
+    "costPerGrid": "{{cost}} / line",
+    "selectLotteryAria": "Select lottery game"
   },
   "grid": {
     "eyebrow": "CHOOSE YOUR NUMBERS",
     "title": "Your ticket",
+    "pickNumbers": "Choose {{count}} numbers",
     "mainLabel": "Main numbers",
     "mainSub": "(pick 5 numbers)",
+    "mainSubWithCount": "(pick {{count}} numbers)",
     "chanceEyebrow": "LUCKY STARS",
-    "chanceSub": "Pick 2 stars (1 to 12)",
+    "chanceEyebrowSwiss": "LUCKY NUMBER",
+    "chanceSubSwiss": "Pick 1 lucky number (1 to 6)",
+    "chanceEyebrowEm": "LUCKY STARS",
+    "chanceSubEm": "Pick 2 stars (1 to 12)",
     "flash": "Lucky pick",
     "flashShort": "Flash",
     "reset": "Reset",
@@ -23,17 +31,22 @@
   "ticketCard": {
     "eyebrow": "ANALYZED TICKET",
     "chanceBadge": "Stars ★ {{stars}}",
+    "chanceBadgeSwiss": "Lucky No. {{bonus}}",
     "bestWin": "Best win",
     "winningDraws": "Winning draws",
     "onDraws": "out of {{count}} draws",
     "onDate": "on {{date}}",
     "incompletePrompt": "Pick 5 numbers and 2 stars to reveal their history.",
+    "incompletePromptSwiss": "Pick 6 numbers and 1 lucky number to reveal their history.",
+    "incompletePromptEm": "Pick 5 numbers and 2 stars to reveal their history.",
     "periodTitle": "Analysis period",
     "periodSub": "Filter history period",
     "startDate": "Start date",
     "endDate": "End date",
     "shortcuts": "Shortcuts:",
     "allTime": "All (2004–2026)",
+    "allTimeSwiss": "All (2013–2026)",
+    "allTimeEm": "All (2004–2026)",
     "oneYear": "1 year",
     "fiveYears": "5 years",
     "shareButton": "Share my result"
@@ -44,18 +57,24 @@
     "waiting": "Waiting...",
     "netProfit": "NET PROFIT",
     "roi": "ROI {{value}}%",
-    "investedNote": "2.50 € × {{count}} draws"
+    "investedNote": "{{cost}} × {{count}} draws"
   },
   "stats": {
     "title": "Hot or cold?",
     "subtitle": "Trends over the period ({{count}} draws)",
-    "applyTop6": "Apply Top 5 + 2★",
+    "applyTop6": "Apply Top 6",
+    "applyTop5": "Apply Top 5 + 2★",
     "hotLabel": "MOST FREQUENT (TOP 5)",
+    "hotLabel6": "MOST FREQUENT (TOP 6)",
+    "hotLabel5": "MOST FREQUENT (TOP 5)",
     "coldLabel": "LEAST FREQUENT (MOST OVERDUE)",
+    "coldLabel6": "LEAST FREQUENT (TOP 6)",
+    "coldLabel5": "LEAST FREQUENT (TOP 5)",
     "hotStarsLabel": "MOST FREQUENT STARS",
     "coldStarsLabel": "OVERDUE STARS",
     "hotTooltip": "{{number}}: drawn {{count}} times ({{percent}}%) in this period",
-    "coldTooltip": "{{number}}: not drawn for {{draws}} draws in this period"
+    "coldTooltip": "{{number}}: not drawn for {{draws}} draws in this period",
+    "starTooltip": "Star {{star}}: drawn {{count}} times in this period"
   },
   "history": {
     "eyebrow": "YOUR COMBINATION IN THE PAST",
@@ -78,13 +97,14 @@
     "estimatedValue": "Estimated current value",
     "etfNetGain": "Net gain",
     "missedDiff": "Missed difference",
-    "disclaimer": "Simulation based on DCA of 2.50 € per draw at 7% annual compound return. Past performance does not guarantee future results."
+    "disclaimer": "Simulation based on DCA of {{cost}} per draw at 7% annual compound return. Past performance does not guarantee future results."
   },
   "modalHistory": {
-    "title": "History & 13 Prize Tiers Breakdown",
+    "title": "History & {{count}} Prize Tiers Breakdown",
     "subtitle": "{{count}} winning draws recorded (from {{start}} to {{end}})",
     "rankTitle": "Wins distribution by prize tier",
     "rankCol": "Tier",
+    "rankLabel": "Tier {{rank}}",
     "comboCol": "Combination",
     "winsCol": "Wins",
     "totalCol": "Total",
@@ -177,7 +197,12 @@
       "p1": "Opportunity cost is the loss of potential gain from other alternatives when one alternative is chosen. When playing the lottery, spending 2.50 CHF, 3.50 CHF, or 2.50 € per draw represents a recurring cash outflow diverted away from wealth generation.",
       "p2": "With a legal Return to Player (RTP) capped around 50%, lottery games carry a structurally negative mathematical expectation. On average, every dollar, franc, or euro wagered instantly loses half its value.",
       "p3": "In contrast, dollar-cost averaging (DCA) into a globally diversified index fund (like MSCI World or Vanguard FTSE All-World) has historically delivered an annualized return of ~7% to 8% over the long run. Compound interest transforms these small recurring stakes into substantial wealth over 10, 15, or 20 years.",
-      "statLabel": "Historical annualized average return of global index funds"
+      "statLabel": "Historical annualized average return of global index funds",
+      "lotteryLabel": "State Lottery",
+      "lotteryValue": "RTP ~50%",
+      "lotteryDesc": "Structurally negative mathematical expectation: approximately 50% of every wager funds taxes, public causes, and operating costs.",
+      "etfValue": "+7% / yr",
+      "etfDesc": "Historical average compound annual growth rate of a globally diversified equity index fund (with reinvested dividends)."
     },
     "faq": {
       "badge": "Frequently Asked Questions",

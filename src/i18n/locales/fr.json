@@ -3,16 +3,24 @@
     "title": "My Magic Numbers",
     "badge": "EuroMillions",
     "subtitle": "Vos numéros fétiches face à l'histoire depuis 2004",
+    "subtitleSwiss": "Simulateur rétrospectif officiel de vos numéros (depuis 2013)",
+    "subtitleEm": "Vos numéros fétiches face à l'histoire officielle depuis 2004",
     "drawsAnalyzed": "{{count}} tirages analysés",
-    "costPerGrid": "2.50 € / grille"
+    "costPerGrid": "{{cost}} / grille",
+    "selectLotteryAria": "Sélectionner le loto"
   },
   "grid": {
     "eyebrow": "COMPOSEZ VOTRE CHANCE",
     "title": "Votre grille",
+    "pickNumbers": "Choisissez {{count}} numéros",
     "mainLabel": "Numéros principaux",
     "mainSub": "(choisir 5 numéros)",
+    "mainSubWithCount": "(choisir {{count}} numéros)",
     "chanceEyebrow": "ÉTOILES CHANCE",
-    "chanceSub": "Choisissez 2 étoiles (1 à 12)",
+    "chanceEyebrowSwiss": "NUMÉRO CHANCE",
+    "chanceSubSwiss": "Choisissez 1 numéro (1 à 6)",
+    "chanceEyebrowEm": "ÉTOILES CHANCE",
+    "chanceSubEm": "Choisissez 2 étoiles (1 à 12)",
     "flash": "Tirage chanceux",
     "flashShort": "Flash",
     "reset": "Réinitialiser",
@@ -23,17 +31,22 @@
   "ticketCard": {
     "eyebrow": "TICKET ANALYSÉ",
     "chanceBadge": "Étoiles ★ {{stars}}",
+    "chanceBadgeSwiss": "Chance {{bonus}}",
     "bestWin": "Meilleur gain",
     "winningDraws": "Tirages gagnants",
     "onDraws": "sur {{count}} tirages",
     "onDate": "le {{date}}",
     "incompletePrompt": "Complétez vos 5 numéros et vos 2 étoiles pour révéler leur histoire.",
+    "incompletePromptSwiss": "Complétez vos 6 numéros et le numéro Chance pour révéler son histoire.",
+    "incompletePromptEm": "Complétez vos 5 numéros et vos 2 étoiles pour révéler leur histoire.",
     "periodTitle": "Période d'analyse",
     "periodSub": "Filtrer l'historique considéré",
     "startDate": "Date de début",
     "endDate": "Date de fin",
     "shortcuts": "Raccourcis :",
     "allTime": "Tout (2004–2026)",
+    "allTimeSwiss": "Tout (2013–2026)",
+    "allTimeEm": "Tout (2004–2026)",
     "oneYear": "1 an",
     "fiveYears": "5 ans",
     "shareButton": "Partager mon résultat"
@@ -44,18 +57,24 @@
     "waiting": "En attente...",
     "netProfit": "BILAN NET",
     "roi": "ROI {{value}}%",
-    "investedNote": "2.50 € × {{count}} tirages"
+    "investedNote": "{{cost}} × {{count}} tirages"
   },
   "stats": {
     "title": "Chaud ou froid ?",
     "subtitle": "Tendances sur la période ({{count}} tirages)",
-    "applyTop6": "Appliquer le Top 5 + 2★",
+    "applyTop6": "Appliquer le Top 6",
+    "applyTop5": "Appliquer le Top 5 + 2★",
     "hotLabel": "LES PLUS TIRÉS (TOP 5)",
+    "hotLabel6": "LES PLUS TIRÉS (TOP 6)",
+    "hotLabel5": "LES PLUS TIRÉS (TOP 5)",
     "coldLabel": "LES MOINS TIRÉS (PLUS EN RETARD)",
+    "coldLabel6": "LES MOINS TIRÉS (TOP 6)",
+    "coldLabel5": "LES MOINS TIRÉS (TOP 5)",
     "hotStarsLabel": "ÉTOILES LES PLUS TIRÉES",
     "coldStarsLabel": "ÉTOILES EN RETARD",
     "hotTooltip": "{{number}} : tiré {{count}} fois ({{percent}}%) sur cette période",
-    "coldTooltip": "{{number}} : absent depuis {{draws}} tirages sur cette période"
+    "coldTooltip": "{{number}} : absent depuis {{draws}} tirages sur cette période",
+    "starTooltip": "Étoile {{star}} : tirée {{count}} fois sur cette période"
   },
   "history": {
     "eyebrow": "VOTRE COMBINAISON DANS LE PASSÉ",
@@ -78,13 +97,14 @@
     "estimatedValue": "Capital actuel estimé",
     "etfNetGain": "Gain net",
     "missedDiff": "Différence manquée",
-    "disclaimer": "Simulation basée sur un DCA de 2.50 € par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures."
+    "disclaimer": "Simulation basée sur un DCA de {{cost}} par tirage à 7% annualisé composé. Les performances passées ne préjugent pas des performances futures."
   },
   "modalHistory": {
-    "title": "Historique & Répartition des 13 rangs",
+    "title": "Historique & Répartition des {{count}} rangs",
     "subtitle": "{{count}} tirages gagnants répertoriés (du {{start}} au {{end}})",
     "rankTitle": "Répartition des victoires par rang",
     "rankCol": "Rang",
+    "rankLabel": "Rang {{rank}}",
     "comboCol": "Combinaison",
     "winsCol": "Victoires",
     "totalCol": "Total",
@@ -177,7 +197,12 @@
       "p1": "Le coût d'opportunité représente la valeur de ce à quoi vous renoncez lorsque vous choisissez une alternative plutôt qu'une autre. Dans le cas de la loterie, chaque mise de 2.50 CHF, 3.50 CHF ou 2.50 € représente un flux financier récurrent soustrait à votre capacité d'épargne ou d'investissement.",
       "p2": "Avec un Taux de Retour Joueur (TRJ) légal plafonné à environ 50 %, la loterie présente une espérance mathématique structurellement négative. En moyenne, chaque franc ou euro joué perd la moitié de sa valeur dès l'instant où le ticket est validé.",
       "p3": "À l'inverse, l'investissement programmé (DCA) dans un ETF mondial diversifié (type MSCI World ou Vanguard FTSE All-World) a généré historiquement un rendement moyen composé d'environ 7 % à 8 % par an sur le long terme. Grâce aux intérêts composés, ces micro-mises accumulées sur 10, 15 ou 20 ans se transforment en un capital substantiel garanti sans risque de perte totale.",
-      "statLabel": "Rendement annuel moyen historique d'un ETF mondial"
+      "statLabel": "Rendement annuel moyen historique d'un ETF mondial",
+      "lotteryLabel": "Loterie d'État",
+      "lotteryValue": "TRJ ~50%",
+      "lotteryDesc": "Espérance mathématique négative structurelle : environ 50 % de chaque mise financent les taxes publiques et les coûts de l'exploitant.",
+      "etfValue": "+7% / an",
+      "etfDesc": "Rendement composé historique moyen d'un portefeuille mondial diversifié (actions internationales avec dividendes réinvestis)."
     },
     "faq": {
       "badge": "Foire Aux Questions",

@@ -397,8 +397,8 @@ export const App: React.FC = () => {
               </div>
               <p className="text-xs text-slate-500">
                 {gameMode === 'swisslotto'
-                  ? 'Simulateur rétrospectif officiel de vos numéros (depuis 2013)'
-                  : "Vos numéros fétiches face à l'histoire officielle depuis 2004"}
+                  ? t('header.subtitleSwiss')
+                  : t('header.subtitleEm')}
               </p>
             </div>
           </div>
@@ -408,7 +408,7 @@ export const App: React.FC = () => {
             <div className="lottery-switcher">
               <select
                 id="lottery-select"
-                aria-label="Sélectionner le loto"
+                aria-label={t('header.selectLotteryAria')}
                 value={gameMode}
                 onChange={(e) => {
                   const next = e.target.value as LotteryGame;
@@ -435,9 +435,11 @@ export const App: React.FC = () => {
               {startDate.slice(0, 4)} — {endDate.slice(0, 4)}
             </span>
             <span className="hidden text-slate-500 sm:inline font-medium">
-              {gameMode === 'swisslotto'
-                ? '2,50 CHF / grille'
-                : `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'} / grille`}
+              {t('header.costPerGrid', {
+                cost: gameMode === 'swisslotto'
+                  ? '2.50 CHF'
+                  : `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`
+              })}
             </span>
             <LanguageSwitcher />
           </div>
@@ -458,7 +460,7 @@ export const App: React.FC = () => {
               <div>
                 <p className="eyebrow">{t('grid.eyebrow')}</p>
                 <h2 id="selection-title" className="mt-0.5 text-2xl font-bold tracking-tight text-slate-900">
-                  {gameMode === 'swisslotto' ? 'Choisissez 6 numéros' : 'Choisissez 5 numéros'}
+                  {t('grid.pickNumbers', { count: gameMode === 'swisslotto' ? 6 : 5 })}
                 </h2>
               </div>
               <span
@@ -477,7 +479,7 @@ export const App: React.FC = () => {
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                 <span>{t('grid.mainLabel')}</span>
-                <span>{gameMode === 'swisslotto' ? '(choisir 6 numéros)' : '(choisir 5 numéros)'}</span>
+                <span>{t('grid.mainSubWithCount', { count: gameMode === 'swisslotto' ? 6 : 5 })}</span>
               </div>
 
               <div className="grid grid-cols-7 gap-2">
@@ -510,9 +512,9 @@ export const App: React.FC = () => {
                 <>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="eyebrow">NUMÉRO CHANCE</p>
+                      <p className="eyebrow">{t('grid.chanceEyebrowSwiss')}</p>
                       <p className="text-xs text-slate-500 font-medium">
-                        Choisissez 1 numéro (1 à 6)
+                        {t('grid.chanceSubSwiss')}
                       </p>
                     </div>
                     <Sparkles className="size-5 text-emerald-600" aria-hidden="true" />
@@ -542,9 +544,9 @@ export const App: React.FC = () => {
                 <>
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="eyebrow">ÉTOILES CHANCE</p>
+                      <p className="eyebrow">{t('grid.chanceEyebrowEm')}</p>
                       <p className="text-xs text-slate-500 font-medium">
-                        Choisissez 2 étoiles (1 à 12)
+                        {t('grid.chanceSubEm')}
                       </p>
                     </div>
                     <span
@@ -623,7 +625,7 @@ export const App: React.FC = () => {
                   <p className="eyebrow text-emerald-800 font-bold">{t('ticketCard.eyebrow')}</p>
                   <span className="rounded-full border border-emerald-200 bg-white/90 px-3 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
                     {gameMode === 'swisslotto'
-                      ? `Chance ${swissTicket.bonus ?? '—'}`
+                      ? t('ticketCard.chanceBadgeSwiss', { bonus: swissTicket.bonus ?? '—' })
                       : `★ ${emTicket.stars.length > 0 ? emTicket.stars.join('  ★ ') : '—'}`}
                   </span>
                 </div>
@@ -709,8 +711,8 @@ export const App: React.FC = () => {
                 ) : (
                   <p className="py-2 text-center text-xs sm:text-sm text-slate-500">
                     {gameMode === 'swisslotto'
-                      ? 'Complétez vos 6 numéros et le numéro Chance pour révéler son histoire.'
-                      : 'Complétez vos 5 numéros et vos 2 étoiles pour révéler leur histoire.'}
+                      ? t('ticketCard.incompletePromptSwiss')
+                      : t('ticketCard.incompletePromptEm')}
                   </p>
                 )}
               </div>
@@ -789,7 +791,7 @@ export const App: React.FC = () => {
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   }`}
                 >
-                  {gameMode === 'swisslotto' ? 'Tout (2013–2026)' : 'Tout (2004–2026)'}
+                  {gameMode === 'swisslotto' ? t('ticketCard.allTimeSwiss') : t('ticketCard.allTimeEm')}
                 </button>
                 <button
                   type="button"
@@ -856,7 +858,12 @@ export const App: React.FC = () => {
                     ? t('metrics.roi', {
                         value: (simulation.roiPercentage >= 0 ? '+' : '') + simulation.roiPercentage.toFixed(1),
                       })
-                    : t('metrics.investedNote', { count: filteredDraws.length })}
+                    : t('metrics.investedNote', {
+                        cost: gameMode === 'swisslotto'
+                          ? '2.50 CHF'
+                          : `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`,
+                        count: filteredDraws.length,
+                      })}
                 </p>
               </article>
             </div>
@@ -896,9 +903,9 @@ export const App: React.FC = () => {
                   type="button"
                   onClick={applyHotSelection}
                   className="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                  title={gameMode === 'swisslotto' ? 'Appliquer le Top 6' : 'Appliquer le Top 5 + 2★'}
+                  title={gameMode === 'swisslotto' ? t('stats.applyTop6') : t('stats.applyTop5')}
                 >
-                  {gameMode === 'swisslotto' ? 'Appliquer le Top 6' : 'Appliquer le Top 5 + 2★'}
+                  {gameMode === 'swisslotto' ? t('stats.applyTop6') : t('stats.applyTop5')}
                 </button>
               </div>
 
@@ -906,7 +913,7 @@ export const App: React.FC = () => {
               <div>
                 <p className="eyebrow flex items-center gap-1.5 text-rose-600">
                   <Flame className="size-3.5" />
-                  <span>{gameMode === 'swisslotto' ? 'LES PLUS TIRÉS (TOP 6)' : 'LES PLUS TIRÉS (TOP 5)'}</span>
+                  <span>{gameMode === 'swisslotto' ? t('stats.hotLabel6') : t('stats.hotLabel5')}</span>
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {gameMode === 'swisslotto'
@@ -918,7 +925,11 @@ export const App: React.FC = () => {
                           className={`stat-ball stat-ball-hot cursor-pointer ${
                             swissTicket.numbers.includes(item.number) ? 'ring-2 ring-rose-500 ring-offset-1' : ''
                           }`}
-                          title={`${item.number} : tiré ${item.count} fois (${item.frequencyPercentage.toFixed(1)}%)`}
+                          title={t('stats.hotTooltip', {
+                            number: item.number,
+                            count: item.count,
+                            percent: item.frequencyPercentage.toFixed(1),
+                          })}
                         >
                           {item.number}
                         </button>
@@ -931,7 +942,11 @@ export const App: React.FC = () => {
                           className={`stat-ball stat-ball-hot cursor-pointer ${
                             emTicket.numbers.includes(item.value) ? 'ring-2 ring-rose-500 ring-offset-1' : ''
                           }`}
-                          title={`${item.value} : tiré ${item.count} fois (${item.frequencyPercentage.toFixed(1)}%)`}
+                          title={t('stats.hotTooltip', {
+                            number: item.value,
+                            count: item.count,
+                            percent: item.frequencyPercentage.toFixed(1),
+                          })}
                         >
                           {item.value}
                         </button>
@@ -943,7 +958,7 @@ export const App: React.FC = () => {
               <div>
                 <p className="eyebrow flex items-center gap-1.5 text-sky-600">
                   <Snowflake className="size-3.5" />
-                  <span>{gameMode === 'swisslotto' ? 'LES MOINS TIRÉS (TOP 6)' : 'LES MOINS TIRÉS (TOP 5)'}</span>
+                  <span>{gameMode === 'swisslotto' ? t('stats.coldLabel6') : t('stats.coldLabel5')}</span>
                 </p>
                 <div className="mt-2.5 flex flex-wrap gap-2">
                   {gameMode === 'swisslotto'
@@ -955,7 +970,10 @@ export const App: React.FC = () => {
                           className={`stat-ball stat-ball-cold cursor-pointer ${
                             swissTicket.numbers.includes(item.number) ? 'ring-2 ring-sky-500 ring-offset-1' : ''
                           }`}
-                          title={`${item.number} : absent depuis ${item.drawsSinceLastDrawn} tirages`}
+                          title={t('stats.coldTooltip', {
+                            number: item.number,
+                            draws: item.drawsSinceLastDrawn,
+                          })}
                         >
                           {item.number}
                         </button>
@@ -968,7 +986,10 @@ export const App: React.FC = () => {
                           className={`stat-ball stat-ball-cold cursor-pointer ${
                             emTicket.numbers.includes(item.value) ? 'ring-2 ring-sky-500 ring-offset-1' : ''
                           }`}
-                          title={`${item.value} : absent depuis ${item.drawsSinceLastDrawn} tirages`}
+                          title={t('stats.coldTooltip', {
+                            number: item.value,
+                            draws: item.drawsSinceLastDrawn,
+                          })}
                         >
                           {item.value}
                         </button>
@@ -981,7 +1002,7 @@ export const App: React.FC = () => {
                 <div>
                   <p className="eyebrow flex items-center gap-1.5 text-amber-700">
                     <Sparkles className="size-3.5" />
-                    <span>ÉTOILES LES PLUS TIRÉES</span>
+                    <span>{t('stats.hotStarsLabel')}</span>
                   </p>
                   <div className="mt-2.5 flex flex-wrap gap-2">
                     {emStats.hotStars.map((item) => (
@@ -994,7 +1015,10 @@ export const App: React.FC = () => {
                             ? 'bg-amber-500 border-amber-600 text-white font-black ring-2 ring-amber-500 ring-offset-1'
                             : 'bg-amber-50 text-amber-900 border-amber-200 hover:bg-amber-100'
                         }`}
-                        title={`Étoile ${item.value} : tirée ${item.count} fois`}
+                        title={t('stats.starTooltip', {
+                          star: item.value,
+                          count: item.count,
+                        })}
                       >
                         {item.value} ★
                       </button>
@@ -1125,9 +1149,7 @@ export const App: React.FC = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    {gameMode === 'swisslotto'
-                      ? 'Historique & Répartition des 8 rangs'
-                      : 'Historique & Répartition des 13 rangs'}
+                    {t('modalHistory.title', { count: gameMode === 'swisslotto' ? 8 : 13 })}
                   </h3>
                   <p className="text-xs text-slate-500">
                     {t('modalHistory.subtitle', {
@@ -1171,7 +1193,7 @@ export const App: React.FC = () => {
                           className={item.count > 0 ? 'bg-emerald-50/40 font-semibold' : 'text-slate-400'}
                         >
                           <td className="px-4 py-2 text-slate-700 font-medium">
-                            Rang {idx + 1}
+                            {t('modalHistory.rankLabel', { rank: idx + 1 })}
                           </td>
                           <td className="px-3 py-2 text-slate-900">
                             {getRankLabel(item.definition.key)}

@@ -201,15 +201,15 @@ export const SeoContent: React.FC = () => {
             <div className="rounded-2xl bg-rose-50/60 border border-rose-200/70 p-5 space-y-2.5">
               <div className="flex items-center justify-between">
                 <span className="text-xs font-bold uppercase tracking-wider text-rose-700">
-                  Loterie d'État
+                  {t('seo.section3.lotteryLabel')}
                 </span>
                 <TrendingDown className="size-4 text-rose-600" aria-hidden="true" />
               </div>
               <p className="text-2xl sm:text-3xl font-black text-rose-800 font-mono">
-                TRJ ~50%
+                {t('seo.section3.lotteryValue')}
               </p>
               <p className="text-xs text-rose-700 leading-relaxed">
-                Espérance mathématique négative structurelle : environ 50 % de chaque mise financent les taxes publiques et les coûts de l'exploitant.
+                {t('seo.section3.lotteryDesc')}
               </p>
             </div>
 
@@ -222,10 +222,10 @@ export const SeoContent: React.FC = () => {
                 <TrendingUp className="size-4 text-emerald-600" aria-hidden="true" />
               </div>
               <p className="text-2xl sm:text-3xl font-black text-emerald-800 font-mono">
-                +7% / an
+                {t('seo.section3.etfValue')}
               </p>
               <p className="text-xs text-emerald-700 leading-relaxed">
-                Rendement composé historique moyen d'un portefeuille mondial diversifié (actions internationales avec dividendes réinvestis).
+                {t('seo.section3.etfDesc')}
               </p>
             </div>
           </div>

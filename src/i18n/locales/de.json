@@ -3,16 +3,24 @@
     "title": "My Magic Numbers",
     "badge": "EuroMillions",
     "subtitle": "Ihre Glückszahlen im Spiegel der Geschichte seit 2004",
+    "subtitleSwiss": "Offizieller retrospektiver Simulator Ihrer Zahlen (seit 2013)",
+    "subtitleEm": "Ihre Glückszahlen im Spiegel der offiziellen Geschichte seit 2004",
     "drawsAnalyzed": "{{count}} Ziehungen analysiert",
-    "costPerGrid": "2.50 € / Tipp"
+    "costPerGrid": "{{cost}} / Tipp",
+    "selectLotteryAria": "Lotterie auswählen"
   },
   "grid": {
     "eyebrow": "WÄHLEN SIE IHR GLÜCK",
     "title": "Ihr Tipp",
+    "pickNumbers": "Wählen Sie {{count}} Zahlen",
     "mainLabel": "Hauptzahlen",
     "mainSub": "(5 Zahlen wählen)",
+    "mainSubWithCount": "({{count}} Zahlen wählen)",
     "chanceEyebrow": "GLÜCKSSTERNE",
-    "chanceSub": "Wählen Sie 2 Sterne (1 bis 12)",
+    "chanceEyebrowSwiss": "GLÜCKSZAHL",
+    "chanceSubSwiss": "Wählen Sie 1 Glückszahl (1 bis 6)",
+    "chanceEyebrowEm": "GLÜCKSSTERNE",
+    "chanceSubEm": "Wählen Sie 2 Sterne (1 bis 12)",
     "flash": "Quick-Tipp",
     "flashShort": "Flash",
     "reset": "Zurücksetzen",
@@ -23,17 +31,22 @@
   "ticketCard": {
     "eyebrow": "ANALYSIERTER TIPP",
     "chanceBadge": "Sterne ★ {{stars}}",
+    "chanceBadgeSwiss": "Glückszahl {{bonus}}",
     "bestWin": "Höchster Gewinn",
     "winningDraws": "Gewinnende Ziehungen",
     "onDraws": "von {{count}} Ziehungen",
     "onDate": "am {{date}}",
     "incompletePrompt": "Wählen Sie 5 Zahlen und 2 Sterne, um ihre Geschichte zu enthüllen.",
+    "incompletePromptSwiss": "Wählen Sie 6 Zahlen und die Glückszahl, um ihre Geschichte zu enthüllen.",
+    "incompletePromptEm": "Wählen Sie 5 Zahlen und 2 Sterne, um ihre Geschichte zu enthüllen.",
     "periodTitle": "Analysezeitraum",
     "periodSub": "Historie filtern",
     "startDate": "Startdatum",
     "endDate": "Enddatum",
     "shortcuts": "Schnellauswahl:",
     "allTime": "Gesamt (2004–2026)",
+    "allTimeSwiss": "Gesamt (2013–2026)",
+    "allTimeEm": "Gesamt (2004–2026)",
     "oneYear": "1 Jahr",
     "fiveYears": "5 Jahre",
     "shareButton": "Mein Ergebnis teilen"
@@ -44,18 +57,24 @@
     "waiting": "Warten...",
     "netProfit": "NETTOBILANZ",
     "roi": "ROI {{value}}%",
-    "investedNote": "2.50 € × {{count}} Ziehungen"
+    "investedNote": "{{cost}} × {{count}} Ziehungen"
   },
   "stats": {
     "title": "Heiss oder kalt?",
     "subtitle": "Trends im Zeitraum ({{count}} Ziehungen)",
-    "applyTop6": "Top 5 + 2★ anwenden",
+    "applyTop6": "Top 6 anwenden",
+    "applyTop5": "Top 5 + 2★ anwenden",
     "hotLabel": "AM HÄUFIGSTEN GEZOGEN (TOP 5)",
+    "hotLabel6": "AM HÄUFIGSTEN GEZOGEN (TOP 6)",
+    "hotLabel5": "AM HÄUFIGSTEN GEZOGEN (TOP 5)",
     "coldLabel": "AM SELTENSTEN GEZOGEN (LÄNGSTES INTERVALL)",
+    "coldLabel6": "AM SELTENSTEN GEZOGEN (TOP 6)",
+    "coldLabel5": "AM SELTENSTEN GEZOGEN (TOP 5)",
     "hotStarsLabel": "HÄUFIGSTE STERNE",
     "coldStarsLabel": "SELTENSTE STERNE",
     "hotTooltip": "{{number}}: {{count}}-mal gezogen ({{percent}}%) in diesem Zeitraum",
-    "coldTooltip": "{{number}}: seit {{draws}} Ziehungen nicht gezogen"
+    "coldTooltip": "{{number}}: seit {{draws}} Ziehungen nicht gezogen",
+    "starTooltip": "Stern {{star}}: {{count}}-mal gezogen in diesem Zeitraum"
   },
   "history": {
     "eyebrow": "IHRE KOMBINATION IN DER VERGANGENHEIT",
@@ -78,13 +97,14 @@
     "estimatedValue": "Geschätzter aktueller Wert",
     "etfNetGain": "Nettogewinn",
     "missedDiff": "Entgangene Differenz",
-    "disclaimer": "Simulation basierend auf 2.50 € pro Ziehung bei 7% jährlicher Zinseszins-Rendite. Die historische Wertentwicklung lässt keine verlässlichen Rückschlüsse auf die Zukunft zu."
+    "disclaimer": "Simulation basierend auf einem DCA-Sparplan von {{cost}} pro Ziehung bei 7% jährlicher Zinseszins-Rendite. Die historische Wertentwicklung lässt keine verlässlichen Rückschlüsse auf die Zukunft zu."
   },
   "modalHistory": {
-    "title": "Historie & Aufschlüsselung der 13 Gewinnränge",
+    "title": "Historie & Aufschlüsselung der {{count}} Gewinnränge",
     "subtitle": "{{count}} Gewinnziehungen erfasst (vom {{start}} bis {{end}})",
     "rankTitle": "Gewinnverteilung nach Rängen",
     "rankCol": "Rang",
+    "rankLabel": "Rang {{rank}}",
     "comboCol": "Kombination",
     "winsCol": "Gewinne",
     "totalCol": "Gesamt",
@@ -177,7 +197,12 @@
       "p1": "Opportunitätskosten beschreiben den entgangenen Nutzen einer nicht gewählten Alternative. Beim Lottospiel bedeutet jeder Einsatz von 2.50 CHF, 3.50 CHF oder 2.50 € pro Ziehung einen kontinuierlichen Geldabfluss, der dem Vermögensaufbau entzogen wird.",
       "p2": "Mit einer gesetzlichen Ausschüttungsquote (RTP) von rund 50 % ist der mathematische Erwartungswert beim Lotto stark negativ. Im Durchschnitt verliert jeder eingesetzte Franken oder Euro direkt die Hälfte seines Wertes.",
       "p3": "Ein regelmässiger Sparplan (DCA) in einen breit gestreuten Welt-Aktien-ETF (wie MSCI World oder Vanguard FTSE All-World) erzielte historisch eine durchschnittliche jährliche Rendite von ca. 7 % bis 8 %. Über 10, 15 oder 20 Jahre verwandelt der Zinseszinseffekt die kleinen Beträge in ein beträchtliches Vermögen.",
-      "statLabel": "Historische durchschnittliche Jahresrendite eines Welt-ETFs"
+      "statLabel": "Historische durchschnittliche Jahresrendite eines Welt-ETFs",
+      "lotteryLabel": "Staatliche Lotterie",
+      "lotteryValue": "Ausschüttungsquote ~50%",
+      "lotteryDesc": "Strukturell negativer mathematischer Erwartungswert: Rund 50 % jedes Einsatzes fliessen in Steuern, Gemeinwohl und Betriebskosten.",
+      "etfValue": "+7% / Jahr",
+      "etfDesc": "Historische durchschnittliche Zinseszins-Rendite eines breit gestreuten Welt-Portfolios (globale Aktien mit reinvestierten Dividenden)."
     },
     "faq": {
       "badge": "Häufige Fragen",
