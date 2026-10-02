@@ -47,7 +47,9 @@ import rawDraws from './data/draws.json';
 
 const swissRawDraws = rawDraws as DrawResult[];
 
-// Encart publicitaire Partenaire inliné
+// Encart publicitaire Partenaire (désactivé temporairement)
+const SHOW_AD_SLOT = false;
+
 const AdSlot: React.FC<{
   variant?: 'leaderboard' | 'rectangle' | 'responsive';
   label?: string;
@@ -1123,10 +1125,12 @@ export const App: React.FC = () => {
           />
         )}
 
-        {/* 3. Emplacement publicitaire discret Partenaire */}
-        <div className="pt-2">
-          <AdSlot variant="leaderboard" className="bg-white/80" />
-        </div>
+        {/* 3. Emplacement publicitaire discret Partenaire (masqué temporairement) */}
+        {SHOW_AD_SLOT && (
+          <div className="pt-2">
+            <AdSlot variant="leaderboard" className="bg-white/80" />
+          </div>
+        )}
       </main>
 
       {/* 4. Contenu textuel éducatif & FAQ SEO (Indexation Google) */}
