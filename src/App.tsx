@@ -200,6 +200,32 @@ export const App: React.FC = () => {
     }
   };
 
+  // Dates prédéfinies pour les raccourcis
+  const oneYearStartDate = useMemo(() => {
+    if (!maxDate) return '';
+    const [year, month, day] = maxDate.split('-');
+    const prevYear = parseInt(year, 10) - 1;
+    const date = new Date(prevYear, parseInt(month, 10) - 1, parseInt(day, 10));
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }, [maxDate]);
+
+  const fiveYearsStartDate = useMemo(() => {
+    if (!maxDate) return '';
+    const [year, month, day] = maxDate.split('-');
+    const prevYear = parseInt(year, 10) - 5;
+    const date = new Date(prevYear, parseInt(month, 10) - 1, parseInt(day, 10));
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }, [maxDate]);
+
+  const currentYear = maxDate ? maxDate.slice(0, 4) : '2026';
+  const currentYearStartDate = `${currentYear}-01-01`;
+
   // Filtrage des tirages historiques selon la période
   const filteredSwissDraws = useMemo(() => {
     return swissRawDraws.filter((d) => {
@@ -798,36 +824,44 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    const d = new Date(maxDate);
-                    d.setFullYear(d.getFullYear() - 1);
-                    setStartDate(d.toISOString().slice(0, 10));
+                    setStartDate(oneYearStartDate);
                     setEndDate(maxDate);
                   }}
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer"
+                  className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
+                    startDate === oneYearStartDate && endDate === maxDate
+                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
                 >
                   {t('ticketCard.oneYear')}
                 </button>
                 <button
                   type="button"
                   onClick={() => {
-                    const d = new Date(maxDate);
-                    d.setFullYear(d.getFullYear() - 5);
-                    setStartDate(d.toISOString().slice(0, 10));
+                    setStartDate(fiveYearsStartDate);
                     setEndDate(maxDate);
                   }}
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer"
+                  className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
+                    startDate === fiveYearsStartDate && endDate === maxDate
+                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
                 >
                   {t('ticketCard.fiveYears')}
                 </button>
                 <button
                   type="button"
                   onClick={() => {
-                    setStartDate('2026-01-01');
+                    setStartDate(currentYearStartDate);
                     setEndDate(maxDate);
                   }}
-                  className="text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all cursor-pointer"
+                  className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
+                    startDate === currentYearStartDate && endDate === maxDate
+                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                  }`}
                 >
-                  2026
+                  {currentYear}
                 </button>
               </div>
             </div>
