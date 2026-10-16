@@ -52,6 +52,9 @@ export const trackEvent = (eventName: string, eventData?: Record<string, any>) =
   if (typeof window === 'undefined') return;
 
   if (window.umami && typeof window.umami.track === 'function') {
+    // Vide d'abord les événements en attente dans la file
+    flushQueue();
+
     try {
       if (import.meta.env.DEV) {
         console.log(`[Umami Analytics] ${eventName}`, eventData ?? {});

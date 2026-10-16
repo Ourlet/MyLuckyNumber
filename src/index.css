@@ -1237,3 +1237,105 @@ body[data-game="euromillions"] [class*="bg-emerald-50/40"] {
   background-color: rgba(219, 234, 254, 0.4) !important;
 }
 
+/* ========================================================== */
+/* Feedback Widget & Modal – Accords de couleurs de l'app    */
+/* ========================================================== */
+
+.fb-side-btn {
+  position: fixed;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 0.45rem;
+  border-top-left-radius: 0.875rem;
+  border-bottom-left-radius: 0.875rem;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  background: linear-gradient(180deg, #16a34a 0%, #15803d 100%);
+  color: #ffffff;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  border-right: none;
+  box-shadow: -4px 0 16px -2px rgba(22, 163, 74, 0.35), 0 2px 6px -1px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.fb-side-btn:hover {
+  background: linear-gradient(180deg, #15803d 0%, #166534 100%);
+  transform: translateY(-50%) translateX(-4px);
+  box-shadow: -6px 0 22px -2px rgba(22, 163, 74, 0.48), 0 4px 10px -1px rgba(0, 0, 0, 0.12);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+
+/* Accord automatique pour EuroMillions */
+body[data-game="euromillions"] .fb-side-btn {
+  background: linear-gradient(180deg, #2563eb 0%, #1d4ed8 100%);
+  box-shadow: -4px 0 16px -2px rgba(37, 99, 235, 0.35), 0 2px 6px -1px rgba(0, 0, 0, 0.08);
+}
+
+body[data-game="euromillions"] .fb-side-btn:hover {
+  background: linear-gradient(180deg, #1d4ed8 0%, #1e40af 100%);
+  box-shadow: -6px 0 22px -2px rgba(37, 99, 235, 0.48), 0 4px 10px -1px rgba(0, 0, 0, 0.12);
+}
+
+@media (max-width: 640px) {
+  .fb-side-btn {
+    top: 58%;
+    padding: 0.65rem 0.4rem;
+  }
+}
+
+.fb-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background-color: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(6px);
+  animation: fbFadeIn 0.2s ease-out;
+}
+
+@keyframes fbFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.fb-card {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  background: #ffffff;
+  border-radius: 1.5rem;
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 25px 50px -12px rgba(15, 23, 42, 0.25),
+    0 0 0 1px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+  animation: fbScaleIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fbScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+

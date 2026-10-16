@@ -217,5 +217,37 @@
       "q4": "Comment est calculée la valeur de l'investissement ETF comparatif ?",
       "a4": "Notre simulateur reproduit un achat programmé régulier (Dollar-Cost Averaging ou DCA) à chaque date de tirage officiel, pour un montant identique au prix de la grille (ex: 2.50 CHF ou 2.50 €). Ce capital est composé au taux annuel théorique de 7 % réinvesti, représentatif de la performance historique long terme des grands indices d'actions mondiaux."
     }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "buttonAria": "Laisser un commentaire ou une évaluation",
+    "badge": "Votre avis compte",
+    "title": "Donnez votre avis",
+    "subtitle": "Aidez-nous à améliorer My Magic Numbers en partageant votre expérience en quelques secondes.",
+    "ratingLabel": "Votre note globale",
+    "ratingSelectPrompt": "Cliquez sur une étoile pour noter",
+    "ratings": {
+      "1": "Décevant",
+      "2": "Peut mieux faire",
+      "3": "Bien",
+      "4": "Très bien !",
+      "5": "Exceptionnel ! 🌟"
+    },
+    "commentLabel": "Votre commentaire",
+    "commentPlaceholder": "Une idée d'amélioration, un bug ou un mot sympa...",
+    "emailLabel": "Votre adresse email (facultatif)",
+    "emailPlaceholder": "vous@exemple.com",
+    "emailHint": "Renseignez votre email uniquement si vous souhaitez une réponse.",
+    "submit": "Envoyer mon avis",
+    "submitting": "Envoi en cours...",
+    "successTitle": "Merci pour votre retour !",
+    "successMessage": "Votre avis a été transmis avec succès. Merci de contribuer à l'amélioration de My Magic Numbers !",
+    "activationNotice": "Note : Si c'est votre première utilisation, vérifiez votre boîte email pour activer la réception du formulaire.",
+    "close": "Fermer",
+    "errorTitle": "Oups, l'envoi a échoué",
+    "errorMessage": "Impossible d'envoyer votre message via le serveur pour le moment.",
+    "retry": "Réessayer",
+    "sendViaEmail": "Envoyer directement via votre messagerie",
+    "requireRating": "Veuillez sélectionner au moins 1 étoile avant d'envoyer."
   }
 }

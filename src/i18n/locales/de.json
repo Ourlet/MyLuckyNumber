@@ -217,5 +217,37 @@
       "q4": "Wie wird der vergleichende ETF-Sparplan berechnet?",
       "a4": "Wir simulieren einen automatisierten Kaufplan (DCA) zu jedem offiziellen Ziehungstermin mit dem Betrag des Tipping-Preises. Dieses Kapital wird mit einer theoretischen Jahresrendite von 7 % aufgezinst, basierend auf der historischen Langzeitperformance globaler Aktienmärkte."
     }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "buttonAria": "Feedback oder Bewertung abgeben",
+    "badge": "Ihre Meinung zählt",
+    "title": "Feedback geben",
+    "subtitle": "Helfen Sie uns, My Magic Numbers zu verbessern, indem Sie Ihre Erfahrung in wenigen Sekunden teilen.",
+    "ratingLabel": "Ihre Gesamtbewertung",
+    "ratingSelectPrompt": "Klicken Sie auf einen Stern zur Bewertung",
+    "ratings": {
+      "1": "Enttäuschend",
+      "2": "Verbesserungswürdig",
+      "3": "Gut",
+      "4": "Sehr gut!",
+      "5": "Hervorragend! 🌟"
+    },
+    "commentLabel": "Ihr Kommentar",
+    "commentPlaceholder": "Eine Verbesserungsidee, ein Fehlerbericht oder ein nettes Wort...",
+    "emailLabel": "Ihre E-Mail-Adresse (optional)",
+    "emailPlaceholder": "beispiel@domain.com",
+    "emailHint": "Geben Sie Ihre E-Mail nur an, wenn Sie eine Antwort wünschen.",
+    "submit": "Feedback absenden",
+    "submitting": "Wird gesendet...",
+    "successTitle": "Vielen Dank für Ihr Feedback!",
+    "successMessage": "Ihre Rückmeldung wurde erfolgreich übermittelt. Danke für Ihre Hilfe!",
+    "activationNotice": "Hinweis: Bei der ersten Übermittlung bitte Posteingang zur Aktivierung prüfen.",
+    "close": "Schließen",
+    "errorTitle": "Hoppla, das Senden ist fehlgeschlagen",
+    "errorMessage": "Ihre Rückmeldung konnte derzeit nicht übermittelt werden.",
+    "retry": "Erneut versuchen",
+    "sendViaEmail": "Direkt per E-Mail-Programm senden",
+    "requireRating": "Bitte wählen Sie mindestens 1 Stern aus."
   }
 }

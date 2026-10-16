@@ -217,5 +217,37 @@
       "q4": "How is the ETF comparison investment value calculated?",
       "a4": "We simulate recurring purchases (DCA) on every official draw date matching the ticket cost. This capital is compounded at a theoretical 7% annual rate, representing the historical long-term real performance of global equity markets."
     }
+  },
+  "feedback": {
+    "button": "Feedback",
+    "buttonAria": "Leave a review or feedback",
+    "badge": "Your feedback matters",
+    "title": "Share your feedback",
+    "subtitle": "Help us improve My Magic Numbers by sharing your experience in just a few seconds.",
+    "ratingLabel": "Your overall rating",
+    "ratingSelectPrompt": "Click on a star to rate",
+    "ratings": {
+      "1": "Poor",
+      "2": "Could be better",
+      "3": "Good",
+      "4": "Great!",
+      "5": "Outstanding! 🌟"
+    },
+    "commentLabel": "Your comment",
+    "commentPlaceholder": "An idea for improvement, a bug report, or just some love...",
+    "emailLabel": "Your email address (optional)",
+    "emailPlaceholder": "you@example.com",
+    "emailHint": "Only provide your email if you would like a reply.",
+    "submit": "Send my feedback",
+    "submitting": "Sending...",
+    "successTitle": "Thank you for your feedback!",
+    "successMessage": "Your review has been successfully sent. Thank you for helping us improve My Magic Numbers!",
+    "activationNotice": "Note: If this is the first submission, check your inbox to activate form reception.",
+    "close": "Close",
+    "errorTitle": "Oops, sending failed",
+    "errorMessage": "Unable to send your feedback via the server at this moment.",
+    "retry": "Try again",
+    "sendViaEmail": "Send directly using your email app",
+    "requireRating": "Please select at least 1 star before sending."
   }
 }

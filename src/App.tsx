@@ -41,6 +41,7 @@ import { ShareModal } from './components/ShareModal';
 import { ShareTriggerModal } from './components/ShareTriggerModal';
 import { SeoContent } from './components/SeoContent';
 import { Footer } from './components/Footer';
+import { FeedbackWidget } from './components/FeedbackModal';
 import { useI18n } from './i18n/I18nContext';
 import { trackEvent } from './utils/analytics';
 import rawDraws from './data/draws.json';
@@ -377,6 +378,7 @@ export const App: React.FC = () => {
 
   // Réinitialiser la sélection
   const resetSelection = () => {
+    trackEvent('Bouton Reset', { game: gameMode });
     if (gameMode === 'swisslotto') {
       setSwissTicket({ numbers: [], bonus: null });
     } else {
@@ -386,6 +388,7 @@ export const App: React.FC = () => {
 
   // Appliquer la sélection chaude
   const applyHotSelection = () => {
+    trackEvent('Appliquer sélection chaude', { game: gameMode });
     if (gameMode === 'swisslotto') {
       setSwissTicket({
         numbers: swissStats.hotNumbers.map((n) => n.number).sort((a, b) => a - b),
@@ -810,6 +813,7 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    trackEvent('Filtre période', { raccourci: 'Tout', game: gameMode });
                     setStartDate(minDate);
                     setEndDate(maxDate);
                   }}
@@ -824,6 +828,7 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    trackEvent('Filtre période', { raccourci: '1 an', game: gameMode });
                     setStartDate(oneYearStartDate);
                     setEndDate(maxDate);
                   }}
@@ -838,6 +843,7 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    trackEvent('Filtre période', { raccourci: '5 ans', game: gameMode });
                     setStartDate(fiveYearsStartDate);
                     setEndDate(maxDate);
                   }}
@@ -852,6 +858,7 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => {
+                    trackEvent('Filtre période', { raccourci: 'Année courante', game: gameMode });
                     setStartDate(currentYearStartDate);
                     setEndDate(maxDate);
                   }}
@@ -908,7 +915,10 @@ export const App: React.FC = () => {
             {isComplete && simulation && (
               <button
                 type="button"
-                onClick={() => setShowShareModal(true)}
+                onClick={() => {
+                  trackEvent('Clic Partager Résultat', { game: gameMode });
+                  setShowShareModal(true);
+                }}
                 className="w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
               >
                 <Share2 className="size-4.5" />
@@ -1137,7 +1147,10 @@ export const App: React.FC = () => {
                 <div className="p-3 border-t border-slate-100 bg-slate-50/50">
                   <button
                     type="button"
-                    onClick={() => setShowAllHistory(true)}
+                    onClick={() => {
+                      trackEvent('Voir tout historique', { game: gameMode, count: simulation.winningDraws.length });
+                      setShowAllHistory(true);
+                    }}
                     className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 bg-transparent hover:bg-slate-100 py-2.5 px-4 border border-dashed border-slate-200 transition-all cursor-pointer"
                   >
                     {t('history.viewAll', { count: simulation.winningDraws.length })}
@@ -1352,6 +1365,9 @@ export const App: React.FC = () => {
           game={gameMode}
         />
       )}
+
+      {/* 7. Bouton & Modale de Feedback */}
+      <FeedbackWidget gameMode={gameMode} />
     </div>
   );
 };
