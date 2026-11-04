@@ -565,7 +565,7 @@ export const App: React.FC = () => {
     <div className="min-h-screen bg-[#f7faf7] font-sans text-slate-800">
       {/* 1. Header épuré avec sélecteur de Loto */}
       <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-lg sticky top-0 z-30 shadow-2xs">
-        <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-4 py-3.5 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
+        <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-4 py-3.5 sm:px-6 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-3">
             <div
               className={`flex size-11 items-center justify-center rounded-2xl text-white shadow-md transition-all ${
@@ -625,7 +625,7 @@ export const App: React.FC = () => {
 
           <div className="flex items-center gap-2 sm:gap-3 text-xs flex-wrap sm:flex-nowrap">
             {/* NAVIGATION JEUX – Onglets directs, visibles et clairs */}
-            <nav aria-label={t('header.selectLotteryAria')} className="inline-flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200/80 shadow-2xs gap-1">
+            <nav aria-label={t('header.selectLotteryAria')} className="inline-flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200/80 shadow-2xs gap-1 shrink-0 whitespace-nowrap">
               <button
                 type="button"
                 aria-pressed={gameMode === 'swisslotto'}
@@ -636,14 +636,14 @@ export const App: React.FC = () => {
                   url.searchParams.set('game', 'swisslotto');
                   window.history.pushState(null, '', url.toString());
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'swisslotto'
                     ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                 }`}
               >
                 <span>🇨🇭</span>
-                <span className="hidden sm:inline">Swiss Lotto</span>
+                <span className="hidden sm:inline whitespace-nowrap">Swiss Lotto</span>
                 <span className="sm:hidden">Swiss</span>
               </button>
 
@@ -657,14 +657,14 @@ export const App: React.FC = () => {
                   url.searchParams.set('game', 'euromillions');
                   window.history.pushState(null, '', url.toString());
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'euromillions'
                     ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                 }`}
               >
                 <span>🇪🇺</span>
-                <span className="hidden sm:inline">EuroMillions</span>
+                <span className="hidden sm:inline whitespace-nowrap">EuroMillions</span>
                 <span className="sm:hidden">EM</span>
               </button>
 
@@ -678,19 +678,19 @@ export const App: React.FC = () => {
                   url.searchParams.set('game', 'loto');
                   window.history.pushState(null, '', url.toString());
                 }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'loto'
                     ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
                     : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                 }`}
               >
                 <span>🇫🇷</span>
-                <span className="hidden sm:inline">Loto (FDJ)</span>
+                <span className="hidden sm:inline whitespace-nowrap">Loto FDJ</span>
                 <span className="sm:hidden">Loto</span>
               </button>
             </nav>
 
-            <span className="status-pill">
+            <span className="status-pill whitespace-nowrap shrink-0">
               <span
                 className={`size-2 rounded-full animate-pulse ${
                   gameMode === 'swisslotto'
@@ -706,10 +706,10 @@ export const App: React.FC = () => {
                 ),
               })}
             </span>
-            <span className="status-pill">
+            <span className="status-pill whitespace-nowrap shrink-0">
               {startDate.slice(0, 4)} — {endDate.slice(0, 4)}
             </span>
-            <span className="hidden text-slate-500 sm:inline font-medium">
+            <span className="hidden text-slate-500 sm:inline font-medium whitespace-nowrap shrink-0">
               {t('header.costPerGrid', {
                 cost:
                   gameMode === 'swisslotto'
