@@ -200,7 +200,7 @@
     "section1": {
       "badge": "Méthodologie & Données",
       "title": "Comment fonctionne le simulateur rétrospectif ?",
-      "p1": "My Magic Numbers compare instantanément vos numéros fétiches face à l'historique officiel complet de chaque tirage. Pour le Swiss Lotto, nous analysons tous les tirages depuis le changement de formule de janvier 2013 (42 numéros + 6 numéros chance). Pour l'EuroMillions, l'analyse couvre l'intégralité des tirages officiels depuis le lancement en février 2004.",
+      "p1": "My Magic Numbers compare instantanément vos numéros fétiches face à l'historique officiel complet de chaque tirage. Grâce à notre simulateur de gains Loto depuis 2008, vous pouvez facilement vérifier si mes numéros sont déjà sortis au Loto FDJ (couvrant le Loto classique, le Super Loto et le Grand Loto). Pour l'EuroMillions, l'analyse couvre l'intégralité des tirages officiels depuis le lancement en février 2004, et pour le Swiss Lotto depuis la nouvelle formule de janvier 2013.",
       "p2": "Chaque rang de gain est recalculé avec les rapports officiels réels constatés lors du tirage. Vous découvrez ainsi le montant exact que vous auriez encaissé (ou perdu) en jouant cette même combinaison de manière ininterrompue.",
       "card1Title": "Données Officielles",
       "card1Desc": "Historique certifié issu des jeux de données publics de Swisslos, de la Loterie Romande et de la FDJ.",
@@ -212,7 +212,7 @@
     "section2": {
       "badge": "Statistiques & Biais",
       "title": "Le piège des dates d'anniversaire et la dilution des gains",
-      "p1": "En théorie des probabilités, chaque combinaison a strictement la même probabilité de sortir au tirage : 1 chance sur environ 31,4 millions au Swiss Lotto (6/42 + 1/6) et 1 chance sur 139,8 millions à l'EuroMillions (5/50 + 2/12). Les boules ne possèdent aucune mémoire.",
+      "p1": "Jouer ses dates de naissance au Loto : probabilités et rentabilité réelle. En théorie des probabilités, chaque combinaison a strictement la même probabilité de sortir au tirage : 1 chance sur environ 19 millions au Loto FDJ (5/49 + 1/10), 1 chance sur 139,8 millions à l'EuroMillions (5/50 + 2/12) et 1 chance sur 31,4 millions au Swiss Lotto (6/42 + 1/6). Les boules ne possèdent aucune mémoire.",
       "p2": "Cependant, le comportement humain crée un déséquilibre majeur : une écrasante majorité de joueurs sélectionnent des dates de naissance ou d'événements familiaux (numéros 1 à 31, et mois 1 à 12). Lorsque les numéros gagnants sont tous inférieurs ou égaux à 31, le nombre de grilles gagnantes explose.",
       "p3": "La conséquence économique est immédiate : la cagnotte et les rangs élevés sont divisés entre des dizaines, voire des centaines de gagnants. Bien que la probabilité de gain soit identique, l'espérance de gain net effectif s'effondre.",
       "tipTitle": "Conseil d'optimisation",
@@ -242,7 +242,13 @@
       "q3": "Pourquoi mes gains historiques sont-ils si faibles malgré plusieurs bons numéros ?",
       "a3": "Les loteries d'État reversent environ 50 % des mises sous forme de gains (Taux de Retour Joueur). De plus, l'essentiel de cette enveloppe est concentré sur le rang 1 (le jackpot). Les rangs inférieurs ne distribuent que des montants minimes qui ne compensent pas le coût cumulé des grilles jouées sur la durée.",
       "q4": "Comment est calculée la valeur de l'investissement ETF comparatif ?",
-      "a4": "Notre simulateur reproduit un achat programmé régulier (Dollar-Cost Averaging ou DCA) à chaque date de tirage officiel, pour un montant identique au prix de la grille (ex: 2.50 CHF ou 2.50 €). Ce capital est composé au taux annuel théorique de 7 % réinvesti, représentatif de la performance historique long terme des grands indices d'actions mondiaux."
+      "a4": "Notre simulateur reproduit un achat programmé régulier (Dollar-Cost Averaging ou DCA) à chaque date de tirage officiel, pour un montant identique au prix de la grille (ex: 2.50 CHF ou 2.50 €). Ce capital est composé au taux annuel théorique de 7 % réinvesti, représentatif de la performance historique long terme des grands indices d'actions mondiaux.",
+      "qLotoCheck": "Comment vérifier si mes numéros sont déjà sortis au Loto FDJ ?",
+      "aLotoCheck": "Pour vérifier si mes numéros sont déjà sortis au Loto FDJ, sélectionnez simplement vos 5 numéros favoris et votre numéro Chance sur notre grille interactive. Notre outil interroge instantanément la base historique officielle de plus de 2 800 tirages de la Française des Jeux depuis 2008 (Loto classique, Super Loto du vendredi 13 et Grand Loto de Noël/Nouvel An). Vous visualisez immédiatement le détail des gains cumulés, le bilan net et toutes les dates de tirages correspondants.",
+      "qLotoSim": "Comment fonctionne ce simulateur de gains Loto depuis 2008 ?",
+      "aLotoSim": "Notre simulateur gains Loto depuis 2008 reproduit l'application rétroactive de votre combinaison fétiche sur l'ensemble des tirages depuis l'instauration de la formule moderne à 5 numéros et 1 numéro Chance en octobre 2008. En appliquant les rapports officiels constatés à chaque tirage et en déduisant le coût réel des grilles (2,20 €), vous obtenez une mesure objective de la rentabilité de votre jeu sur plus de 15 ans.",
+      "qBirthdayProb": "Jouer ses dates de naissance au Loto : quelles sont les probabilités et la rentabilité ?",
+      "aBirthdayProb": "Pour la question « Jouer ses dates de naissance au Loto : probabilités et rentabilité », le constat statistique est sans appel : si la probabilité de tirage est inchangée (1 sur 19 068 840 pour le jackpot), la rentabilité financière en cas de gain s'effondre. Les jours du calendrier (1 à 31) et les mois (1 à 12) sont surreprésentés sur les grilles des joueurs. Quand ces numéros sortent, la cagnotte se partage entre de multiples gagnants, divisant drastiquement vos gains."
     }
   },
   "feedback": {

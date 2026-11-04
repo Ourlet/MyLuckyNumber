@@ -22,9 +22,20 @@ export const SeoContent: React.FC = () => {
   const toggleFaq = (index: number) => {
     setOpenFaq((prev) => (prev === index ? null : index));
   };
-
   const faqItems = useMemo(
     () => [
+      {
+        q: t('seo.faq.qLotoCheck'),
+        a: t('seo.faq.aLotoCheck'),
+      },
+      {
+        q: t('seo.faq.qLotoSim'),
+        a: t('seo.faq.aLotoSim'),
+      },
+      {
+        q: t('seo.faq.qBirthdayProb'),
+        a: t('seo.faq.aBirthdayProb'),
+      },
       {
         q: t('seo.faq.q1'),
         a: t('seo.faq.a1'),

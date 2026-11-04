@@ -37,6 +37,7 @@ import {
   LOTO_COST,
 } from './utils/lotoCalculator';
 import { useLotoHistory } from './hooks/useLotoHistory';
+import { useSeoMeta } from './hooks/useSeoMeta';
 import {
   LotteryGame,
   getUrlGameMode,
@@ -132,6 +133,9 @@ export const App: React.FC = () => {
       document.body.removeAttribute('data-game');
     };
   }, [gameMode]);
+
+  // Met à jour dynamiquement les balises SEO (title, description, OpenGraph, Canonical)
+  useSeoMeta(gameMode);
 
   // Synchronise le mode de jeu lors de la navigation dans l'historique (Précédent / Suivant)
   useEffect(() => {
@@ -633,8 +637,9 @@ export const App: React.FC = () => {
                   setGameMode('swisslotto');
                   trackEvent('Changement de jeu', { game: 'swisslotto' });
                   const url = new URL(window.location.href);
-                  url.searchParams.set('game', 'swisslotto');
-                  window.history.pushState(null, '', url.toString());
+                  url.pathname = '/swiss-lotto';
+                  url.searchParams.delete('game');
+                  window.history.pushState(null, '', url.pathname + url.search);
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'swisslotto'
@@ -654,8 +659,9 @@ export const App: React.FC = () => {
                   setGameMode('euromillions');
                   trackEvent('Changement de jeu', { game: 'euromillions' });
                   const url = new URL(window.location.href);
-                  url.searchParams.set('game', 'euromillions');
-                  window.history.pushState(null, '', url.toString());
+                  url.pathname = '/euromillions';
+                  url.searchParams.delete('game');
+                  window.history.pushState(null, '', url.pathname + url.search);
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'euromillions'
@@ -675,8 +681,9 @@ export const App: React.FC = () => {
                   setGameMode('loto');
                   trackEvent('Changement de jeu', { game: 'loto' });
                   const url = new URL(window.location.href);
-                  url.searchParams.set('game', 'loto');
-                  window.history.pushState(null, '', url.toString());
+                  url.pathname = '/loto-francais';
+                  url.searchParams.delete('game');
+                  window.history.pushState(null, '', url.pathname + url.search);
                 }}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   gameMode === 'loto'

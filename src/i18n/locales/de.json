@@ -242,7 +242,13 @@
       "q3": "Warum sind meine historischen Gewinne trotz mehrerer Treffer so gering?",
       "a3": "Staatliche Lotterien schütten im Schnitt nur etwa 50 % der Spieleinsätze als Gewinne aus. Der grösste Teil dieses Betrags fliesst in den Jackpot (Rang 1). Die unteren Gewinnränge zahlen nur kleine Beträge aus, die die laufenden Einsätze selten decken.",
       "q4": "Wie wird der vergleichende ETF-Sparplan berechnet?",
-      "a4": "Wir simulieren einen automatisierten Kaufplan (DCA) zu jedem offiziellen Ziehungstermin mit dem Betrag des Tipping-Preises. Dieses Kapital wird mit einer theoretischen Jahresrendite von 7 % aufgezinst, basierend auf der historischen Langzeitperformance globaler Aktienmärkte."
+      "a4": "Wir simulieren einen automatisierten Kaufplan (DCA) zu jedem offiziellen Ziehungstermin mit dem Betrag des Tipping-Preises. Dieses Kapital wird mit einer theoretischen Jahresrendite von 7 % aufgezinst, basierend auf der historischen Langzeitperformance globaler Aktienmärkte.",
+      "qLotoCheck": "Wie überprüfe ich, ob meine Zahlen bereits bei der französischen Lotterie (FDJ) gezogen wurden?",
+      "aLotoCheck": "Wählen Sie einfach Ihre 5 Lieblingszahlen und Ihre Zusatzzahl. Unser Simulator prüft sofort die offizielle FDJ-Ziehungsdatenbank seit 2008 (klassisches Loto, Super Loto und Grand Loto) und zeigt alle bisherigen Gewinne und Ziehungsdaten an.",
+      "qLotoSim": "Wie funktioniert dieser Loto-Gewinn-Simulator seit 2008?",
+      "aLotoSim": "Unser Simulator analysiert Ihre Zahlen rückwirkend über alle offiziellen Ziehungen seit Oktober 2008 und berechnet Ihren tatsächlichen Nettogewinn oder -verlust basierend auf den realen Quoten.",
+      "qBirthdayProb": "Geburtstage im Lotto spielen: Wie stehen Wahrscheinlichkeit und Rentabilität?",
+      "aBirthdayProb": "Alle Zahlen haben die gleiche Ziehungswahrscheinlichkeit, aber Geburtstagszahlen (1 bis 31) verringern die Rentabilität im Gewinnfall drastisch, da viele Spieler dieselben Zahlen wählen und der Jackpot geteilt werden muss."
     }
   },
   "feedback": {

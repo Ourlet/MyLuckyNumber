@@ -242,7 +242,13 @@
       "q3": "Why are my historical winnings so low despite matching numbers?",
       "a3": "State lotteries return only ~50% of total revenue back to players. Furthermore, the lion's share of this prize pool is concentrated in the top jackpot tier. Lower tiers pay out small sums that rarely offset the cumulative cost of tickets over time.",
       "q4": "How is the ETF comparison investment value calculated?",
-      "a4": "We simulate recurring purchases (DCA) on every official draw date matching the ticket cost. This capital is compounded at a theoretical 7% annual rate, representing the historical long-term real performance of global equity markets."
+      "a4": "We simulate recurring purchases (DCA) on every official draw date matching the ticket cost. This capital is compounded at a theoretical 7% annual rate, representing the historical long-term real performance of global equity markets.",
+      "qLotoCheck": "How to check if my numbers have already won at the French Loto (FDJ)?",
+      "aLotoCheck": "Simply select your 5 lucky numbers and 1 Chance number. Our tool instantly scans the official FDJ historical archive since 2008 (classic Loto, Super Loto, and Grand Loto), displaying your exact total winnings, net balance, and past winning draw dates.",
+      "qLotoSim": "How does the Loto simulator since 2008 work?",
+      "aLotoSim": "Our French Loto simulator tests your combination against every official draw since the modern 5+1 rule was introduced in October 2008, showing whether your numbers would have been profitable over 15+ years of real draws.",
+      "qBirthdayProb": "Playing birthday dates in the lottery: what are the odds and profitability?",
+      "aBirthdayProb": "While all numbers have an equal chance of being drawn, playing birthday numbers (1 to 31) drastically lowers your expected payoff. Because thousands of players pick those same dates, jackpots with low numbers are split among many winners."
     }
   },
   "feedback": {

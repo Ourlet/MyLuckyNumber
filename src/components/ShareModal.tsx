@@ -16,7 +16,7 @@ import { trackEvent } from '../utils/analytics';
 import { generateStoryImage } from '../utils/storyImage';
 import { useI18n } from '../i18n/I18nContext';
 
-import { LotteryGame } from '../hooks/useUrlSync';
+import { LotteryGame, createLotteryShareUrl } from '../hooks/useUrlSync';
 
 function formatShareAmount(amount: number, currency: string = 'CHF'): string {
   const isNeg = amount < 0;
@@ -79,24 +79,7 @@ export const ShareModal: React.FC<ShareModalProps> = ({
   }, [isOpen, handleKeyDown]);
 
   // Build the shareable URL
-  const shareUrl = (() => {
-    if (typeof window === 'undefined') return '';
-    const url = new URL(window.location.origin + window.location.pathname);
-    if (game === 'loto') {
-      url.searchParams.set('game', 'loto');
-      url.searchParams.set('numbers', numbers.join(','));
-      if (bonus !== undefined && bonus !== null) url.searchParams.set('chance', String(bonus));
-    } else if (game === 'euromillions') {
-      url.searchParams.set('game', 'euromillions');
-      url.searchParams.set('numbers', numbers.join(','));
-      if (stars && stars.length > 0) url.searchParams.set('stars', stars.join(','));
-    } else {
-      url.searchParams.set('game', 'swisslotto');
-      url.searchParams.set('numbers', numbers.join(','));
-      if (bonus !== undefined && bonus !== null) url.searchParams.set('chance', String(bonus));
-    }
-    return url.toString();
-  })();
+  const shareUrl = createLotteryShareUrl({ game, numbers, bonus, stars });
 
   // Build the share message
   const message = (() => {
