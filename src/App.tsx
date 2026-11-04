@@ -11,7 +11,6 @@ import {
   Award,
   Calendar,
   Share2,
-  ChevronDown,
   ExternalLink,
 } from 'lucide-react';
 import { DrawResult, UserTicket } from './types/lottery';
@@ -133,6 +132,28 @@ export const App: React.FC = () => {
       document.body.removeAttribute('data-game');
     };
   }, [gameMode]);
+
+  // Synchronise le mode de jeu lors de la navigation dans l'historique (Précédent / Suivant)
+  useEffect(() => {
+    const handlePopState = () => {
+      const detected = getUrlGameMode();
+      setGameMode(detected);
+      if (detected === 'swisslotto') {
+        const t = getUrlSwissTicket();
+        if (t) setSwissTicket(t);
+      } else if (detected === 'euromillions') {
+        const t = getUrlEuromillionsTicket();
+        if (t) setEmTicket(t);
+      } else {
+        const t = getUrlLotoTicket();
+        if (t) setLotoTicket(t);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   // 1. Swiss Lotto State
   const [swissTicket, setSwissTicket] = useState<UserTicket>(() => {
@@ -603,31 +624,71 @@ export const App: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-2 sm:gap-3 text-xs flex-wrap sm:flex-nowrap">
-            {/* SELECTEUR DU JEU – pill coloré affordant */}
-            <div className="lottery-switcher">
-              <select
-                id="lottery-select"
-                aria-label={t('header.selectLotteryAria')}
-                value={gameMode}
-                onChange={(e) => {
-                  const next = e.target.value as LotteryGame;
-                  setGameMode(next);
-                  trackEvent('Changement de jeu', { game: next });
+            {/* NAVIGATION JEUX – Onglets directs, visibles et clairs */}
+            <nav aria-label={t('header.selectLotteryAria')} className="inline-flex items-center p-1 rounded-2xl bg-slate-100 border border-slate-200/80 shadow-2xs gap-1">
+              <button
+                type="button"
+                aria-pressed={gameMode === 'swisslotto'}
+                onClick={() => {
+                  setGameMode('swisslotto');
+                  trackEvent('Changement de jeu', { game: 'swisslotto' });
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('game', 'swisslotto');
+                  window.history.pushState(null, '', url.toString());
                 }}
-                className={`lottery-switcher-select ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   gameMode === 'swisslotto'
-                    ? 'theme-swiss'
-                    : gameMode === 'euromillions'
-                    ? 'theme-em'
-                    : 'theme-loto'
+                    ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/30'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
                 }`}
               >
-                <option value="swisslotto">🇨🇭 Swiss Lotto</option>
-                <option value="euromillions">🇪🇺 EuroMillions</option>
-                <option value="loto">🇫🇷 Loto (FDJ)</option>
-              </select>
-              <ChevronDown className="size-3.5 lottery-switcher-icon" />
-            </div>
+                <span>🇨🇭</span>
+                <span className="hidden sm:inline">Swiss Lotto</span>
+                <span className="sm:hidden">Swiss</span>
+              </button>
+
+              <button
+                type="button"
+                aria-pressed={gameMode === 'euromillions'}
+                onClick={() => {
+                  setGameMode('euromillions');
+                  trackEvent('Changement de jeu', { game: 'euromillions' });
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('game', 'euromillions');
+                  window.history.pushState(null, '', url.toString());
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  gameMode === 'euromillions'
+                    ? 'bg-blue-600 text-white shadow-sm shadow-blue-600/30'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
+                }`}
+              >
+                <span>🇪🇺</span>
+                <span className="hidden sm:inline">EuroMillions</span>
+                <span className="sm:hidden">EM</span>
+              </button>
+
+              <button
+                type="button"
+                aria-pressed={gameMode === 'loto'}
+                onClick={() => {
+                  setGameMode('loto');
+                  trackEvent('Changement de jeu', { game: 'loto' });
+                  const url = new URL(window.location.href);
+                  url.searchParams.set('game', 'loto');
+                  window.history.pushState(null, '', url.toString());
+                }}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  gameMode === 'loto'
+                    ? 'bg-sky-600 text-white shadow-sm shadow-sky-600/30'
+                    : 'text-slate-600 hover:text-slate-900 hover:bg-white/80'
+                }`}
+              >
+                <span>🇫🇷</span>
+                <span className="hidden sm:inline">Loto (FDJ)</span>
+                <span className="sm:hidden">Loto</span>
+              </button>
+            </nav>
 
             <span className="status-pill">
               <span

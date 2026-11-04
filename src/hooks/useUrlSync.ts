@@ -6,10 +6,18 @@ import { LotoUserTicket } from '../types/loto';
 export type LotteryGame = 'swisslotto' | 'euromillions' | 'loto';
 
 /**
- * Détecte le jeu depuis l'URL (?game=loto, ?game=euromillions ou présence de stars/s)
+ * Détecte le jeu depuis l'URL (chemin d'accès /euromillions, /loto, /swisslotto OU query param ?game=...)
  */
 export function getUrlGameMode(): LotteryGame {
   if (typeof window === 'undefined') return 'swisslotto';
+
+  // 1. Détection via le chemin d'URL (support des sous-pages SPA)
+  const path = window.location.pathname.toLowerCase();
+  if (path.includes('euromillions')) return 'euromillions';
+  if (path.includes('loto') || path.includes('superloto') || path.includes('grandloto')) return 'loto';
+  if (path.includes('swisslotto') || path.includes('swiss-lotto')) return 'swisslotto';
+
+  // 2. Détection via le paramètre de requête ?game=... ou présence de paramètres caractéristiques
   const params = new URLSearchParams(window.location.search);
   const game = params.get('game')?.toLowerCase();
   if (game === 'loto' || game === 'superloto' || game === 'grandloto' || game === 'fdj') {
@@ -18,9 +26,10 @@ export function getUrlGameMode(): LotteryGame {
   if (game === 'euromillions' || params.has('stars') || params.has('s')) {
     return 'euromillions';
   }
-  if (game === 'swisslotto') {
+  if (game === 'swisslotto' || game === 'swiss') {
     return 'swisslotto';
   }
+
   return 'swisslotto';
 }
 
@@ -121,7 +130,7 @@ export function getUrlLotoTicket(): LotoUserTicket | null {
  * Synchronise dynamiquement l'URL selon le jeu sélectionné avec des paramètres clairs et lisibles :
  * - EuroMillions : ?game=euromillions&numbers=3,14,22,35,40&stars=4,9
  * - Loto FDJ     : ?game=loto&numbers=7,14,22,35,41&chance=8
- * - Swiss Lotto  : ?numbers=1,5,6,16,30,34&chance=4
+ * - Swiss Lotto  : ?game=swisslotto&numbers=1,5,6,16,30,34&chance=4
  */
 export function useMultiLotteryUrlSync({
   game,
@@ -164,7 +173,7 @@ export function useMultiLotteryUrlSync({
         url.searchParams.delete('stars');
       }
     } else {
-      url.searchParams.delete('game');
+      url.searchParams.set('game', 'swisslotto');
       url.searchParams.delete('stars');
       if (swissTicket.numbers.length === 6 && swissTicket.bonus !== null) {
         url.searchParams.set('numbers', swissTicket.numbers.join(','));
