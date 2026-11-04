@@ -811,7 +811,15 @@ export const App: React.FC = () => {
                         {t('grid.chanceSubSwiss')}
                       </p>
                     </div>
-                    <Sparkles className="size-5 text-emerald-600" aria-hidden="true" />
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-bold transition-colors ${
+                        swissTicket.bonus !== null
+                          ? 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {swissTicket.bonus !== null ? '1 / 1' : '0 / 1'}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-6 gap-2">
@@ -883,7 +891,15 @@ export const App: React.FC = () => {
                         {t('grid.chanceSubLoto')}
                       </p>
                     </div>
-                    <Sparkles className="size-5 text-sky-600" aria-hidden="true" />
+                    <span
+                      className={`rounded-full px-2.5 py-0.5 text-xs font-bold transition-colors ${
+                        lotoTicket.chance !== null
+                          ? 'bg-sky-100 text-sky-900 border border-sky-300'
+                          : 'bg-slate-100 text-slate-600'
+                      }`}
+                    >
+                      {lotoTicket.chance !== null ? '1 / 1' : '0 / 1'}
+                    </span>
                   </div>
 
                   <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
@@ -986,7 +1002,7 @@ export const App: React.FC = () => {
 
                 {/* Pastilles du ticket */}
                 {gameMode === 'swisslotto' ? (
-                  <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5">
+                  <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5 items-center">
                     {Array.from({ length: 6 }).map((_, index) => {
                       const num = swissTicket.numbers[index];
                       return (
@@ -998,6 +1014,16 @@ export const App: React.FC = () => {
                         </span>
                       );
                     })}
+                    <span className="text-slate-300 font-bold px-1">+</span>
+                    <span
+                      className={
+                        swissTicket.bonus
+                          ? 'w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-black text-sm sm:text-base bg-emerald-600 text-white shadow-md shadow-emerald-600/30 border border-emerald-500 ball-pop'
+                          : 'w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-black text-sm sm:text-base bg-white/60 border border-dashed border-emerald-300/80 text-emerald-600/60'
+                      }
+                    >
+                      {swissTicket.bonus ?? '·'}
+                    </span>
                   </div>
                 ) : gameMode === 'euromillions' ? (
                   <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5 items-center">
@@ -1574,6 +1600,38 @@ export const App: React.FC = () => {
                 </div>
               </div>
 
+                            {/* Numéros Chance les plus fréquents (Swiss Lotto) */}
+              {gameMode === 'swisslotto' && (
+                <div>
+                  <p className="eyebrow flex items-center gap-1.5 text-emerald-700">
+                    <Sparkles className="size-3.5" />
+                    <span>{t('stats.hotChanceLabel')}</span>
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {[...swissStats.bonusFrequencies]
+                      .sort((a, b) => b.count - a.count)
+                      .map((item) => (
+                        <button
+                          key={item.bonus}
+                          type="button"
+                          onClick={() => toggleBonus(item.bonus)}
+                          className={`stat-ball cursor-pointer ${
+                            swissTicket.bonus === item.bonus
+                              ? 'bg-emerald-600 border-emerald-700 text-white font-black ring-2 ring-emerald-500 ring-offset-1'
+                              : 'bg-emerald-50 text-emerald-900 border-emerald-200 hover:bg-emerald-100'
+                          }`}
+                          title={t('stats.chanceTooltip', {
+                            number: item.bonus,
+                            count: item.count,
+                          })}
+                        >
+                          {item.bonus}
+                        </button>
+                      ))}
+                  </div>
+                </div>
+              )}
+
               {/* Étoiles les plus fréquentes (EuroMillions) */}
               {gameMode === 'euromillions' && (
                 <div>
@@ -1704,18 +1762,18 @@ export const App: React.FC = () => {
                         ))}
                         {match.matchedBonus !== undefined && match.matchedBonus && (
                           <span
-                            className="history-ball-chance"
+                            className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-900 border border-emerald-300"
                             title={t('history.chanceFoundTitle')}
                           >
-                            Chance {match.drawBonus} ★
+                            Chance {match.drawBonus}
                           </span>
                         )}
                         {match.matchedChance !== undefined && match.matchedChance && (
                           <span
-                            className="history-ball-chance"
+                            className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold bg-sky-100 text-sky-900 border border-sky-300"
                             title={t('history.chanceFoundLotoTitle')}
                           >
-                            Chance {match.drawChance} ★
+                            Chance {match.drawChance}
                           </span>
                         )}
                         {match.matchedStars &&
@@ -1957,13 +2015,13 @@ export const App: React.FC = () => {
                             </span>
                           ))}
                           {wDraw.matchedBonus !== undefined && wDraw.matchedBonus && (
-                            <span className="history-ball-chance text-[11px]">
-                              Chance {wDraw.drawBonus} ★
+                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-900 border border-emerald-300">
+                              Chance {wDraw.drawBonus}
                             </span>
                           )}
                           {wDraw.matchedChance !== undefined && wDraw.matchedChance && (
-                            <span className="history-ball-chance text-[11px]">
-                              Chance {wDraw.drawChance} ★
+                            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-[11px] font-bold bg-sky-100 text-sky-900 border border-sky-300">
+                              Chance {wDraw.drawChance}
                             </span>
                           )}
                           {wDraw.matchedStars &&

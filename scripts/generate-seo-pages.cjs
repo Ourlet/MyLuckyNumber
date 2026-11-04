@@ -125,3 +125,4 @@ for (const page of pages) {
 }
 
 console.log('[SEO Generator] All SEO landing pages generated successfully.');
+
