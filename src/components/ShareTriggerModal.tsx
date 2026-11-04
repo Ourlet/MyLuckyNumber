@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from 'react';
 import { MessageCircle, ExternalLink, Dices, X } from 'lucide-react';
 import { trackEvent } from '../utils/analytics';
 import { useI18n } from '../i18n/I18nContext';
+import { LotteryGame } from '../hooks/useUrlSync';
 
 interface ShareTriggerModalProps {
   isOpen: boolean;
@@ -9,7 +10,7 @@ interface ShareTriggerModalProps {
   numbers: number[];
   bonus?: number | null;
   stars?: number[];
-  game?: 'swisslotto' | 'euromillions';
+  game?: LotteryGame;
 }
 
 export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
@@ -46,13 +47,18 @@ export const ShareTriggerModal: React.FC<ShareTriggerModalProps> = ({
   // Build shareable URL
   const shareUrl = (() => {
     const url = new URL(window.location.origin + window.location.pathname);
-    if (game === 'euromillions') {
+    if (game === 'loto') {
+      url.searchParams.set('game', 'loto');
+      url.searchParams.set('numbers', numbers.join(','));
+      if (bonus !== undefined && bonus !== null) url.searchParams.set('chance', String(bonus));
+    } else if (game === 'euromillions') {
       url.searchParams.set('game', 'euromillions');
-      url.searchParams.set('n', numbers.join(','));
-      if (stars && stars.length > 0) url.searchParams.set('s', stars.join(','));
+      url.searchParams.set('numbers', numbers.join(','));
+      if (stars && stars.length > 0) url.searchParams.set('stars', stars.join(','));
     } else {
-      url.searchParams.set('n', numbers.join(','));
-      if (bonus !== undefined && bonus !== null) url.searchParams.set('b', String(bonus));
+      url.searchParams.set('game', 'swisslotto');
+      url.searchParams.set('numbers', numbers.join(','));
+      if (bonus !== undefined && bonus !== null) url.searchParams.set('chance', String(bonus));
     }
     return url.toString();
   })();

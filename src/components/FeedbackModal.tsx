@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useCallback, useId } from 'react';
 import { Star, MessageSquare, Send, CheckCircle2, AlertCircle, Loader2, X, Sparkles, Mail } from 'lucide-react';
 import { useI18n } from '../i18n/I18nContext';
+import { LotteryGame } from '../hooks/useUrlSync';
 import { trackEvent } from '../utils/analytics';
 
 interface FeedbackWidgetProps {
-  gameMode?: 'swisslotto' | 'euromillions';
+  gameMode?: LotteryGame;
 }
 
 const TARGET_EMAIL = 'lavignedigilab@gmail.com';
@@ -120,7 +121,7 @@ export const FeedbackWidget: React.FC<FeedbackWidgetProps> = ({ gameMode = 'euro
       Rating: `${rating} / 5 - ${ratingLabel}`,
       Comment: comment.trim() || '(Aucun commentaire saisi)',
       User_Email: email.trim() || '(Non renseigné)',
-      Game_Mode: gameMode === 'swisslotto' ? 'Swiss Lotto' : 'EuroMillions',
+      Game_Mode: gameMode === 'swisslotto' ? 'Swiss Lotto' : gameMode === 'euromillions' ? 'EuroMillions' : 'Loto FDJ',
       Language: language,
       Page_URL: typeof window !== 'undefined' ? window.location.href : '',
       Submitted_At: new Date().toLocaleString('fr-CH', { timeZone: 'Europe/Zurich' }),

@@ -7,7 +7,9 @@
     "subtitleEm": "Ihre Glückszahlen im Spiegel der offiziellen Geschichte seit 2004",
     "drawsAnalyzed": "{{count}} Ziehungen analysiert",
     "costPerGrid": "{{cost}} / Tipp",
-    "selectLotteryAria": "Lotterie auswählen"
+    "selectLotteryAria": "Lotterie auswählen",
+    "badgeLoto": "Französisches Loto",
+    "subtitleLoto": "Ihre Glückszahlen gegen die offizielle französische Loto FDJ-Geschichte seit 2008"
   },
   "grid": {
     "eyebrow": "WÄHLEN SIE IHR GLÜCK",
@@ -26,7 +28,13 @@
     "reset": "Zurücksetzen",
     "complete": "Tipp vollständig ✓",
     "selectedCount": "{{count}} / 5 gewählt",
-    "starsCount": "{{count}} / 2 Sterne"
+    "starsCount": "{{count}} / 2 Sterne",
+    "chanceEyebrowLoto": "GLÜCKSZAHL",
+    "chanceSubLoto": "Wählen Sie 1 Glückszahl (1 bis 10)",
+    "subTypeAll": "Alle Ziehungen",
+    "subTypeLoto": "Loto",
+    "subTypeSuperLoto": "Super Loto",
+    "subTypeGrandLoto": "Grand Loto"
   },
   "ticketCard": {
     "eyebrow": "ANALYSIERTER TIPP",
@@ -49,7 +57,10 @@
     "allTimeEm": "Gesamt (2004–2026)",
     "oneYear": "1 Jahr",
     "fiveYears": "5 Jahre",
-    "shareButton": "Mein Ergebnis teilen"
+    "shareButton": "Mein Ergebnis teilen",
+    "chanceBadgeLoto": "Glückszahl {{bonus}}",
+    "incompletePromptLoto": "Vervollständigen Sie Ihre 5 Zahlen und die Glückszahl, um deren Geschichte aufzudecken.",
+    "allTimeLoto": "Alles (2008–2026)"
   },
   "metrics": {
     "totalWinnings": "GESAMTGEWINNE",
@@ -74,7 +85,12 @@
     "coldStarsLabel": "SELTENSTE STERNE",
     "hotTooltip": "{{number}}: {{count}}-mal gezogen ({{percent}}%) in diesem Zeitraum",
     "coldTooltip": "{{number}}: seit {{draws}} Ziehungen nicht gezogen",
-    "starTooltip": "Stern {{star}}: {{count}}-mal gezogen in diesem Zeitraum"
+    "starTooltip": "Stern {{star}}: {{count}}-mal gezogen in diesem Zeitraum",
+    "applyTop5Loto": "Top 5 + Glückszahl anwenden",
+    "hotChanceLabel": "HÄUFIGSTE GLÜCKSZAHLEN",
+    "coldChanceLabel": "ÜBERFÄLLIGE GLÜCKSZAHLEN",
+    "chanceTooltip": "Glückszahl {{number}}: {{count}}-mal in diesem Zeitraum gezogen",
+    "chanceColdTooltip": "Glückszahl {{number}}: seit {{draws}} Ziehungen überfällig"
   },
   "history": {
     "eyebrow": "IHRE KOMBINATION IN DER VERGANGENHEIT",
@@ -83,7 +99,9 @@
     "chanceFoundTitle": "Stern getroffen!",
     "viewAll": "Gesamte Historie ({{count}} Ziehungen) & Ränge ansehen",
     "noMatch": "Keine passenden Gewinnziehungen im gewählten Zeitraum gefunden.",
-    "incomplete": "Vervollständigen Sie Ihren Tipp (5 Zahlen + 2 Sterne) für passende Ziehungen."
+    "incomplete": "Vervollständigen Sie Ihren Tipp (5 Zahlen + 2 Sterne) für passende Ziehungen.",
+    "chanceFoundLotoTitle": "Glückszahl getroffen!",
+    "incompleteLoto": "Füllen Sie Ihren Schein aus (5 Zahlen + 1 Glückszahl), um die Ziehungen anzuzeigen."
   },
   "etf": {
     "title": "Was wäre, wenn Sie investiert hätten?",
@@ -156,7 +174,16 @@
     "rank_3_0": "3 Zahlen",
     "rank_1_2": "1 Zahl + 2 Sterne",
     "rank_2_1": "2 Zahlen + 1 Stern",
-    "rank_2_0": "2 Zahlen"
+    "rank_2_0": "2 Zahlen",
+    "rank_loto_5_1": "5 Zahlen + Glückszahl",
+    "rank_loto_5_0": "5 Zahlen",
+    "rank_loto_4_1": "4 Zahlen + Glückszahl",
+    "rank_loto_4_0": "4 Zahlen",
+    "rank_loto_3_1": "3 Zahlen + Glückszahl",
+    "rank_loto_3_0": "3 Zahlen",
+    "rank_loto_2_1": "2 Zahlen + Glückszahl",
+    "rank_loto_2_0": "2 Zahlen",
+    "rank_loto_chance": "Nur Glückszahl"
   },
   "adSlot": {
     "partnerSpace": "Partnerbereich",

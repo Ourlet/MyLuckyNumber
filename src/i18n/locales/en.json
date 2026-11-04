@@ -7,7 +7,9 @@
     "subtitleEm": "Your lucky numbers against official history since 2004",
     "drawsAnalyzed": "{{count}} draws analyzed",
     "costPerGrid": "{{cost}} / line",
-    "selectLotteryAria": "Select lottery game"
+    "selectLotteryAria": "Select lottery game",
+    "badgeLoto": "French Loto",
+    "subtitleLoto": "Your lucky numbers against the official French FDJ Loto history since 2008 (Loto, Super Loto, Grand Loto)"
   },
   "grid": {
     "eyebrow": "CHOOSE YOUR NUMBERS",
@@ -26,7 +28,13 @@
     "reset": "Reset",
     "complete": "Ticket complete ✓",
     "selectedCount": "{{count}} / 5 selected",
-    "starsCount": "{{count}} / 2 stars"
+    "starsCount": "{{count}} / 2 stars",
+    "chanceEyebrowLoto": "CHANCE NUMBER",
+    "chanceSubLoto": "Choose 1 Chance number (1 to 10)",
+    "subTypeAll": "All draws",
+    "subTypeLoto": "Loto",
+    "subTypeSuperLoto": "Super Loto",
+    "subTypeGrandLoto": "Grand Loto"
   },
   "ticketCard": {
     "eyebrow": "ANALYZED TICKET",
@@ -49,7 +57,10 @@
     "allTimeEm": "All (2004–2026)",
     "oneYear": "1 year",
     "fiveYears": "5 years",
-    "shareButton": "Share my result"
+    "shareButton": "Share my result",
+    "chanceBadgeLoto": "Chance {{bonus}}",
+    "incompletePromptLoto": "Complete your 5 numbers and the Chance number to reveal their history.",
+    "allTimeLoto": "All time (2008–2026)"
   },
   "metrics": {
     "totalWinnings": "TOTAL WINNINGS",
@@ -74,7 +85,12 @@
     "coldStarsLabel": "OVERDUE STARS",
     "hotTooltip": "{{number}}: drawn {{count}} times ({{percent}}%) in this period",
     "coldTooltip": "{{number}}: not drawn for {{draws}} draws in this period",
-    "starTooltip": "Star {{star}}: drawn {{count}} times in this period"
+    "starTooltip": "Star {{star}}: drawn {{count}} times in this period",
+    "applyTop5Loto": "Apply Top 5 + Chance",
+    "hotChanceLabel": "MOST DRAWN CHANCE NUMBERS",
+    "coldChanceLabel": "OVERDUE CHANCE NUMBERS",
+    "chanceTooltip": "Chance {{number}}: drawn {{count}} times in this period",
+    "chanceColdTooltip": "Chance {{number}}: overdue by {{draws}} draws in this period"
   },
   "history": {
     "eyebrow": "YOUR COMBINATION IN THE PAST",
@@ -83,7 +99,9 @@
     "chanceFoundTitle": "Star matched!",
     "viewAll": "View all history ({{count}} draws) & tiers",
     "noMatch": "No winning draws found for the selected period.",
-    "incomplete": "Complete your ticket (5 numbers + 2 stars) to show matching draws."
+    "incomplete": "Complete your ticket (5 numbers + 2 stars) to show matching draws.",
+    "chanceFoundLotoTitle": "Chance number matched!",
+    "incompleteLoto": "Complete your grid (5 numbers + 1 Chance number) to display the draws."
   },
   "etf": {
     "title": "What if you had invested instead?",
@@ -156,7 +174,16 @@
     "rank_3_0": "3 numbers",
     "rank_1_2": "1 number + 2 stars",
     "rank_2_1": "2 numbers + 1 star",
-    "rank_2_0": "2 numbers"
+    "rank_2_0": "2 numbers",
+    "rank_loto_5_1": "5 numbers + Chance",
+    "rank_loto_5_0": "5 numbers",
+    "rank_loto_4_1": "4 numbers + Chance",
+    "rank_loto_4_0": "4 numbers",
+    "rank_loto_3_1": "3 numbers + Chance",
+    "rank_loto_3_0": "3 numbers",
+    "rank_loto_2_1": "2 numbers + Chance",
+    "rank_loto_2_0": "2 numbers",
+    "rank_loto_chance": "Chance only"
   },
   "adSlot": {
     "partnerSpace": "Partner Space",

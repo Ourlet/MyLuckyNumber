@@ -12,6 +12,7 @@ import {
   Calendar,
   Share2,
   ChevronDown,
+  ExternalLink,
 } from 'lucide-react';
 import { DrawResult, UserTicket } from './types/lottery';
 import {
@@ -29,10 +30,20 @@ import {
 } from './utils/euromillionsCalculator';
 import { useEuromillionsHistory } from './hooks/useEuromillionsHistory';
 import {
+  LotoUserTicket,
+} from './types/loto';
+import {
+  calculateLotoSimulation,
+  calculateLotoStats,
+  LOTO_COST,
+} from './utils/lotoCalculator';
+import { useLotoHistory } from './hooks/useLotoHistory';
+import {
   LotteryGame,
   getUrlGameMode,
   getUrlSwissTicket,
   getUrlEuromillionsTicket,
+  getUrlLotoTicket,
   useMultiLotteryUrlSync,
 } from './hooks/useUrlSync';
 import { EtfComparison } from './components/EtfComparison';
@@ -112,13 +123,15 @@ const AdSlot: React.FC<{
 export const App: React.FC = () => {
   const { t, language, formatDate, getRankLabel, emCostPerDraw, emCurrency } = useI18n();
 
-  // Mode de jeu sélectionné via le select : Swiss Lotto ou EuroMillions
+  // Mode de jeu sélectionné via le select : Swiss Lotto, EuroMillions ou Loto FDJ
   const [gameMode, setGameMode] = useState<LotteryGame>(getUrlGameMode);
 
   // Synchronise l'attribut data-game sur <body> pour le thème CSS
   useEffect(() => {
     document.body.setAttribute('data-game', gameMode);
-    return () => { document.body.removeAttribute('data-game'); };
+    return () => {
+      document.body.removeAttribute('data-game');
+    };
   }, [gameMode]);
 
   // 1. Swiss Lotto State
@@ -149,11 +162,31 @@ export const App: React.FC = () => {
     }
   }, [emRawDraws]);
 
+  // 3. Loto FDJ State (Loto, Super Loto, Grand Loto)
+  const { draws: lotoRawDraws } = useLotoHistory();
+  const [lotoTicket, setLotoTicket] = useState<LotoUserTicket>(() => {
+    const urlLotoTicket = getUrlLotoTicket();
+    return urlLotoTicket ?? { numbers: [7, 14, 22, 35, 41], chance: 8 };
+  });
+  const [lotoTypeFilter, setLotoTypeFilter] = useState<'all' | 'loto' | 'superloto' | 'grandloto'>('all');
+  const lotoMinDate = lotoRawDraws.length > 0 ? lotoRawDraws[lotoRawDraws.length - 1].d : '2008-10-06';
+  const lotoMaxDate = lotoRawDraws.length > 0 ? lotoRawDraws[0].d : '2026-10-19';
+  const [lotoStartDate, setLotoStartDate] = useState<string>('2008-10-06');
+  const [lotoEndDate, setLotoEndDate] = useState<string>('2026-10-19');
+
+  useEffect(() => {
+    if (lotoRawDraws.length > 0) {
+      setLotoStartDate(lotoRawDraws[lotoRawDraws.length - 1].d);
+      setLotoEndDate(lotoRawDraws[0].d);
+    }
+  }, [lotoRawDraws]);
+
   // Synchronisation dynamique avec l'URL selon le jeu sélectionné
   useMultiLotteryUrlSync({
     game: gameMode,
     swissTicket,
     emTicket,
+    lotoTicket,
   });
 
   // Modal pour afficher l'historique complet et le tableau des rangs
@@ -174,30 +207,62 @@ export const App: React.FC = () => {
   })());
 
   // Valeurs courantes selon le jeu actif
-  const numbers = gameMode === 'swisslotto' ? swissTicket.numbers : emTicket.numbers;
+  const numbers =
+    gameMode === 'swisslotto'
+      ? swissTicket.numbers
+      : gameMode === 'euromillions'
+      ? emTicket.numbers
+      : lotoTicket.numbers;
+
   const isComplete =
     gameMode === 'swisslotto'
       ? swissTicket.numbers.length === 6 && swissTicket.bonus !== null
-      : emTicket.numbers.length === 5 && emTicket.stars.length === 2;
+      : gameMode === 'euromillions'
+      ? emTicket.numbers.length === 5 && emTicket.stars.length === 2
+      : lotoTicket.numbers.length === 5 && lotoTicket.chance !== null;
 
-  const minDate = gameMode === 'swisslotto' ? swissMinDate : emMinDate;
-  const maxDate = gameMode === 'swisslotto' ? swissMaxDate : emMaxDate;
-  const startDate = gameMode === 'swisslotto' ? swissStartDate : emStartDate;
-  const endDate = gameMode === 'swisslotto' ? swissEndDate : emEndDate;
+  const minDate =
+    gameMode === 'swisslotto'
+      ? swissMinDate
+      : gameMode === 'euromillions'
+      ? emMinDate
+      : lotoMinDate;
+  const maxDate =
+    gameMode === 'swisslotto'
+      ? swissMaxDate
+      : gameMode === 'euromillions'
+      ? emMaxDate
+      : lotoMaxDate;
+  const startDate =
+    gameMode === 'swisslotto'
+      ? swissStartDate
+      : gameMode === 'euromillions'
+      ? emStartDate
+      : lotoStartDate;
+  const endDate =
+    gameMode === 'swisslotto'
+      ? swissEndDate
+      : gameMode === 'euromillions'
+      ? emEndDate
+      : lotoEndDate;
 
   const setStartDate = (dateStr: string) => {
     if (gameMode === 'swisslotto') {
       setSwissStartDate(dateStr);
-    } else {
+    } else if (gameMode === 'euromillions') {
       setEmStartDate(dateStr);
+    } else {
+      setLotoStartDate(dateStr);
     }
   };
 
   const setEndDate = (dateStr: string) => {
     if (gameMode === 'swisslotto') {
       setSwissEndDate(dateStr);
-    } else {
+    } else if (gameMode === 'euromillions') {
       setEmEndDate(dateStr);
+    } else {
+      setLotoEndDate(dateStr);
     }
   };
 
@@ -227,7 +292,7 @@ export const App: React.FC = () => {
   const currentYear = maxDate ? maxDate.slice(0, 4) : '2026';
   const currentYearStartDate = `${currentYear}-01-01`;
 
-  // Filtrage des tirages historiques selon la période
+  // Filtrage des tirages historiques selon la période et le type
   const filteredSwissDraws = useMemo(() => {
     return swissRawDraws.filter((d) => {
       if (swissStartDate && d.date < swissStartDate) return false;
@@ -244,7 +309,21 @@ export const App: React.FC = () => {
     });
   }, [emRawDraws, emStartDate, emEndDate]);
 
-  const filteredDraws = gameMode === 'swisslotto' ? filteredSwissDraws : filteredEmDraws;
+  const filteredLotoDraws = useMemo(() => {
+    return lotoRawDraws.filter((d) => {
+      if (lotoStartDate && d.d < lotoStartDate) return false;
+      if (lotoEndDate && d.d > lotoEndDate) return false;
+      if (lotoTypeFilter !== 'all' && d.t !== lotoTypeFilter) return false;
+      return true;
+    });
+  }, [lotoRawDraws, lotoStartDate, lotoEndDate, lotoTypeFilter]);
+
+  const filteredDraws =
+    gameMode === 'swisslotto'
+      ? filteredSwissDraws
+      : gameMode === 'euromillions'
+      ? filteredEmDraws
+      : filteredLotoDraws;
 
   // Calcul des statistiques
   const swissStats = useMemo(() => {
@@ -254,6 +333,10 @@ export const App: React.FC = () => {
   const emStats = useMemo(() => {
     return calculateEuromillionsStats(filteredEmDraws);
   }, [filteredEmDraws]);
+
+  const lotoStats = useMemo(() => {
+    return calculateLotoStats(filteredLotoDraws);
+  }, [filteredLotoDraws]);
 
   // Simulation rétrospective en temps réel
   const swissSimulation = useMemo(() => {
@@ -272,16 +355,36 @@ export const App: React.FC = () => {
     );
   }, [emTicket.numbers, emTicket.stars, filteredEmDraws, emCostPerDraw, emCurrency]);
 
-  const simulation = gameMode === 'swisslotto' ? swissSimulation : emSimulation;
-  // Swiss Lotto = always CHF ; EuroMillions = CHF (Suisse) ou EUR (France/intl) selon la locale
-  const currency: 'CHF' | 'EUR' = gameMode === 'swisslotto' ? 'CHF' : emCurrency;
+  const lotoSimulation = useMemo(() => {
+    if (lotoTicket.numbers.length !== 5 || lotoTicket.chance === null) return null;
+    return calculateLotoSimulation(
+      lotoTicket.numbers,
+      lotoTicket.chance,
+      filteredLotoDraws,
+      LOTO_COST,
+      'EUR'
+    );
+  }, [lotoTicket.numbers, lotoTicket.chance, filteredLotoDraws]);
+
+  const simulation =
+    gameMode === 'swisslotto'
+      ? swissSimulation
+      : gameMode === 'euromillions'
+      ? emSimulation
+      : lotoSimulation;
+
+  // Devises : Swiss Lotto = CHF ; EuroMillions = CHF ou EUR ; Loto FDJ = toujours EUR (€)
+  const currency: 'CHF' | 'EUR' =
+    gameMode === 'swisslotto' ? 'CHF' : gameMode === 'euromillions' ? emCurrency : 'EUR';
   const formatAmount = currency === 'CHF' ? formatCHF : formatEUR;
 
   // Analytics : Simulation réussie anti doublon strict-mode
   const currentTicketKey =
     gameMode === 'swisslotto'
       ? (isComplete ? `swiss-${swissTicket.numbers.join(',')}-${swissTicket.bonus}` : '')
-      : (isComplete ? `em-${emTicket.numbers.join(',')}-${emTicket.stars.join(',')}` : '');
+      : gameMode === 'euromillions'
+      ? (isComplete ? `em-${emTicket.numbers.join(',')}-${emTicket.stars.join(',')}` : '')
+      : (isComplete ? `loto-${lotoTicket.numbers.join(',')}-${lotoTicket.chance}-${lotoTypeFilter}` : '');
 
   const prevTicketKeyRef = useRef<string>('');
 
@@ -327,21 +430,35 @@ export const App: React.FC = () => {
       } else if (cur.length < 6) {
         setSwissTicket({ ...swissTicket, numbers: [...cur, num].sort((a, b) => a - b) });
       }
-    } else {
+    } else if (gameMode === 'euromillions') {
       const cur = emTicket.numbers;
       if (cur.includes(num)) {
         setEmTicket({ ...emTicket, numbers: cur.filter((n) => n !== num) });
       } else if (cur.length < 5) {
         setEmTicket({ ...emTicket, numbers: [...cur, num].sort((a, b) => a - b) });
       }
+    } else {
+      const cur = lotoTicket.numbers;
+      if (cur.includes(num)) {
+        setLotoTicket({ ...lotoTicket, numbers: cur.filter((n) => n !== num) });
+      } else if (cur.length < 5) {
+        setLotoTicket({ ...lotoTicket, numbers: [...cur, num].sort((a, b) => a - b) });
+      }
     }
   };
 
   const toggleBonus = (bonusNum: number) => {
-    setSwissTicket({
-      ...swissTicket,
-      bonus: swissTicket.bonus === bonusNum ? null : bonusNum,
-    });
+    if (gameMode === 'swisslotto') {
+      setSwissTicket({
+        ...swissTicket,
+        bonus: swissTicket.bonus === bonusNum ? null : bonusNum,
+      });
+    } else if (gameMode === 'loto') {
+      setLotoTicket({
+        ...lotoTicket,
+        chance: lotoTicket.chance === bonusNum ? null : bonusNum,
+      });
+    }
   };
 
   const toggleStar = (starNum: number) => {
@@ -364,7 +481,7 @@ export const App: React.FC = () => {
         numbers: shuffled.slice(0, 6).sort((a, b) => a - b),
         bonus: randBonus,
       });
-    } else {
+    } else if (gameMode === 'euromillions') {
       const all = Array.from({ length: 50 }, (_, i) => i + 1);
       const shuffled = all.sort(() => 0.5 - Math.random());
       const allStars = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -372,6 +489,14 @@ export const App: React.FC = () => {
       setEmTicket({
         numbers: shuffled.slice(0, 5).sort((a, b) => a - b),
         stars: shuffledStars.slice(0, 2).sort((a, b) => a - b),
+      });
+    } else {
+      const all = Array.from({ length: 49 }, (_, i) => i + 1);
+      const shuffled = all.sort(() => 0.5 - Math.random());
+      const randChance = Math.floor(Math.random() * 10) + 1;
+      setLotoTicket({
+        numbers: shuffled.slice(0, 5).sort((a, b) => a - b),
+        chance: randChance,
       });
     }
   };
@@ -381,8 +506,10 @@ export const App: React.FC = () => {
     trackEvent('Bouton Reset', { game: gameMode });
     if (gameMode === 'swisslotto') {
       setSwissTicket({ numbers: [], bonus: null });
-    } else {
+    } else if (gameMode === 'euromillions') {
       setEmTicket({ numbers: [], stars: [] });
+    } else {
+      setLotoTicket({ numbers: [], chance: null });
     }
   };
 
@@ -394,10 +521,15 @@ export const App: React.FC = () => {
         numbers: swissStats.hotNumbers.map((n) => n.number).sort((a, b) => a - b),
         bonus: swissStats.mostFrequentBonus,
       });
-    } else {
+    } else if (gameMode === 'euromillions') {
       setEmTicket({
         numbers: emStats.hotNumbers.map((n) => n.value).sort((a, b) => a - b),
         stars: emStats.hotStars.slice(0, 2).map((s) => s.value).sort((a, b) => a - b),
+      });
+    } else {
+      setLotoTicket({
+        numbers: lotoStats.hotNumbers.map((n) => n.value).sort((a, b) => a - b),
+        chance: lotoStats.hotChance[0]?.value ?? 1,
       });
     }
   };
@@ -414,22 +546,58 @@ export const App: React.FC = () => {
       <header className="border-b border-slate-200/80 bg-white/90 backdrop-blur-lg sticky top-0 z-30 shadow-2xs">
         <div className="mx-auto flex max-w-[1500px] flex-col gap-3 px-4 py-3.5 sm:px-6 md:flex-row md:items-center md:justify-between lg:px-8">
           <div className="flex items-center gap-3">
-            <div className="grid size-11 place-items-center rounded-xl bg-emerald-600 text-white shadow-md shadow-emerald-600/20">
-              <Clover className="size-6 text-white" aria-hidden="true" />
+            <div
+              className={`flex size-11 items-center justify-center rounded-2xl text-white shadow-md transition-all ${
+                gameMode === 'swisslotto'
+                  ? 'bg-gradient-to-br from-emerald-600 to-teal-700 shadow-emerald-700/20'
+                  : gameMode === 'euromillions'
+                  ? 'bg-gradient-to-br from-blue-600 to-indigo-800 shadow-blue-700/20'
+                  : 'bg-gradient-to-br from-sky-600 to-blue-700 shadow-sky-700/20'
+              }`}
+            >
+              <Clover className="size-6 animate-pulse" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-xl font-extrabold tracking-tight text-slate-900">
                   {t('header.title')}
                 </h1>
-                <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 border border-emerald-200/60">
-                  {gameMode === 'swisslotto' ? 'Swiss Lotto' : 'EuroMillions'}
+                <span
+                  className={`rounded-md px-2 py-0.5 text-[10px] font-bold border ${
+                    gameMode === 'swisslotto'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200/60'
+                      : gameMode === 'euromillions'
+                      ? 'bg-blue-50 text-blue-700 border-blue-200/60'
+                      : 'bg-sky-50 text-sky-700 border-sky-200/60'
+                  }`}
+                >
+                  {gameMode === 'swisslotto'
+                    ? 'Swiss Lotto'
+                    : gameMode === 'euromillions'
+                    ? 'EuroMillions'
+                    : 'Loto FDJ'}
                 </span>
+                {/* Media Trust Badge */}
+                <a
+                  href="https://frapp.ch/fr/articles/stories/loto-une-app-qui-permet-de-tester-ses-chiffres-fetiches"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[10px] font-semibold border border-slate-200/80 transition-all hover:scale-[1.02] shadow-2xs group"
+                  title="Lire l'article sur Frapp.ch & Radio Fribourg"
+                >
+                  <span className="size-1.5 rounded-full bg-rose-500 animate-pulse" />
+                  <span>
+                    Vu sur <strong className="font-bold text-slate-800">Frapp.ch</strong> & <strong className="font-bold text-slate-800">Radio Fribourg</strong>
+                  </span>
+                  <ExternalLink className="size-2.5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+                </a>
               </div>
               <p className="text-xs text-slate-500">
                 {gameMode === 'swisslotto'
                   ? t('header.subtitleSwiss')
-                  : t('header.subtitleEm')}
+                  : gameMode === 'euromillions'
+                  ? t('header.subtitleEm')
+                  : t('header.subtitleLoto')}
               </p>
             </div>
           </div>
@@ -446,16 +614,31 @@ export const App: React.FC = () => {
                   setGameMode(next);
                   trackEvent('Changement de jeu', { game: next });
                 }}
-                className={`lottery-switcher-select ${gameMode === 'swisslotto' ? 'theme-swiss' : 'theme-em'}`}
+                className={`lottery-switcher-select ${
+                  gameMode === 'swisslotto'
+                    ? 'theme-swiss'
+                    : gameMode === 'euromillions'
+                    ? 'theme-em'
+                    : 'theme-loto'
+                }`}
               >
                 <option value="swisslotto">🇨🇭 Swiss Lotto</option>
                 <option value="euromillions">🇪🇺 EuroMillions</option>
+                <option value="loto">🇫🇷 Loto (FDJ)</option>
               </select>
               <ChevronDown className="size-3.5 lottery-switcher-icon" />
             </div>
 
             <span className="status-pill">
-              <span className={`size-2 rounded-full animate-pulse ${gameMode === 'swisslotto' ? 'bg-emerald-500' : 'bg-blue-500'}`} />
+              <span
+                className={`size-2 rounded-full animate-pulse ${
+                  gameMode === 'swisslotto'
+                    ? 'bg-emerald-500'
+                    : gameMode === 'euromillions'
+                    ? 'bg-blue-500'
+                    : 'bg-sky-500'
+                }`}
+              />
               {t('header.drawsAnalyzed', {
                 count: filteredDraws.length.toLocaleString(
                   language === 'de' ? 'de-CH' : language === 'en' ? 'en-CH' : 'fr-CH'
@@ -467,11 +650,16 @@ export const App: React.FC = () => {
             </span>
             <span className="hidden text-slate-500 sm:inline font-medium">
               {t('header.costPerGrid', {
-                cost: gameMode === 'swisslotto'
-                  ? '2.50 CHF'
-                  : `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`
+                cost:
+                  gameMode === 'swisslotto'
+                    ? '2.50 CHF'
+                    : gameMode === 'euromillions'
+                    ? `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`
+                    : '2,20 €',
               })}
             </span>
+
+            {/* SWITCHER DE LANGUE */}
             <LanguageSwitcher />
           </div>
         </div>
@@ -497,8 +685,12 @@ export const App: React.FC = () => {
               <span
                 className={`rounded-full px-3 py-1 text-xs font-bold transition-colors ${
                   (gameMode === 'swisslotto' && numbers.length === 6) ||
-                  (gameMode === 'euromillions' && numbers.length === 5)
-                    ? 'bg-emerald-100 text-emerald-800'
+                  ((gameMode === 'euromillions' || gameMode === 'loto') && numbers.length === 5)
+                    ? gameMode === 'swisslotto'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : gameMode === 'euromillions'
+                      ? 'bg-blue-100 text-blue-800'
+                      : 'bg-sky-100 text-sky-800'
                     : 'bg-slate-100 text-slate-600'
                 }`}
               >
@@ -506,7 +698,7 @@ export const App: React.FC = () => {
               </span>
             </div>
 
-            {/* Grille principale des numéros (7 colonnes originales) */}
+            {/* Grille principale des numéros (7 colonnes) */}
             <div className="space-y-2">
               <div className="flex items-center justify-between text-xs text-slate-500 font-medium">
                 <span>{t('grid.mainLabel')}</span>
@@ -515,7 +707,10 @@ export const App: React.FC = () => {
 
               <div className="grid grid-cols-7 gap-2">
                 {Array.from(
-                  { length: gameMode === 'swisslotto' ? 42 : 50 },
+                  {
+                    length:
+                      gameMode === 'swisslotto' ? 42 : gameMode === 'loto' ? 49 : 50,
+                  },
                   (_, i) => i + 1
                 ).map((number) => {
                   const isSelected = numbers.includes(number);
@@ -537,7 +732,7 @@ export const App: React.FC = () => {
               </div>
             </div>
 
-            {/* Section Numéro Chance (Swiss Lotto) OU Étoiles (EuroMillions) */}
+            {/* Section Numéro Chance (Swiss Lotto & Loto FDJ) OU Étoiles (EuroMillions) */}
             <div className="space-y-2 pt-2 border-t border-slate-100">
               {gameMode === 'swisslotto' ? (
                 <>
@@ -571,7 +766,7 @@ export const App: React.FC = () => {
                     })}
                   </div>
                 </>
-              ) : (
+              ) : gameMode === 'euromillions' ? (
                 <>
                   <div className="flex items-center justify-between">
                     <div>
@@ -611,6 +806,38 @@ export const App: React.FC = () => {
                     })}
                   </div>
                 </>
+              ) : (
+                <>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="eyebrow">{t('grid.chanceEyebrowLoto')}</p>
+                      <p className="text-xs text-slate-500 font-medium">
+                        {t('grid.chanceSubLoto')}
+                      </p>
+                    </div>
+                    <Sparkles className="size-5 text-sky-600" aria-hidden="true" />
+                  </div>
+
+                  <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((number) => {
+                      const isSelected = lotoTicket.chance === number;
+                      return (
+                        <button
+                          key={number}
+                          type="button"
+                          aria-pressed={isSelected}
+                          aria-label={`Chance ${number}`}
+                          onClick={() => toggleBonus(number)}
+                          className={`chance-cell cursor-pointer ${
+                            isSelected ? 'chance-cell-selected ball-pop' : 'number-cell-idle'
+                          }`}
+                        >
+                          {number}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </>
               )}
             </div>
 
@@ -619,7 +846,13 @@ export const App: React.FC = () => {
               <button
                 type="button"
                 onClick={randomize}
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 shadow-md shadow-emerald-600/20 transition-all active:scale-95 cursor-pointer"
+                className={`w-full inline-flex items-center justify-center gap-2 rounded-xl text-sm font-bold text-white px-5 py-3 shadow-md transition-all active:scale-95 cursor-pointer ${
+                  gameMode === 'swisslotto'
+                    ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                    : gameMode === 'euromillions'
+                    ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'
+                    : 'bg-sky-600 hover:bg-sky-700 shadow-sky-600/20'
+                }`}
               >
                 <Dices className="size-4" />
                 <span>{t('grid.flash')}</span>
@@ -633,7 +866,9 @@ export const App: React.FC = () => {
                 disabled={
                   gameMode === 'swisslotto'
                     ? swissTicket.numbers.length === 0 && swissTicket.bonus === null
-                    : emTicket.numbers.length === 0 && emTicket.stars.length === 0
+                    : gameMode === 'euromillions'
+                    ? emTicket.numbers.length === 0 && emTicket.stars.length === 0
+                    : lotoTicket.numbers.length === 0 && lotoTicket.chance === null
                 }
                 className="inline-flex items-center justify-center rounded-xl text-sm font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-3 border border-slate-200/80 transition-all active:scale-95 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
               >
@@ -653,11 +888,31 @@ export const App: React.FC = () => {
             <div className="ticket-panel-light p-5 sm:p-6">
               <div className="relative">
                 <div className="flex items-center justify-between">
-                  <p className="eyebrow text-emerald-800 font-bold">{t('ticketCard.eyebrow')}</p>
-                  <span className="rounded-full border border-emerald-200 bg-white/90 px-3 py-1 text-xs font-bold text-emerald-800 shadow-2xs">
+                  <p
+                    className={`eyebrow font-bold ${
+                      gameMode === 'swisslotto'
+                        ? 'text-emerald-800'
+                        : gameMode === 'euromillions'
+                        ? 'text-blue-800'
+                        : 'text-sky-800'
+                    }`}
+                  >
+                    {t('ticketCard.eyebrow')}
+                  </p>
+                  <span
+                    className={`rounded-full border bg-white/90 px-3 py-1 text-xs font-bold shadow-2xs ${
+                      gameMode === 'swisslotto'
+                        ? 'border-emerald-200 text-emerald-800'
+                        : gameMode === 'euromillions'
+                        ? 'border-blue-200 text-blue-800'
+                        : 'border-sky-200 text-sky-800'
+                    }`}
+                  >
                     {gameMode === 'swisslotto'
                       ? t('ticketCard.chanceBadgeSwiss', { bonus: swissTicket.bonus ?? '—' })
-                      : `★ ${emTicket.stars.length > 0 ? emTicket.stars.join('  ★ ') : '—'}`}
+                      : gameMode === 'euromillions'
+                      ? `★ ${emTicket.stars.length > 0 ? emTicket.stars.join('  ★ ') : '—'}`
+                      : t('ticketCard.chanceBadgeLoto', { bonus: lotoTicket.chance ?? '—' })}
                   </span>
                 </div>
 
@@ -676,7 +931,7 @@ export const App: React.FC = () => {
                       );
                     })}
                   </div>
-                ) : (
+                ) : gameMode === 'euromillions' ? (
                   <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5 items-center">
                     {Array.from({ length: 5 }).map((_, index) => {
                       const num = emTicket.numbers[index];
@@ -706,9 +961,41 @@ export const App: React.FC = () => {
                       );
                     })}
                   </div>
+                ) : (
+                  <div className="mt-4 flex flex-wrap justify-center gap-2 sm:gap-2.5 items-center">
+                    {Array.from({ length: 5 }).map((_, index) => {
+                      const num = lotoTicket.numbers[index];
+                      return (
+                        <span
+                          key={index}
+                          className={num ? 'ticket-ball ball-pop' : 'ticket-ball-empty'}
+                        >
+                          {num ?? '·'}
+                        </span>
+                      );
+                    })}
+                    <span className="text-slate-300 font-bold px-1">+</span>
+                    <span
+                      className={
+                        lotoTicket.chance
+                          ? 'w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-black text-sm sm:text-base bg-sky-500 text-white shadow-md shadow-sky-500/30 border border-sky-400 ball-pop'
+                          : 'w-10 h-10 sm:w-11 sm:h-11 rounded-full flex items-center justify-center font-black text-sm sm:text-base bg-white/60 border border-dashed border-sky-300/80 text-sky-400/60'
+                      }
+                    >
+                      {lotoTicket.chance ?? '·'}
+                    </span>
+                  </div>
                 )}
 
-                <div className="my-4 border-t border-dashed border-emerald-200/80" />
+                <div
+                  className={`my-4 border-t border-dashed ${
+                    gameMode === 'swisslotto'
+                      ? 'border-emerald-200/80'
+                      : gameMode === 'euromillions'
+                      ? 'border-blue-200/80'
+                      : 'border-sky-200/80'
+                  }`}
+                />
 
                 {/* Métriques clés du ticket */}
                 {isComplete && simulation ? (
@@ -731,7 +1018,15 @@ export const App: React.FC = () => {
                       <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
                         {t('ticketCard.winningDraws')}
                       </p>
-                      <p className="mt-1 text-2xl sm:text-3xl font-black text-emerald-600 tracking-tight">
+                      <p
+                        className={`mt-1 text-2xl sm:text-3xl font-black tracking-tight ${
+                          gameMode === 'swisslotto'
+                            ? 'text-emerald-600'
+                            : gameMode === 'euromillions'
+                            ? 'text-blue-600'
+                            : 'text-sky-600'
+                        }`}
+                      >
                         {simulation.winningDrawsCount}
                       </p>
                       <p className="text-[11px] text-slate-400 mt-0.5">
@@ -743,17 +1038,27 @@ export const App: React.FC = () => {
                   <p className="py-2 text-center text-xs sm:text-sm text-slate-500">
                     {gameMode === 'swisslotto'
                       ? t('ticketCard.incompletePromptSwiss')
-                      : t('ticketCard.incompletePromptEm')}
+                      : gameMode === 'euromillions'
+                      ? t('ticketCard.incompletePromptEm')
+                      : t('ticketCard.incompletePromptLoto')}
                   </p>
                 )}
               </div>
             </div>
 
-            {/* 2. DATE PICKER */}
+            {/* 2. DATE PICKER & SOUS-FILTRE DU JEU */}
             <div className="panel p-4 sm:p-4.5 space-y-3 border border-slate-200/80 shadow-xs">
               <div className="flex items-center justify-between gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                  <div
+                    className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                      gameMode === 'swisslotto'
+                        ? 'bg-emerald-100 text-emerald-800'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-sky-100 text-sky-800'
+                    }`}
+                  >
                     <Calendar className="size-4" />
                   </div>
                   <div>
@@ -764,8 +1069,24 @@ export const App: React.FC = () => {
                   </div>
                 </div>
 
-                <span className="status-pill text-[11px] py-0.5 px-2.5 bg-emerald-50 text-emerald-800 border-emerald-200 font-semibold">
-                  <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span
+                  className={`status-pill text-[11px] py-0.5 px-2.5 font-semibold ${
+                    gameMode === 'swisslotto'
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : gameMode === 'euromillions'
+                      ? 'bg-blue-50 text-blue-800 border-blue-200'
+                      : 'bg-sky-50 text-sky-800 border-sky-200'
+                  }`}
+                >
+                  <span
+                    className={`size-1.5 rounded-full animate-pulse ${
+                      gameMode === 'swisslotto'
+                        ? 'bg-emerald-500'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-500'
+                        : 'bg-sky-500'
+                    }`}
+                  />
                   {t('header.drawsAnalyzed', {
                     count: filteredDraws.length.toLocaleString(
                       language === 'de' ? 'de-CH' : language === 'en' ? 'en-CH' : 'fr-CH'
@@ -773,6 +1094,56 @@ export const App: React.FC = () => {
                   })}
                 </span>
               </div>
+
+              {/* Sélecteur de type de tirage Loto FDJ (Loto, Super Loto, Grand Loto) */}
+              {gameMode === 'loto' && (
+                <div className="flex items-center gap-1.5 flex-wrap pt-1 pb-1">
+                  <button
+                    type="button"
+                    onClick={() => setLotoTypeFilter('all')}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      lotoTypeFilter === 'all'
+                        ? 'bg-sky-600 text-white shadow-2xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {t('grid.subTypeAll')} ({lotoRawDraws.length})
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLotoTypeFilter('loto')}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      lotoTypeFilter === 'loto'
+                        ? 'bg-sky-600 text-white shadow-2xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {t('grid.subTypeLoto')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLotoTypeFilter('superloto')}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      lotoTypeFilter === 'superloto'
+                        ? 'bg-sky-600 text-white shadow-2xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {t('grid.subTypeSuperLoto')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setLotoTypeFilter('grandloto')}
+                    className={`text-[11px] font-semibold px-2.5 py-1 rounded-lg transition-all cursor-pointer ${
+                      lotoTypeFilter === 'grandloto'
+                        ? 'bg-sky-600 text-white shadow-2xs'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                    }`}
+                  >
+                    {t('grid.subTypeGrandLoto')}
+                  </button>
+                </div>
+              )}
 
               {/* Champs Date début et Date fin */}
               <div className="grid grid-cols-2 gap-2.5">
@@ -787,7 +1158,13 @@ export const App: React.FC = () => {
                     min={minDate}
                     max={endDate || maxDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer"
+                    className={`w-full text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 transition-all cursor-pointer ${
+                      gameMode === 'swisslotto'
+                        ? 'focus:ring-emerald-500/50 focus:border-emerald-500'
+                        : gameMode === 'euromillions'
+                        ? 'focus:ring-blue-500/50 focus:border-blue-500'
+                        : 'focus:ring-sky-500/50 focus:border-sky-500'
+                    }`}
                   />
                 </div>
 
@@ -802,7 +1179,13 @@ export const App: React.FC = () => {
                     min={startDate || minDate}
                     max={maxDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 focus:border-emerald-500 transition-all cursor-pointer"
+                    className={`w-full text-xs font-semibold px-2.5 py-1.5 rounded-xl bg-slate-50 hover:bg-slate-100/70 border border-slate-200 text-slate-800 focus:outline-none focus:ring-2 transition-all cursor-pointer ${
+                      gameMode === 'swisslotto'
+                        ? 'focus:ring-emerald-500/50 focus:border-emerald-500'
+                        : gameMode === 'euromillions'
+                        ? 'focus:ring-blue-500/50 focus:border-blue-500'
+                        : 'focus:ring-sky-500/50 focus:border-sky-500'
+                    }`}
                   />
                 </div>
               </div>
@@ -819,11 +1202,19 @@ export const App: React.FC = () => {
                   }}
                   className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
                     startDate === minDate && endDate === maxDate
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? gameMode === 'swisslotto'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-sky-600 text-white shadow-2xs'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   }`}
                 >
-                  {gameMode === 'swisslotto' ? t('ticketCard.allTimeSwiss') : t('ticketCard.allTimeEm')}
+                  {gameMode === 'swisslotto'
+                    ? t('ticketCard.allTimeSwiss')
+                    : gameMode === 'euromillions'
+                    ? t('ticketCard.allTimeEm')
+                    : t('ticketCard.allTimeLoto')}
                 </button>
                 <button
                   type="button"
@@ -834,7 +1225,11 @@ export const App: React.FC = () => {
                   }}
                   className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
                     startDate === oneYearStartDate && endDate === maxDate
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? gameMode === 'swisslotto'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-sky-600 text-white shadow-2xs'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -849,7 +1244,11 @@ export const App: React.FC = () => {
                   }}
                   className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
                     startDate === fiveYearsStartDate && endDate === maxDate
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? gameMode === 'swisslotto'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-sky-600 text-white shadow-2xs'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -864,7 +1263,11 @@ export const App: React.FC = () => {
                   }}
                   className={`text-[11px] font-semibold px-2.5 py-0.5 rounded-lg transition-all cursor-pointer ${
                     startDate === currentYearStartDate && endDate === maxDate
-                      ? 'bg-emerald-600 text-white shadow-2xs'
+                      ? gameMode === 'swisslotto'
+                        ? 'bg-emerald-600 text-white shadow-2xs'
+                        : gameMode === 'euromillions'
+                        ? 'bg-blue-600 text-white shadow-2xs'
+                        : 'bg-sky-600 text-white shadow-2xs'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
                   }`}
                 >
@@ -902,9 +1305,12 @@ export const App: React.FC = () => {
                         value: (simulation.roiPercentage >= 0 ? '+' : '') + simulation.roiPercentage.toFixed(1),
                       })
                     : t('metrics.investedNote', {
-                        cost: gameMode === 'swisslotto'
-                          ? '2.50 CHF'
-                          : `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`,
+                        cost:
+                          gameMode === 'swisslotto'
+                            ? '2.50 CHF'
+                            : gameMode === 'euromillions'
+                            ? `${emCostPerDraw.toFixed(2).replace('.', ',')} ${emCurrency === 'EUR' ? '€' : 'CHF'}`
+                            : '2,20 €',
                         count: filteredDraws.length,
                       })}
                 </p>
@@ -919,7 +1325,13 @@ export const App: React.FC = () => {
                   trackEvent('Clic Partager Résultat', { game: gameMode });
                   setShowShareModal(true);
                 }}
-                className="w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-600/20 transition-all active:scale-[0.98] cursor-pointer"
+                className={`w-full inline-flex items-center justify-center gap-2.5 rounded-2xl text-sm font-bold px-5 py-3.5 text-white shadow-md transition-all active:scale-[0.98] cursor-pointer ${
+                  gameMode === 'swisslotto'
+                    ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
+                    : gameMode === 'euromillions'
+                    ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-600/20'
+                    : 'bg-sky-600 hover:bg-sky-700 shadow-sky-600/20'
+                }`}
               >
                 <Share2 className="size-4.5" />
                 <span>{t('ticketCard.shareButton')}</span>
@@ -948,10 +1360,26 @@ export const App: React.FC = () => {
                 <button
                   type="button"
                   onClick={applyHotSelection}
-                  className="text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-lg border border-emerald-200 transition-colors cursor-pointer"
-                  title={gameMode === 'swisslotto' ? t('stats.applyTop6') : t('stats.applyTop5')}
+                  className={`text-xs font-bold px-2.5 py-1 rounded-lg border transition-colors cursor-pointer ${
+                    gameMode === 'swisslotto'
+                      ? 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border-emerald-200'
+                      : gameMode === 'euromillions'
+                      ? 'text-blue-700 bg-blue-50 hover:bg-blue-100 border-blue-200'
+                      : 'text-sky-700 bg-sky-50 hover:bg-sky-100 border-sky-200'
+                  }`}
+                  title={
+                    gameMode === 'swisslotto'
+                      ? t('stats.applyTop6')
+                      : gameMode === 'euromillions'
+                      ? t('stats.applyTop5')
+                      : t('stats.applyTop5Loto')
+                  }
                 >
-                  {gameMode === 'swisslotto' ? t('stats.applyTop6') : t('stats.applyTop5')}
+                  {gameMode === 'swisslotto'
+                    ? t('stats.applyTop6')
+                    : gameMode === 'euromillions'
+                    ? t('stats.applyTop5')
+                    : t('stats.applyTop5Loto')}
                 </button>
               </div>
 
@@ -980,13 +1408,31 @@ export const App: React.FC = () => {
                           {item.number}
                         </button>
                       ))
-                    : emStats.hotNumbers.map((item) => (
+                    : gameMode === 'euromillions'
+                    ? emStats.hotNumbers.map((item) => (
                         <button
                           key={item.value}
                           type="button"
                           onClick={() => toggleNumber(item.value)}
                           className={`stat-ball stat-ball-hot cursor-pointer ${
                             emTicket.numbers.includes(item.value) ? 'ring-2 ring-rose-500 ring-offset-1' : ''
+                          }`}
+                          title={t('stats.hotTooltip', {
+                            number: item.value,
+                            count: item.count,
+                            percent: item.frequencyPercentage.toFixed(1),
+                          })}
+                        >
+                          {item.value}
+                        </button>
+                      ))
+                    : lotoStats.hotNumbers.map((item) => (
+                        <button
+                          key={item.value}
+                          type="button"
+                          onClick={() => toggleNumber(item.value)}
+                          className={`stat-ball stat-ball-hot cursor-pointer ${
+                            lotoTicket.numbers.includes(item.value) ? 'ring-2 ring-rose-500 ring-offset-1' : ''
                           }`}
                           title={t('stats.hotTooltip', {
                             number: item.value,
@@ -1024,7 +1470,8 @@ export const App: React.FC = () => {
                           {item.number}
                         </button>
                       ))
-                    : emStats.coldNumbers.map((item) => (
+                    : gameMode === 'euromillions'
+                    ? emStats.coldNumbers.map((item) => (
                         <button
                           key={item.value}
                           type="button"
@@ -1039,11 +1486,27 @@ export const App: React.FC = () => {
                         >
                           {item.value}
                         </button>
+                      ))
+                    : lotoStats.coldNumbers.map((item) => (
+                        <button
+                          key={item.value}
+                          type="button"
+                          onClick={() => toggleNumber(item.value)}
+                          className={`stat-ball stat-ball-cold cursor-pointer ${
+                            lotoTicket.numbers.includes(item.value) ? 'ring-2 ring-sky-500 ring-offset-1' : ''
+                          }`}
+                          title={t('stats.coldTooltip', {
+                            number: item.value,
+                            draws: item.drawsSinceLastDrawn,
+                          })}
+                        >
+                          {item.value}
+                        </button>
                       ))}
                 </div>
               </div>
 
-              {/* Étoiles les plus fréquentes (EuroMillions uniquement) */}
+              {/* Étoiles les plus fréquentes (EuroMillions) */}
               {gameMode === 'euromillions' && (
                 <div>
                   <p className="eyebrow flex items-center gap-1.5 text-amber-700">
@@ -1072,6 +1535,36 @@ export const App: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Numéros Chance les plus fréquents (Loto FDJ) */}
+              {gameMode === 'loto' && (
+                <div>
+                  <p className="eyebrow flex items-center gap-1.5 text-sky-700">
+                    <Sparkles className="size-3.5" />
+                    <span>{t('stats.hotChanceLabel')}</span>
+                  </p>
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {lotoStats.hotChance.map((item) => (
+                      <button
+                        key={item.value}
+                        type="button"
+                        onClick={() => toggleBonus(item.value)}
+                        className={`stat-ball cursor-pointer ${
+                          lotoTicket.chance === item.value
+                            ? 'bg-sky-500 border-sky-600 text-white font-black ring-2 ring-sky-500 ring-offset-1'
+                            : 'bg-sky-50 text-sky-900 border-sky-200 hover:bg-sky-100'
+                        }`}
+                        title={t('stats.chanceTooltip', {
+                          number: item.value,
+                          count: item.count,
+                        })}
+                      >
+                        {item.value}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Carte Tirages correspondants dans le passé sur la période */}
@@ -1083,7 +1576,16 @@ export const App: React.FC = () => {
                     {t('history.title')}
                   </h3>
                 </div>
-                <Trophy className="size-5 text-emerald-600" aria-hidden="true" />
+                <Trophy
+                  className={`size-5 ${
+                    gameMode === 'swisslotto'
+                      ? 'text-emerald-600'
+                      : gameMode === 'euromillions'
+                      ? 'text-blue-600'
+                      : 'text-sky-600'
+                  }`}
+                  aria-hidden="true"
+                />
               </div>
 
               <div className="divide-y divide-slate-100 max-h-[420px] overflow-y-auto">
@@ -1095,12 +1597,32 @@ export const App: React.FC = () => {
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <p className="text-sm font-bold text-slate-900">
-                            {formatDate(match.date)}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="text-sm font-bold text-slate-900">
+                              {formatDate(match.date)}
+                            </p>
+                            {match.drawType === 'superloto' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 border border-purple-200">
+                                Super Loto
+                              </span>
+                            )}
+                            {match.drawType === 'grandloto' && (
+                              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                                Grand Loto
+                              </span>
+                            )}
+                          </div>
                           <p className="text-xs text-slate-500">{match.rankLabel}</p>
                         </div>
-                        <p className="text-sm font-black text-emerald-600">
+                        <p
+                          className={`text-sm font-black ${
+                            gameMode === 'swisslotto'
+                              ? 'text-emerald-600'
+                              : gameMode === 'euromillions'
+                              ? 'text-blue-600'
+                              : 'text-sky-600'
+                          }`}
+                        >
                           + {formatAmount(match.amount)}
                         </p>
                       </div>
@@ -1120,6 +1642,14 @@ export const App: React.FC = () => {
                             Chance {match.drawBonus} ★
                           </span>
                         )}
+                        {match.matchedChance !== undefined && match.matchedChance && (
+                          <span
+                            className="history-ball-chance"
+                            title={t('history.chanceFoundLotoTitle')}
+                          >
+                            Chance {match.drawChance} ★
+                          </span>
+                        )}
                         {match.matchedStars &&
                           match.matchedStars.map((s: number) => (
                             <span
@@ -1136,7 +1666,13 @@ export const App: React.FC = () => {
                 ) : (
                   <div className="py-8 text-center text-slate-400 px-4">
                     <p className="text-xs sm:text-sm">
-                      {isComplete ? t('history.noMatch') : t('history.incomplete')}
+                      {isComplete
+                        ? t('history.noMatch')
+                        : gameMode === 'swisslotto'
+                        ? t('history.incomplete')
+                        : gameMode === 'euromillions'
+                        ? t('history.incomplete')
+                        : t('history.incompleteLoto')}
                     </p>
                   </div>
                 )}
@@ -1167,8 +1703,16 @@ export const App: React.FC = () => {
             simulation={simulation}
             filteredDraws={filteredDraws}
             currency={currency}
-            costPerDraw={gameMode === 'swisslotto' ? 2.5 : emCostPerDraw}
-            gameLabel={gameMode === 'swisslotto' ? 'Swiss Lotto' : 'EuroMillions'}
+            costPerDraw={
+              gameMode === 'swisslotto' ? 2.5 : gameMode === 'euromillions' ? emCostPerDraw : LOTO_COST
+            }
+            gameLabel={
+              gameMode === 'swisslotto'
+                ? 'Swiss Lotto'
+                : gameMode === 'euromillions'
+                ? 'EuroMillions'
+                : 'Loto FDJ'
+            }
           />
         )}
 
@@ -1195,12 +1739,22 @@ export const App: React.FC = () => {
             {/* Header Modal */}
             <div className="p-5 sm:p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/70">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+                    gameMode === 'swisslotto'
+                      ? 'bg-emerald-100 text-emerald-700'
+                      : gameMode === 'euromillions'
+                      ? 'bg-blue-100 text-blue-700'
+                      : 'bg-sky-100 text-sky-700'
+                  }`}
+                >
                   <Award className="size-5" />
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-slate-900">
-                    {t('modalHistory.title', { count: gameMode === 'swisslotto' ? 8 : 13 })}
+                    {t('modalHistory.title', {
+                      count: gameMode === 'swisslotto' ? 8 : gameMode === 'euromillions' ? 13 : 9,
+                    })}
                   </h3>
                   <p className="text-xs text-slate-500">
                     {t('modalHistory.subtitle', {
@@ -1241,7 +1795,15 @@ export const App: React.FC = () => {
                       {simulation.rankStats.map((item: any, idx: number) => (
                         <tr
                           key={item.definition.key}
-                          className={item.count > 0 ? 'bg-emerald-50/40 font-semibold' : 'text-slate-400'}
+                          className={
+                            item.count > 0
+                              ? gameMode === 'swisslotto'
+                                ? 'bg-emerald-50/40 font-semibold'
+                                : gameMode === 'euromillions'
+                                ? 'bg-blue-50/40 font-semibold'
+                                : 'bg-sky-50/40 font-semibold'
+                              : 'text-slate-400'
+                          }
                         >
                           <td className="px-4 py-2 text-slate-700 font-medium">
                             {t('modalHistory.rankLabel', { rank: idx + 1 })}
@@ -1251,7 +1813,15 @@ export const App: React.FC = () => {
                           </td>
                           <td className="px-3 py-2 text-center">
                             {item.count > 0 ? (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                              <span
+                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold ${
+                                  gameMode === 'swisslotto'
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : gameMode === 'euromillions'
+                                    ? 'bg-blue-100 text-blue-800'
+                                    : 'bg-sky-100 text-sky-800'
+                                }`}
+                              >
                                 {item.count}
                               </span>
                             ) : (
@@ -1260,7 +1830,15 @@ export const App: React.FC = () => {
                           </td>
                           <td className="px-4 py-2 text-right font-mono">
                             {item.totalAmount > 0 ? (
-                              <span className="text-emerald-700 font-bold">
+                              <span
+                                className={`font-bold ${
+                                  gameMode === 'swisslotto'
+                                    ? 'text-emerald-700'
+                                    : gameMode === 'euromillions'
+                                    ? 'text-blue-700'
+                                    : 'text-sky-700'
+                                }`}
+                              >
                                 {formatAmount(item.totalAmount)}
                               </span>
                             ) : (
@@ -1293,6 +1871,16 @@ export const App: React.FC = () => {
                           <span className="text-[11px] px-2 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 font-semibold">
                             {wDraw.rankLabel}
                           </span>
+                          {wDraw.drawType === 'superloto' && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-purple-100 text-purple-700 border border-purple-200">
+                              Super Loto
+                            </span>
+                          )}
+                          {wDraw.drawType === 'grandloto' && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 border border-amber-200">
+                              Grand Loto
+                            </span>
+                          )}
                         </div>
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {wDraw.matchedNumbers.map((n: number) => (
@@ -1303,6 +1891,11 @@ export const App: React.FC = () => {
                           {wDraw.matchedBonus !== undefined && wDraw.matchedBonus && (
                             <span className="history-ball-chance text-[11px]">
                               Chance {wDraw.drawBonus} ★
+                            </span>
+                          )}
+                          {wDraw.matchedChance !== undefined && wDraw.matchedChance && (
+                            <span className="history-ball-chance text-[11px]">
+                              Chance {wDraw.drawChance} ★
                             </span>
                           )}
                           {wDraw.matchedStars &&
@@ -1316,7 +1909,15 @@ export const App: React.FC = () => {
                             ))}
                         </div>
                       </div>
-                      <span className="font-black text-xs sm:text-sm text-emerald-600 font-mono">
+                      <span
+                        className={`font-black text-xs sm:text-sm font-mono ${
+                          gameMode === 'swisslotto'
+                            ? 'text-emerald-600'
+                            : gameMode === 'euromillions'
+                            ? 'text-blue-600'
+                            : 'text-sky-600'
+                        }`}
+                      >
                         + {formatAmount(wDraw.amount)}
                       </span>
                     </div>
@@ -1345,8 +1946,20 @@ export const App: React.FC = () => {
           isOpen={showShareModal}
           onClose={() => setShowShareModal(false)}
           simulation={simulation}
-          numbers={gameMode === 'swisslotto' ? swissTicket.numbers : emTicket.numbers}
-          bonus={gameMode === 'swisslotto' ? swissTicket.bonus : null}
+          numbers={
+            gameMode === 'swisslotto'
+              ? swissTicket.numbers
+              : gameMode === 'euromillions'
+              ? emTicket.numbers
+              : lotoTicket.numbers
+          }
+          bonus={
+            gameMode === 'swisslotto'
+              ? swissTicket.bonus
+              : gameMode === 'loto'
+              ? lotoTicket.chance
+              : null
+          }
           stars={gameMode === 'euromillions' ? emTicket.stars : undefined}
           startYear={startDate.slice(0, 4)}
           game={gameMode}
@@ -1359,8 +1972,20 @@ export const App: React.FC = () => {
         <ShareTriggerModal
           isOpen={showShareTrigger}
           onClose={() => setShowShareTrigger(false)}
-          numbers={gameMode === 'swisslotto' ? swissTicket.numbers : emTicket.numbers}
-          bonus={gameMode === 'swisslotto' ? swissTicket.bonus : null}
+          numbers={
+            gameMode === 'swisslotto'
+              ? swissTicket.numbers
+              : gameMode === 'euromillions'
+              ? emTicket.numbers
+              : lotoTicket.numbers
+          }
+          bonus={
+            gameMode === 'swisslotto'
+              ? swissTicket.bonus
+              : gameMode === 'loto'
+              ? lotoTicket.chance
+              : null
+          }
           stars={gameMode === 'euromillions' ? emTicket.stars : undefined}
           game={gameMode}
         />

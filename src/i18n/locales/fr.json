@@ -7,7 +7,9 @@
     "subtitleEm": "Vos numéros fétiches face à l'histoire officielle depuis 2004",
     "drawsAnalyzed": "{{count}} tirages analysés",
     "costPerGrid": "{{cost}} / grille",
-    "selectLotteryAria": "Sélectionner le loto"
+    "selectLotteryAria": "Sélectionner le loto",
+    "badgeLoto": "Loto FDJ",
+    "subtitleLoto": "Vos numéros fétiches face à l'histoire officielle du Loto FDJ depuis 2008 (Loto, Super Loto, Grand Loto)"
   },
   "grid": {
     "eyebrow": "COMPOSEZ VOTRE CHANCE",
@@ -26,7 +28,13 @@
     "reset": "Réinitialiser",
     "complete": "Grille complète ✓",
     "selectedCount": "{{count}} / 5 sélectionnés",
-    "starsCount": "{{count}} / 2 étoiles"
+    "starsCount": "{{count}} / 2 étoiles",
+    "chanceEyebrowLoto": "NUMÉRO CHANCE",
+    "chanceSubLoto": "Choisissez 1 numéro Chance (1 à 10)",
+    "subTypeAll": "Tous les tirages",
+    "subTypeLoto": "Loto",
+    "subTypeSuperLoto": "Super Loto",
+    "subTypeGrandLoto": "Grand Loto"
   },
   "ticketCard": {
     "eyebrow": "TICKET ANALYSÉ",
@@ -49,7 +57,10 @@
     "allTimeEm": "Tout (2004–2026)",
     "oneYear": "1 an",
     "fiveYears": "5 ans",
-    "shareButton": "Partager mon résultat"
+    "shareButton": "Partager mon résultat",
+    "chanceBadgeLoto": "Chance {{bonus}}",
+    "incompletePromptLoto": "Complétez vos 5 numéros et le numéro Chance pour révéler leur histoire.",
+    "allTimeLoto": "Tout (2008–2026)"
   },
   "metrics": {
     "totalWinnings": "GAINS CUMULÉS",
@@ -74,7 +85,12 @@
     "coldStarsLabel": "ÉTOILES EN RETARD",
     "hotTooltip": "{{number}} : tiré {{count}} fois ({{percent}}%) sur cette période",
     "coldTooltip": "{{number}} : absent depuis {{draws}} tirages sur cette période",
-    "starTooltip": "Étoile {{star}} : tirée {{count}} fois sur cette période"
+    "starTooltip": "Étoile {{star}} : tirée {{count}} fois sur cette période",
+    "applyTop5Loto": "Appliquer le Top 5 + Chance",
+    "hotChanceLabel": "NUMÉROS CHANCE LES PLUS TIRÉS",
+    "coldChanceLabel": "NUMÉROS CHANCE EN RETARD",
+    "chanceTooltip": "Chance {{number}} : tiré {{count}} fois sur cette période",
+    "chanceColdTooltip": "Chance {{number}} : absent depuis {{draws}} tirages sur cette période"
   },
   "history": {
     "eyebrow": "VOTRE COMBINAISON DANS LE PASSÉ",
@@ -83,7 +99,9 @@
     "chanceFoundTitle": "Étoile trouvée !",
     "viewAll": "Voir tout l’historique ({{count}} tirages) & rangs",
     "noMatch": "Aucun tirage gagnant répertorié sur la période sélectionnée.",
-    "incomplete": "Complétez votre grille (5 numéros + 2 étoiles) pour afficher les tirages."
+    "incomplete": "Complétez votre grille (5 numéros + 2 étoiles) pour afficher les tirages.",
+    "chanceFoundLotoTitle": "Numéro Chance trouvé !",
+    "incompleteLoto": "Complétez votre grille (5 numéros + 1 numéro Chance) pour afficher les tirages."
   },
   "etf": {
     "title": "Et si vous aviez investi au lieu de jouer ?",
@@ -156,7 +174,16 @@
     "rank_3_0": "3 numéros",
     "rank_1_2": "1 numéro + 2 étoiles",
     "rank_2_1": "2 numéros + 1 étoile",
-    "rank_2_0": "2 numéros"
+    "rank_2_0": "2 numéros",
+    "rank_loto_5_1": "5 numéros + N° Chance",
+    "rank_loto_5_0": "5 numéros",
+    "rank_loto_4_1": "4 numéros + N° Chance",
+    "rank_loto_4_0": "4 numéros",
+    "rank_loto_3_1": "3 numéros + N° Chance",
+    "rank_loto_3_0": "3 numéros",
+    "rank_loto_2_1": "2 numéros + N° Chance",
+    "rank_loto_2_0": "2 numéros",
+    "rank_loto_chance": "N° Chance seul"
   },
   "adSlot": {
     "partnerSpace": "Espace Partenaire",

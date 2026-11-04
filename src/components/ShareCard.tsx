@@ -50,8 +50,8 @@ export const ShareCard: React.FC<ShareCardProps> = ({
   // Build the shareable URL
   const shareUrl = (() => {
     const url = new URL(window.location.origin + window.location.pathname);
-    url.searchParams.set('n', numbers.join(','));
-    url.searchParams.set('b', String(bonus));
+    url.searchParams.set('numbers', numbers.join(','));
+    url.searchParams.set('chance', String(bonus));
     return url.toString();
   })();
 

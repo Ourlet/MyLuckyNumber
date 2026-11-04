@@ -1339,3 +1339,233 @@ body[data-game="euromillions"] .fb-side-btn:hover {
 }
 
 
+
+
+/* ====================================================================== */
+/* THÈME LOTO FDJ (bleu roi / cyan) – activé via data-game="loto"         */
+/* ====================================================================== */
+
+body[data-game="loto"] {
+  background-color: #f0f7ff;
+}
+
+body[data-game="loto"] .min-h-screen {
+  background-color: #f0f7ff !important;
+}
+
+body[data-game="loto"] .panel {
+  border-color: #dbeafe;
+}
+
+body[data-game="loto"] .ticket-panel-light {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  border-color: #bfdbfe;
+  box-shadow: 0 10px 25px -5px rgba(2, 132, 199, 0.08);
+}
+
+body[data-game="loto"] .ticket-ball {
+  background-color: #0284c7;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.25);
+}
+
+body[data-game="loto"] .number-cell-idle:hover {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+body[data-game="loto"] .number-cell-selected {
+  background-color: #0284c7;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+body[data-game="loto"] .chance-cell-selected {
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.45);
+  transform: scale(1.07);
+}
+
+body[data-game="loto"] .chance-cell:not(.chance-cell-selected):hover {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+  transform: scale(1.04);
+}
+
+body[data-game="loto"] .history-ball {
+  background-color: #e0f2fe;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+body[data-game="loto"] header {
+  border-bottom-color: #bae6fd !important;
+  background-color: rgba(240, 247, 255, 0.96) !important;
+}
+
+body[data-game="loto"] .etf-card {
+  background: linear-gradient(145deg, #ffffff 0%, #f0f9ff 40%, #e0f2fe 100%);
+  border-color: #bae6fd;
+  box-shadow: 0 4px 24px -4px rgba(2, 132, 199, 0.06), 0 1px 3px rgba(0,0,0,0.03);
+}
+
+body[data-game="loto"] .etf-card-topbar {
+  background: linear-gradient(90deg, #0284c7, #0ea5e9, #38bdf8, #7dd3fc);
+}
+
+body[data-game="loto"] .etf-icon-wrapper {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+}
+
+body[data-game="loto"] .etf-diff-banner {
+  background: linear-gradient(135deg, #0369a1, #0284c7);
+}
+
+body[data-game="loto"] .etf-diff-value {
+  color: #7dd3fc;
+}
+
+.lottery-switcher-select.theme-loto {
+  background: linear-gradient(135deg, #0284c7 0%, #1e40af 100%);
+  color: #ffffff;
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.35), 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.lottery-switcher-select.theme-loto:hover {
+  background: linear-gradient(135deg, #0369a1 0%, #1e3a8a 100%);
+  box-shadow: 0 4px 16px rgba(2, 132, 199, 0.45);
+  transform: translateY(-1px);
+}
+
+/* ====================================================================== */
+/* THÈME LOTO FDJ : Couvre tous les éléments utilisant des classes emerald-* */
+/* ====================================================================== */
+
+/* bg-emerald-600 → bleu ciel / royal (boutons Flash, Partager, etc.) */
+body[data-game="loto"] .bg-emerald-600 {
+  background-color: #0284c7 !important;
+}
+body[data-game="loto"] .hover\:bg-emerald-700:hover {
+  background-color: #0369a1 !important;
+}
+body[data-game="loto"] .bg-emerald-700 {
+  background-color: #0369a1 !important;
+}
+
+/* bg-emerald-50/100 → bleu clair (badges, pills, etc.) */
+body[data-game="loto"] .bg-emerald-50 {
+  background-color: #f0f9ff !important;
+}
+body[data-game="loto"] .bg-emerald-100 {
+  background-color: #e0f2fe !important;
+}
+
+/* text-emerald-600/700/800 → bleu */
+body[data-game="loto"] .text-emerald-600 {
+  color: #0284c7 !important;
+}
+body[data-game="loto"] .text-emerald-700 {
+  color: #0369a1 !important;
+}
+body[data-game="loto"] .text-emerald-800 {
+  color: #075985 !important;
+}
+
+/* border-emerald-200 → bleu */
+body[data-game="loto"] .border-emerald-200 {
+  border-color: #bae6fd !important;
+}
+body[data-game="loto"] .border-emerald-200\/60 {
+  border-color: rgba(186, 230, 253, 0.6) !important;
+}
+body[data-game="loto"] .border-emerald-200\/80 {
+  border-color: rgba(186, 230, 253, 0.8) !important;
+}
+
+/* Boutons / icônes avec bg-emerald-600 */
+body[data-game="loto"] .bg-emerald-600.rounded-xl,
+body[data-game="loto"] .bg-emerald-600.rounded-lg {
+  background-color: #0284c7 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2) !important;
+}
+
+/* shadow-emerald → bleu */
+body[data-game="loto"] .shadow-emerald-600\/20 {
+  --tw-shadow-color: rgba(2, 132, 199, 0.2);
+}
+
+/* Focus ring */
+body[data-game="loto"] .focus\:ring-emerald-500\/50:focus {
+  --tw-ring-color: rgba(14, 165, 233, 0.5) !important;
+}
+body[data-game="loto"] .focus\:border-emerald-500:focus {
+  border-color: #0ea5e9 !important;
+}
+
+/* Pill "raccourcis" actif sélectionné (ex: "Tout (2008–2026)") */
+body[data-game="loto"] .bg-emerald-600.text-white.shadow-2xs {
+  background-color: #0284c7 !important;
+}
+
+/* Animate-pulse dot dans les status-pills */
+body[data-game="loto"] .bg-emerald-500 {
+  background-color: #0ea5e9 !important;
+}
+
+/* hover:bg-emerald-100 (bouton applyTop) */
+body[data-game="loto"] .hover\:bg-emerald-100:hover {
+  background-color: #e0f2fe !important;
+}
+body[data-game="loto"] .hover\:text-emerald-800:hover {
+  color: #075985 !important;
+}
+
+/* Badge sélection complète (ex: "5 / 5") */
+body[data-game="loto"] .bg-emerald-100.text-emerald-800 {
+  background-color: #e0f2fe !important;
+  color: #075985 !important;
+}
+
+/* Modal Award icon */
+body[data-game="loto"] .bg-emerald-100.text-emerald-700 {
+  background-color: #e0f2fe !important;
+  color: #0284c7 !important;
+}
+
+/* ===== Tailwind v4: hover/focus variants ===== */
+body[data-game="loto"] [class*="hover:bg-emerald-700"]:hover,
+body[data-game="loto"] [class*="hover\\:bg-emerald-700"]:hover {
+  background-color: #0369a1 !important;
+}
+
+body[data-game="loto"] [class*="hover:bg-emerald-100"]:hover,
+body[data-game="loto"] [class*="hover\\:bg-emerald-100"]:hover {
+  background-color: #e0f2fe !important;
+}
+
+body[data-game="loto"] [class*="hover:text-emerald-800"]:hover,
+body[data-game="loto"] [class*="hover\\:text-emerald-800"]:hover {
+  color: #075985 !important;
+}
+
+body[data-game="loto"] [class*="shadow-emerald-600"] {
+  --tw-shadow-color: rgba(2, 132, 199, 0.2) !important;
+  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
+              var(--tw-ring-shadow, 0 0 #0000),
+              0 4px 16px -2px rgba(2, 132, 199, 0.25) !important;
+}
+
+body[data-game="loto"] [class*="focus:ring-emerald"]:focus,
+body[data-game="loto"] [class*="focus\\:ring-emerald"]:focus {
+  --tw-ring-color: rgba(14, 165, 233, 0.5) !important;
+}
+body[data-game="loto"] [class*="focus:border-emerald"]:focus,
+body[data-game="loto"] [class*="focus\\:border-emerald"]:focus {
+  border-color: #0ea5e9 !important;
+}
+
+body[data-game="loto"] [class*="bg-emerald-50/40"] {
+  background-color: rgba(224, 242, 254, 0.4) !important;
+}
