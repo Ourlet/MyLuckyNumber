@@ -3,14 +3,37 @@
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://mymagicnumbers.com/</loc>
-    <lastmod>2026-10-02</lastmod>
-    <changefreq>weekly</changefreq>
+    <lastmod>2026-11-17</lastmod>
+    <changefreq>daily</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="fr-CH" href="https://mymagicnumbers.com/" />
-    <xhtml:link rel="alternate" hreflang="de-CH" href="https://mymagicnumbers.com/" />
-    <xhtml:link rel="alternate" hreflang="fr-FR" href="https://mymagicnumbers.com/" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://mymagicnumbers.com/" />
     <xhtml:link rel="alternate" hreflang="de" href="https://mymagicnumbers.com/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://mymagicnumbers.com/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://mymagicnumbers.com/" />
+  </url>
+  <url>
+    <loc>https://mymagicnumbers.com/loto-francais</loc>
+    <lastmod>2026-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://mymagicnumbers.com/loto-francais" />
+  </url>
+  <url>
+    <loc>https://mymagicnumbers.com/euromillions</loc>
+    <lastmod>2026-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://mymagicnumbers.com/euromillions" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://mymagicnumbers.com/euromillions" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mymagicnumbers.com/euromillions" />
+  </url>
+  <url>
+    <loc>https://mymagicnumbers.com/swiss-lotto</loc>
+    <lastmod>2026-11-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://mymagicnumbers.com/swiss-lotto" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://mymagicnumbers.com/swiss-lotto" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://mymagicnumbers.com/swiss-lotto" />
   </url>
 </urlset>

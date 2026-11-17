@@ -7,6 +7,7 @@ interface SeoMetaConfig {
   ogTitle: string;
   ogDescription: string;
   canonicalPath: string;
+  ogImage: string;
 }
 
 const SEO_CONFIG: Record<LotteryGame, SeoMetaConfig> = {
@@ -18,6 +19,7 @@ const SEO_CONFIG: Record<LotteryGame, SeoMetaConfig> = {
     ogDescription:
       'Simulateur gains Loto depuis 2008 : testez vos 5 numéros et votre numéro Chance face à plus de 2 800 tirages officiels de la FDJ.',
     canonicalPath: '/loto-francais',
+    ogImage: 'https://mymagicnumbers.com/og-image-loto.png',
   },
   euromillions: {
     title: 'EuroMillions : Vos numéros sont-ils déjà sortis ? | Simulateur de gains depuis 2004',
@@ -27,6 +29,7 @@ const SEO_CONFIG: Record<LotteryGame, SeoMetaConfig> = {
     ogDescription:
       'Découvrez ce que vos 5 numéros et 2 étoiles auraient réellement rapporté face à l’historique complet de l’EuroMillions.',
     canonicalPath: '/euromillions',
+    ogImage: 'https://mymagicnumbers.com/og-image.png',
   },
   swisslotto: {
     title: 'Swiss Lotto : Vos numéros sont-ils déjà sortis ? | Simulateur historique',
@@ -36,11 +39,12 @@ const SEO_CONFIG: Record<LotteryGame, SeoMetaConfig> = {
     ogDescription:
       'Découvrez ce que vos numéros fétiches auraient réellement rapporté face à l’historique officiel du Swiss Lotto.',
     canonicalPath: '/swiss-lotto',
+    ogImage: 'https://mymagicnumbers.com/og-image.png',
   },
 };
 
 /**
- * Met à jour dynamiquement les balises document.title, meta description, OpenGraph et canonical
+ * Met à jour dynamiquement les balises document.title, meta description, OpenGraph, Canonical et Images
  * lors de la navigation entre les différents jeux (Loto FDJ, EuroMillions, Swiss Lotto).
  */
 export function useSeoMeta(game: LotteryGame) {
@@ -68,8 +72,10 @@ export function useSeoMeta(game: LotteryGame) {
     setMetaTag('meta[property="og:title"]', 'content', config.ogTitle);
     setMetaTag('meta[property="og:description"]', 'content', config.ogDescription);
     setMetaTag('meta[property="og:url"]', 'content', `https://mymagicnumbers.com${config.canonicalPath}`);
+    setMetaTag('meta[property="og:image"]', 'content', config.ogImage);
     setMetaTag('meta[name="twitter:title"]', 'content', config.ogTitle);
     setMetaTag('meta[name="twitter:description"]', 'content', config.ogDescription);
+    setMetaTag('meta[name="twitter:image"]', 'content', config.ogImage);
 
     // 3. Lien Canonique
     let canonical = document.querySelector('link[rel="canonical"]');

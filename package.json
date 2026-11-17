@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node scripts/generate-seo-pages.cjs",
+    "build": "node scripts/generate-og-images.cjs && tsc && vite build && node scripts/generate-seo-pages.cjs",
     "preview": "vite preview",
     "update": "node scripts/update-latest.js",
     "convert:euromillions": "npx tsx scripts/convertEuromillionsCsv.ts",

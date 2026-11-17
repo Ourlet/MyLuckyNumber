@@ -20,6 +20,7 @@ const pages = [
     ogTitle: 'Loto FDJ : Vos numéros sont-ils déjà sortis ? | My Magic Numbers',
     ogDescription:
       'Simulateur gains Loto depuis 2008 : testez vos 5 numéros et votre numéro Chance face à plus de 2 800 tirages officiels de la FDJ.',
+    ogImage: 'https://mymagicnumbers.com/og-image-loto.png',
     canonical: 'https://mymagicnumbers.com/loto-francais',
     jsonLdName: 'Simulateur Loto FDJ',
     jsonLdDescription:
@@ -35,6 +36,7 @@ const pages = [
     ogTitle: 'Loto FDJ : Vos numéros sont-ils déjà sortis ? | My Magic Numbers',
     ogDescription:
       'Simulateur gains Loto depuis 2008 : testez vos 5 numéros et votre numéro Chance face à plus de 2 800 tirages officiels de la FDJ.',
+    ogImage: 'https://mymagicnumbers.com/og-image-loto.png',
     canonical: 'https://mymagicnumbers.com/loto-francais',
     jsonLdName: 'Simulateur Loto FDJ',
     jsonLdDescription:
@@ -49,6 +51,7 @@ const pages = [
     ogTitle: 'Simulateur Gains EuroMillions depuis 2004 | My Magic Numbers',
     ogDescription:
       'Découvrez ce que vos 5 numéros et 2 étoiles auraient réellement rapporté face à l’historique officiel complet de l’EuroMillions.',
+    ogImage: 'https://mymagicnumbers.com/og-image.png',
     canonical: 'https://mymagicnumbers.com/euromillions',
     jsonLdName: 'Simulateur EuroMillions',
     jsonLdDescription:
@@ -63,6 +66,7 @@ const pages = [
     ogTitle: 'Simulateur historique Swiss Lotto | My Magic Numbers',
     ogDescription:
       'Découvrez ce que vos numéros fétiches auraient réellement rapporté face à l’historique complet du Swiss Lotto.',
+    ogImage: 'https://mymagicnumbers.com/og-image.png',
     canonical: 'https://mymagicnumbers.com/swiss-lotto',
     jsonLdName: 'Simulateur Swiss Lotto',
     jsonLdDescription:
@@ -96,6 +100,10 @@ for (const page of pages) {
     /<meta property="og:url" content=".*?" \/>/,
     `<meta property="og:url" content="${page.canonical}" />`
   );
+  html = html.replace(
+    /<meta property="og:image" content=".*?" \/>/,
+    `<meta property="og:image" content="${page.ogImage}" />`
+  );
 
   // Replace Twitter
   html = html.replace(
@@ -105,6 +113,10 @@ for (const page of pages) {
   html = html.replace(
     /<meta name="twitter:description" content=".*?" \/>/,
     `<meta name="twitter:description" content="${page.ogDescription}" />`
+  );
+  html = html.replace(
+    /<meta name="twitter:image" content=".*?" \/>/,
+    `<meta name="twitter:image" content="${page.ogImage}" />`
   );
 
   // Replace Canonical
@@ -125,4 +137,3 @@ for (const page of pages) {
 }
 
 console.log('[SEO Generator] All SEO landing pages generated successfully.');
-
